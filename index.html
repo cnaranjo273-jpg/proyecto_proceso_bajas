@@ -646,7 +646,7 @@ function getUserName(uid) {
 // RENDER DASHBOARD
 // ══════════════════════════════════════════
 function renderDashboard() {
-  const projects = getUserProjects();
+  const projects = window.proyectosFirebase || [];
   const total = projects.length;
   const done  = projects.filter(p=>getProgress(p)===100).length;
   const inPrg = projects.filter(p=>getProgress(p)>0&&getProgress(p)<100).length;
@@ -693,10 +693,15 @@ function projectCardHTML(p) {
 // RENDER PROJECTS
 // ══════════════════════════════════════════
 function renderProjects() {
-  const projects = getUserProjects();
-  document.getElementById('projectsGrid').innerHTML = projects.length
-    ? projects.map(p=>projectCardHTML(p)).join('')
-    : `<div class="empty-state"><div class="icon">📂</div><h3>No hay proyectos</h3><p>Crea el primero con "+ Nuevo Proyecto".</p></div>`;
+  const proyectos = window.proyectosFirebase || [];
+  const container = document.getElementById('projectsGrid');
+  container.innerHTML = proyectos.length
+    ? proyectos.map(p => projectCardHTML(p)).join('')
+    : `<div class="empty-state">
+        <div class="icon">📂</div>
+        <h3>No hay proyectos</h3>
+        <p>Crea el primero con "+ Nuevo Proyecto".</p>
+      </div>`;
 }
 
 
@@ -704,23 +709,37 @@ function renderProjects() {
 // RENDER SUPERVISOR
 // ══════════════════════════════════════════
 function renderSupervisor() {
-  const data = getData();
+  const proyectos = window.proyectosFirebase || [];
   const users = getUsers();
   const collaborators = Object.entries(users).filter(([,u])=>u.role==='collaborator');
+
   let html = '';
+
   collaborators.forEach(([uid,uinfo]) => {
-    const ups = data.projects.filter(p=>p.owner===uid);
+    const ups = proyectos.filter(p=>p.owner===uid);
     const al = ups.filter(p=>isDaysSinceLastUpdate(p,3)).length;
+
     html += `<div class="collab-section">
       <div class="collab-title">
         <div class="avatar avatar-purple">${uinfo.name[0]}</div>
-        <div><div class="font-bold">${uinfo.name}</div>
-          <div class="text-sm text-muted">${ups.length} proyectos${al?` · <span style="color:#dc2626">⚠️ ${al} con alerta</span>`:''}</div></div>
+        <div>
+          <div class="font-bold">${uinfo.name}</div>
+          <div class="text-sm text-muted">
+            ${ups.length} proyectos
+            ${al?` · <span style="color:#dc2626">⚠️ ${al} con alerta</span>`:''}
+          </div>
+        </div>
       </div>
-      ${ups.length?`<div class="projects-grid">${ups.map(p=>projectCardHTML(p)).join('')}</div>`:`<div class="text-muted" style="padding:8px 0;">Sin proyectos registrados.</div>`}
+
+      ${ups.length
+        ? `<div class="projects-grid">${ups.map(p=>projectCardHTML(p)).join('')}</div>`
+        : `<div class="text-muted" style="padding:8px 0;">Sin proyectos registrados.</div>`
+      }
     </div>`;
   });
-  document.getElementById('supervisorContent').innerHTML = html||'<div class="empty-state"><div class="icon">👥</div><h3>Sin colaboradores</h3></div>';
+
+  document.getElementById('supervisorContent').innerHTML =
+    html || '<div class="empty-state"><div class="icon">👥</div><h3>Sin colaboradores</h3></div>';
 }
 
 // ══════════════════════════════════════════
@@ -886,38 +905,39 @@ function createProject() {
     steps: initSteps()
   };
 
-  // 🔹 Guardar en local (por ahora)
-  const data = getData();
-  data.projects.push(proyecto);
-  saveData(data);
-
   // 🔥 Guardar en Firebase
-  db.collection("proyectos").add(proyecto)
+  db.collection("proyectos").doc(id).set(proyecto)
     .then(() => {
       console.log("✅ Guardado en Firebase");
+      cargarProyectosFirebase(); // 🔥 refresca desde Firebase
     })
     .catch((error) => {
       console.error("❌ Error Firebase:", error);
     });
 
   closeModal('newProjectModal');
-  renderProjects();
-  renderDashboard();
 }
 function openProject(id) {
-  const data = getData();
-  currentProject = data.projects.find(p=>p.id===id);
+  const proyectos = window.proyectosFirebase || [];
+  currentProject = proyectos.find(p => p.id === id);
+
   if(!currentProject) return;
+
   document.getElementById('detailTitle').textContent = currentProject.name;
+
   const pct = getProgress(currentProject);
   const st  = getStatusBadge(currentProject);
+
   document.getElementById('detailBadges').innerHTML = `
     <span class="badge ${st.cls}">${st.label}</span>
     <span class="badge badge-purple">${pct}% completado</span>
-    <span class="badge badge-gray">${currentProject.code}</span>`;
+    <span class="badge badge-gray">${currentProject.code}</span>
+  `;
+
   switchTab('timeline');
   document.getElementById('projectDetailModal').classList.remove('hidden');
 }
+  
 function cargarProyectosFirebase() {
   db.collection("proyectos").get().then((querySnapshot) => {
     let proyectos = [];
@@ -935,18 +955,8 @@ function cargarProyectosFirebase() {
   });
 }
 function renderProjectsFirebase(proyectos) {
-  const container = document.getElementById('projectsGrid'); // usa tu ID real
-
-  container.innerHTML = "";
-
-  proyectos.forEach(p => {
-    const div = document.createElement("div");
-    div.innerHTML = `
-      <h3>${p.name}</h3>
-      <p>${p.code}</p>
-    `;
-    container.appendChild(div);
-  });
+  window.proyectosFirebase = proyectos;
+  renderProjects();
 }
 
 // ══════════════════════════════════════════
@@ -1295,62 +1305,19 @@ document.addEventListener('click', e => {
 // ══════════════════════════════════════════
 // SEED DEMO DATA
 // ══════════════════════════════════════════
-function seedDemoData() {
-  if(getData().projects.length > 0) return;
-  const now=Date.now(), day=86400000;
-  const p1 = { id:'p_demo1',name:'Edificio Torres del Norte',code:'PRJ-2026-001',
-    startDate:new Date(now-20*day).toISOString(),description:'Proyecto de inspección y certificación',
-    client:'Inmobiliaria Torres S.A.',owner:'ana',createdAt:new Date(now-20*day).toISOString(),steps:initSteps()};
-  p1.steps[0]={...p1.steps[0],status:'done',notes:'Informe técnico firmado.',startedAt:new Date(now-18*day).toISOString(),completedAt:new Date(now-16*day).toISOString(),updatedAt:new Date(now-16*day).toISOString()};
-  p1.steps[1]={...p1.steps[1],status:'done',notes:'Certificado obtenido.',startedAt:new Date(now-15*day).toISOString(),completedAt:new Date(now-13*day).toISOString(),updatedAt:new Date(now-13*day).toISOString()};
-  p1.steps[2]={...p1.steps[2],status:'done',notes:'Quipux N° 2026-047.',startedAt:new Date(now-12*day).toISOString(),completedAt:new Date(now-10*day).toISOString(),updatedAt:new Date(now-10*day).toISOString()};
-  p1.steps[3]={...p1.steps[3],status:'in_progress',notes:'Visita programada.',startedAt:new Date(now-9*day).toISOString(),updatedAt:new Date(now-4*day).toISOString()};
-
-  const p2 = { id:'p_demo2',name:'Residencia Los Pinos',code:'PRJ-2026-002',
-    startDate:new Date(now-5*day).toISOString(),description:'Constatación física de vivienda',
-    client:'Familia Rodríguez',owner:'ana',createdAt:new Date(now-5*day).toISOString(),steps:initSteps()};
-  p2.steps[0]={...p2.steps[0],status:'done',completedAt:new Date(now-4*day).toISOString(),updatedAt:new Date(now-4*day).toISOString(),notes:'Informe entregado.'};
-  p2.steps[1]={...p2.steps[1],status:'in_progress',startedAt:new Date(now-3*day).toISOString(),updatedAt:new Date(now-3*day).toISOString(),notes:'En trámite.'};
-
-  const p3 = { id:'p_demo3',name:'Centro Comercial Pasaje',code:'PRJ-2026-003',
-    startDate:new Date(now-30*day).toISOString(),description:'Proyecto completo de certificación',
-    client:'Grupo Andino Corp.',owner:'carlos',createdAt:new Date(now-30*day).toISOString(),steps:initSteps()};
-  p3.steps.forEach((_,i)=>{ p3.steps[i]={...p3.steps[i],status:'done',completedAt:new Date(now-(25-i*2)*day).toISOString(),updatedAt:new Date(now-(25-i*2)*day).toISOString(),notes:'Completado.'}; });
-
-  const p4 = { id:'p_demo4',name:'Local Av. 10 de Agosto',code:'PRJ-2026-004',
-    startDate:new Date(now-15*day).toISOString(),description:'Inspección local comercial',
-    client:'Sr. Marco Vega',owner:'carlos',createdAt:new Date(now-15*day).toISOString(),steps:initSteps()};
-  p4.steps[0]={...p4.steps[0],status:'done',completedAt:new Date(now-12*day).toISOString(),updatedAt:new Date(now-12*day).toISOString(),notes:'Completado.'};
-  p4.steps[1]={...p4.steps[1],status:'done',completedAt:new Date(now-9*day).toISOString(),updatedAt:new Date(now-9*day).toISOString(),notes:'Completado.'};
-  p4.steps[2]={...p4.steps[2],status:'in_progress',startedAt:new Date(now-8*day).toISOString(),updatedAt:new Date(now-7*day).toISOString(),notes:'En espera de número.'};
-
-  const data=getData(); data.projects.push(p1,p2,p3,p4); saveData(data);
-}
 
 // INIT
-seedDemoData();
 document.getElementById('loginUser').addEventListener('keydown',e=>e.key==='Enter'&&doLogin());
 document.getElementById('loginPass').addEventListener('keydown',e=>e.key==='Enter'&&doLogin());
+
 setInterval(()=>{ if(currentUser) updateNotifBadge(); }, 60000);
+
+// 🔥 CLAVE
+cargarProyectosFirebase();
+  
+<script>
 cargarProyectosFirebase();
 </script>
-  <!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyC40UAPgOwuEW1P7ZOvr4NYlvTh9eEdsFw",
-  authDomain: "proyectotrack-d3556.firebaseapp.com",
-  projectId: "proyectotrack-d3556",
-  storageBucket: "proyectotrack-d3556.firebasestorage.app",
-  messagingSenderId: "319794903621",
-  appId: "1:319794903621:web:63c6c5fcc1988392c2c12c"
-};
-
-firebase.initializeApp(firebaseConfig);
-
-const db = firebase.firestore();
-</script>
+  cargarProyectosFirebase();
 </body>
 </html>
