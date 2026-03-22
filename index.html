@@ -939,24 +939,25 @@ function openProject(id) {
 }
   
 function cargarProyectosFirebase() {
-  db.collection("proyectos").get().then((querySnapshot) => {
+  db.collection("proyectos").onSnapshot((querySnapshot) => {
     let proyectos = [];
 
     querySnapshot.forEach((doc) => {
       proyectos.push(doc.data());
     });
 
-    console.log("📦 Proyectos desde Firebase:", proyectos);
-
-    // 👉 AQUÍ reemplazamos temporalmente el data local
-    window.proyectosFirebase = proyectos;
+    console.log("🔥 Tiempo real:", proyectos);
 
     renderProjectsFirebase(proyectos);
   });
 }
+  
 function renderProjectsFirebase(proyectos) {
   window.proyectosFirebase = proyectos;
+
   renderProjects();
+  renderDashboard();
+  renderSupervisor();
 }
 
 // ══════════════════════════════════════════
@@ -1318,6 +1319,6 @@ cargarProyectosFirebase();
 <script>
 cargarProyectosFirebase();
 </script>
-  cargarProyectosFirebase();
+cargarProyectosFirebase();
 </body>
 </html>
