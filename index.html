@@ -491,6 +491,8 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 </script>
+</head>
+<body>
 <script>
 // ══════════════════════════════════════════
 // DATA
@@ -520,7 +522,6 @@ function registerUser(email, password, role, name) {
   auth.createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
       const user = userCredential.user;
-      // Guardar datos adicionales en Firestore
       return db.collection("usuarios").doc(user.uid).set({
         email: email,
         role: role,
@@ -620,35 +621,21 @@ function initSteps() {
 // ══════════════════════════════════════════
 // AUTH
 // ══════════════════════════════════════════
-function doLogin() {
+function doLogin(){
   const email = document.getElementById('loginUser').value;
   const password = document.getElementById('loginPass').value;
-  auth.signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      // Obtener rol desde Firestore
-      return db.collection("usuarios").doc(user.uid).get();
+
+  auth.signInWithEmailAndPassword(email,password)
+    .then(()=>{
+      cargarProyectosFirebase();
+      renderDashboard();
     })
-    .then((doc) => {
-      if (!doc.exists) {
-        alert("Usuario sin datos");
-        return;
-      }
-      const userData = doc.data();
-      currentUser = {
-        id: doc.id,
-        email: userData.email,
-        role: userData.role,
-        name: userData.name
-      };
-      console.log("✅ Login correcto:", currentUser);
-      renderApp();
-    })
-    .catch((error) => {
-      console.error(error);
-      alert("❌ Credenciales incorrectas");
-    });
-}  
+    .catch(err=>alert(err.message));
+}
+
+function logout(){
+  auth.signOut();
+}
 function doLogout() {
   currentUser = null;
   document.getElementById('loginScreen').style.display = 'flex';
@@ -953,35 +940,27 @@ function openNewProjectModal() {
   document.getElementById('np_client').value='';
   document.getElementById('newProjectModal').classList.remove('hidden');
 }
-function createProject() {
+function createProject(){
   const name = document.getElementById('np_name').value.trim();
   const code = document.getElementById('np_code').value.trim();
-  if(!name || !code){
-    alert('Completa el nombre y código.');
-    return;
-  }
-  const id = 'p_' + Date.now();
-  const proyecto = {
-    id: id,
-    name: name,
-    code: code,
-    startDate: document.getElementById('np_startDate').value,
-    description: document.getElementById('np_desc').value.trim(),
-    client: document.getElementById('np_client').value.trim(),
-    owner: currentUser.id,
-    createdAt: new Date().toISOString(),
-    steps: initSteps()
-  };
-  // 🔥 Guardar en Firebase
-  db.collection("proyectos").doc(id).set(proyecto)
-    .then(() => {
-      console.log("✅ Guardado en Firebase");
-      cargarProyectosFirebase(); // 🔥 refresca desde Firebase
-    })
-    .catch((error) => {
-      console.error("❌ Error Firebase:", error);
-    });
-  closeModal('newProjectModal');
+
+  if(!name||!code){alert('Completa datos');return;}
+
+  db.collection("proyectos").add({
+    name,
+    code,
+    createdAt: new Date().toISOString()
+  })
+  .then(()=>{
+    cargarProyectosFirebase();
+  })
+  .catch(err=>console.error(err));
+}
+
+async function cargarProyectosFirebase(){
+  const snapshot = await db.collection("proyectos").get();
+  window.projects = snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
+  renderProjects();
 }
 function openProject(id) {
   const proyectos = window.proyectosFirebase || [];
@@ -1334,14 +1313,13 @@ document.addEventListener('click', e => {
 // SEED DEMO DATA
 // ══════════════════════════════════════════
 // INIT
-document.getElementById('loginUser').addEventListener('keydown',e=>e.key==='Enter'&&doLogin());
-document.getElementById('loginPass').addEventListener('keydown',e=>e.key==='Enter'&&doLogin());
-setInterval(()=>{ if(currentUser) updateNotifBadge(); }, 60000);
-// 🔥 CLAVE
-cargarProyectosFirebase();
-<script>
-cargarProyectosFirebase();
+auth.onAuthStateChanged(user=>{
+  if(user){
+    cargarProyectosFirebase();
+  }
+});
+
 </script>
-cargarProyectosFirebase();
+
 </body>
 </html>
