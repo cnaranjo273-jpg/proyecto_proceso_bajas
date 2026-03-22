@@ -14,7 +14,6 @@
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
-
   /* LOGIN */
   #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;
     background:linear-gradient(135deg,#1e3a8a 0%,#7c3aed 100%);}
@@ -43,7 +42,6 @@
   .btn-full{width:100%;justify-content:center;}
   .demo-users{margin-top:20px;padding:14px;background:#f0f9ff;border-radius:10px;font-size:.78rem;line-height:1.8;}
   .demo-users strong{color:var(--primary);}
-
   /* LAYOUT */
   #app{display:none;min-height:100vh;}
   .sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;
@@ -75,7 +73,6 @@
     box-shadow:0 1px 8px rgba(0,0,0,.05);}
   .topbar h1{font-size:1.15rem;font-weight:700;}
   .content{padding:28px;}
-
   /* STATS */
   .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:18px;margin-bottom:28px;}
   .stat-card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 1px 8px rgba(0,0,0,.06);
@@ -84,7 +81,6 @@
     justify-content:center;font-size:1.3rem;flex-shrink:0;}
   .stat-card h3{font-size:1.75rem;font-weight:800;line-height:1;}
   .stat-card p{font-size:.78rem;color:var(--muted);margin-top:4px;}
-
   /* PROJECT CARDS */
   .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
   .section-header h2{font-size:1.05rem;font-weight:700;}
@@ -112,7 +108,6 @@
   .fill-yellow{background:linear-gradient(90deg,var(--warning),#fbbf24);}
   .fill-red{background:linear-gradient(90deg,var(--danger),#f87171);}
   .project-meta{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-top:10px;}
-
   /* MODAL */
   .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.52);z-index:1000;
     display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);}
@@ -127,7 +122,6 @@
     cursor:pointer;display:flex;align-items:center;justify-content:center;
     font-size:1.1rem;color:var(--muted);transition:all .2s;}
   .close-btn:hover{background:#fee2e2;color:var(--danger);}
-
   /* TIMELINE */
   .timeline{position:relative;padding-left:26px;}
   .timeline::before{content:'';position:absolute;left:9px;top:0;bottom:0;width:2px;background:var(--border);}
@@ -148,7 +142,6 @@
   .timeline-step-date{font-size:.72rem;color:var(--muted);}
   .timeline-step-notes{font-size:.8rem;color:var(--muted);margin-top:5px;}
   .timeline-actions{margin-top:9px;display:flex;gap:7px;flex-wrap:wrap;}
-
   /* STEPS */
   .steps-list{display:flex;flex-direction:column;gap:10px;}
   .step-row{display:flex;align-items:center;gap:12px;padding:13px 16px;
@@ -164,13 +157,11 @@
   .step-name{font-weight:600;font-size:.88rem;}
   .step-date{font-size:.72rem;color:var(--muted);}
   .step-note{font-size:.76rem;color:var(--muted);margin-top:2px;}
-
   /* TABS */
   .tabs{display:flex;gap:4px;background:var(--bg);border-radius:11px;padding:3px;margin-bottom:22px;}
   .tab{flex:1;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-size:.84rem;
     font-weight:600;color:var(--muted);background:transparent;transition:all .2s;}
   .tab.active{background:#fff;color:var(--primary);box-shadow:0 1px 6px rgba(0,0,0,.1);}
-
   /* GANTT */
   .gantt-wrap{overflow-x:auto;margin-top:16px;}
   .gantt{min-width:620px;}
@@ -185,7 +176,6 @@
   .gantt-cell.done{background:#bbf7d0;}
   .gantt-cell.in_progress{background:#bfdbfe;animation:shimmer 2s infinite;}
   @keyframes shimmer{0%,100%{opacity:1}50%{opacity:.6}}
-
   /* ALERTS */
   .alert-banner{display:flex;align-items:center;gap:11px;padding:13px 16px;
     border-radius:11px;margin-bottom:14px;font-size:.86rem;}
@@ -193,7 +183,6 @@
   .alert-warning{background:#fffbeb;border:1.5px solid #fde68a;color:#92400e;}
   .alert-info{background:#eff6ff;border:1.5px solid #bfdbfe;color:#1e40af;}
   .alert-success{background:#f0fdf4;border:1.5px solid #bbf7d0;color:#166534;}
-
   /* NOTIFS */
   .notif-list{display:flex;flex-direction:column;gap:10px;}
   .notif-item{padding:13px 15px;border-radius:11px;border-left:4px solid;}
@@ -203,7 +192,6 @@
   .notif-title{font-weight:600;font-size:.86rem;}
   .notif-body{font-size:.78rem;color:var(--muted);margin-top:3px;}
   .notif-time{font-size:.7rem;color:var(--muted);margin-top:3px;}
-
   /* USERS TABLE */
   .users-table{width:100%;border-collapse:collapse;}
   .users-table th{text-align:left;padding:10px 14px;font-size:.78rem;font-weight:700;
@@ -212,12 +200,10 @@
   .users-table td{padding:12px 14px;font-size:.88rem;border-bottom:1px solid var(--border);}
   .users-table tr:last-child td{border-bottom:none;}
   .users-table tr:hover td{background:#f8fafc;}
-
   /* SUPERVISOR */
   .collab-section{margin-bottom:26px;}
   .collab-title{display:flex;align-items:center;gap:10px;margin-bottom:12px;
     padding-bottom:9px;border-bottom:2px solid var(--border);}
-
   /* MISC */
   .empty-state{text-align:center;padding:56px 20px;color:var(--muted);}
   .empty-state .icon{font-size:3.5rem;margin-bottom:14px;}
@@ -237,7 +223,6 @@
 </style>
 </head>
 <body>
-
 <!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-card">
@@ -257,7 +242,6 @@
     </div>
   </div>
 </div>
-
 <!-- APP -->
 <div id="app">
   <aside class="sidebar">
@@ -298,7 +282,6 @@
       <button class="btn btn-ghost btn-full" onclick="doLogout()" style="color:#fff;border-color:rgba(255,255,255,.3);">← Cerrar Sesión</button>
     </div>
   </aside>
-
   <main class="main">
     <div class="topbar">
       <h1 id="pageTitle">Dashboard</h1>
@@ -309,7 +292,6 @@
       </div>
     </div>
     <div class="content">
-
       <!-- DASHBOARD -->
       <div id="page-dashboard">
         <div class="stats-grid" id="statsGrid"></div>
@@ -317,7 +299,6 @@
         <div class="section-header"><h2>Proyectos Recientes</h2></div>
         <div class="projects-grid" id="recentProjects"></div>
       </div>
-
       <!-- PROJECTS -->
       <div id="page-projects" class="hidden">
         <div class="section-header">
@@ -326,17 +307,14 @@
         </div>
         <div class="projects-grid" id="projectsGrid"></div>
       </div>
-
       <!-- SUPERVISOR -->
       <div id="page-supervisor" class="hidden">
         <div id="supervisorContent"></div>
       </div>
-
       <!-- USERS -->
       <div id="page-users" class="hidden">
         <div id="usersContent"></div>
       </div>
-
       <!-- NOTIFICATIONS -->
       <div id="page-notifications" class="hidden">
         <div class="notif-list" id="notifList"></div>
@@ -345,9 +323,7 @@
     </div>
   </main>
 </div>
-
 <!-- ══ MODALS ══ -->
-
 <!-- New Project -->
 <div class="modal-overlay hidden" id="newProjectModal">
   <div class="modal" style="max-width:540px;">
@@ -375,7 +351,6 @@
     </div>
   </div>
 </div>
-
 <!-- Project Detail -->
 <div class="modal-overlay hidden" id="projectDetailModal">
   <div class="modal">
@@ -405,7 +380,6 @@
     </div>
   </div>
 </div>
-
 <!-- Update Step -->
 <div class="modal-overlay hidden" id="updateStepModal">
   <div class="modal" style="max-width:470px;">
@@ -431,7 +405,6 @@
     </div>
   </div>
 </div>
-
 <!-- Add / Edit User -->
 <div class="modal-overlay hidden" id="addUserModal">
   <div class="modal" style="max-width:480px;">
@@ -461,7 +434,6 @@
     </div>
   </div>
 </div>
-
 <!-- Confirm Delete -->
 <div class="modal-overlay hidden" id="confirmModal">
   <div class="modal" style="max-width:400px;">
@@ -476,10 +448,36 @@
     </div>
   </div>
 </div>
+<div id="usersView" class="view hidden">
+  <h2>👥 Gestión de Usuarios</h2>
+  <!-- FORMULARIO -->
+  <div style="margin-bottom:20px;">
+    <input id="u_name" placeholder="Nombre">
+    <input id="u_email" placeholder="Correo">
+    <input id="u_pass" type="password" placeholder="Contraseña">
+    <select id="u_role">
+      <option value="admin">Admin</option>
+      <option value="supervisor">Supervisor</option>
+      <option value="collaborator">Colaborador</option>
+    </select>
+    <button onclick="crearUsuario()">Crear Usuario</button>
+  </div>
+  <!-- LISTA -->
+  <table border="1" width="100%">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Rol</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody id="usersTable"></tbody>
+  </table>
+</div>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyC40UAPgOwuEW1P7ZOvr4NYlvTh9eEdsFw",
@@ -489,12 +487,10 @@ const firebaseConfig = {
   messagingSenderId: "319794903621",
   appId: "1:319794903621:web:63c6c5fcc1988392c2c12c"
 };
-
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 </script>
-
 <script>
 // ══════════════════════════════════════════
 // DATA
@@ -509,25 +505,21 @@ const STEP_NAMES = [
   "Número de Reingreso",
   "Quipux – Finalización"
 ];
-
 // Default system users (cannot be deleted)
 const DEFAULT_USERS = {
   ana:        { name:"Ana García",     role:"collaborator", password:"pass123",  system:true },
   carlos:     { name:"Carlos Mendoza", role:"collaborator", password:"pass123",  system:true },
   supervisor: { name:"Supervisor Jefe",role:"supervisor",   password:"super123", system:true }
 };
-
 let currentUser = null;
 let currentProject = null;
 let updateStepIndex = null;
 let editingUserId = null;
-
 // ── User store (localStorage) ──
 function registerUser(email, password, role, name) {
   auth.createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
       const user = userCredential.user;
-
       // Guardar datos adicionales en Firestore
       return db.collection("usuarios").doc(user.uid).set({
         email: email,
@@ -544,47 +536,96 @@ function registerUser(email, password, role, name) {
       alert("❌ Error: " + error.message);
     });
 }
+function crearUsuario() {
+  const name = document.getElementById('u_name').value;
+  const email = document.getElementById('u_email').value;
+  const pass = document.getElementById('u_pass').value;
+  const role = document.getElementById('u_role').value;
+  if (!name || !email || !pass) {
+    alert("Completa todos los campos");
+    return;
+  }
+  auth.createUserWithEmailAndPassword(email, pass)
+    .then((userCredential) => {
+      const user = userCredential.user;
+
+      return db.collection("usuarios").doc(user.uid).set({
+        name,
+        email,
+        role,
+        createdAt: new Date().toISOString()
+      });
+    })
+    .then(() => {
+      alert("✅ Usuario creado");
+      cargarUsuarios();
+    })
+    .catch((error) => {
+      console.error(error);
+      alert("❌ " + error.message);
+    });
+}
+function cargarUsuarios() {
+  db.collection("usuarios").onSnapshot((snapshot) => {
+    const tbody = document.getElementById("usersTable");
+    tbody.innerHTML = "";
+    snapshot.forEach((doc) => {
+      const u = doc.data();
+      tbody.innerHTML += `
+        <tr>
+          <td>${u.name}</td>
+          <td>${u.email}</td>
+          <td>${u.role}</td>
+          <td>
+            <button onclick="eliminarUsuario('${doc.id}')">Eliminar</button>
+          </td>
+        </tr>
+      `;
+    });
+  });
+}
+function eliminarUsuario(uid) {
+  if (!confirm("¿Eliminar usuario?")) return;
+
+  db.collection("usuarios").doc(uid).delete()
+    .then(() => {
+      alert("🗑 Usuario eliminado (Firestore)");
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+} 
 function getUsers() {
   const stored = localStorage.getItem('ptrack_users');
-
   if (!stored) return { ...DEFAULT_USERS };
-
   const users = JSON.parse(stored);
-
   // 🔥 SI ESTÁ VACÍO → restaurar defaults
   if (Object.keys(users).length === 0) {
     return { ...DEFAULT_USERS };
   }
-
   return users;
 }
 function saveUsers(users) {
   localStorage.setItem('ptrack_users', JSON.stringify(users));
 }
-
 // ── Project store ──
 function getData() { return JSON.parse(localStorage.getItem('ptrack_data') || '{"projects":[]}'); }
 function saveData(d) { localStorage.setItem('ptrack_data', JSON.stringify(d)); }
-
-
 function initSteps() {
   return STEP_NAMES.map((name, i) => ({
     id:i, name, status:"pending", notes:"",
     startedAt:null, completedAt:null, updatedAt:null
   }));
 }
-
 // ══════════════════════════════════════════
 // AUTH
 // ══════════════════════════════════════════
 function doLogin() {
   const email = document.getElementById('loginUser').value;
   const password = document.getElementById('loginPass').value;
-
   auth.signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
       const user = userCredential.user;
-
       // Obtener rol desde Firestore
       return db.collection("usuarios").doc(user.uid).get();
     })
@@ -593,26 +634,21 @@ function doLogin() {
         alert("Usuario sin datos");
         return;
       }
-
       const userData = doc.data();
-
       currentUser = {
         id: doc.id,
         email: userData.email,
         role: userData.role,
         name: userData.name
       };
-
       console.log("✅ Login correcto:", currentUser);
-
       renderApp();
     })
     .catch((error) => {
       console.error(error);
       alert("❌ Credenciales incorrectas");
     });
-}
-  
+}  
 function doLogout() {
   currentUser = null;
   document.getElementById('loginScreen').style.display = 'flex';
@@ -632,7 +668,6 @@ function setupUI() {
     document.getElementById('btnNewProject2').classList.add('hidden');
   }
 }
-
 // ══════════════════════════════════════════
 // NAVIGATION
 // ══════════════════════════════════════════
@@ -654,7 +689,6 @@ function showPage(page) {
   if (page==='users')          renderUsers();
   if (page==='notifications')  renderNotifications();
 }
-
 // ══════════════════════════════════════════
 // HELPERS
 // ══════════════════════════════════════════
@@ -694,7 +728,6 @@ function getUserName(uid) {
   const users = getUsers();
   return users[uid]?.name || uid;
 }
-
 // ══════════════════════════════════════════
 // RENDER DASHBOARD
 // ══════════════════════════════════════════
@@ -717,7 +750,6 @@ function renderDashboard() {
     : '<div class="empty-state"><div class="icon">📭</div><h3>Sin proyectos aún</h3></div>';
   updateNotifBadge();
 }
-
 // ══════════════════════════════════════════
 // PROJECT CARD
 // ══════════════════════════════════════════
@@ -741,7 +773,6 @@ function projectCardHTML(p) {
     <div class="project-meta"><span>👤 ${getUserName(p.owner)}</span><span>📅 ${fmtDate(p.createdAt)}</span></div>
   </div>`;
 }
-
 // ══════════════════════════════════════════
 // RENDER PROJECTS
 // ══════════════════════════════════════════
@@ -756,8 +787,6 @@ function renderProjects() {
         <p>Crea el primero con "+ Nuevo Proyecto".</p>
       </div>`;
 }
-
-
 // ══════════════════════════════════════════
 // RENDER SUPERVISOR
 // ══════════════════════════════════════════
@@ -765,13 +794,10 @@ function renderSupervisor() {
   const proyectos = window.proyectosFirebase || [];
   const users = getUsers();
   const collaborators = Object.entries(users).filter(([,u])=>u.role==='collaborator');
-
   let html = '';
-
   collaborators.forEach(([uid,uinfo]) => {
     const ups = proyectos.filter(p=>p.owner===uid);
     const al = ups.filter(p=>isDaysSinceLastUpdate(p,3)).length;
-
     html += `<div class="collab-section">
       <div class="collab-title">
         <div class="avatar avatar-purple">${uinfo.name[0]}</div>
@@ -783,18 +809,15 @@ function renderSupervisor() {
           </div>
         </div>
       </div>
-
       ${ups.length
         ? `<div class="projects-grid">${ups.map(p=>projectCardHTML(p)).join('')}</div>`
         : `<div class="text-muted" style="padding:8px 0;">Sin proyectos registrados.</div>`
       }
     </div>`;
   });
-
   document.getElementById('supervisorContent').innerHTML =
     html || '<div class="empty-state"><div class="icon">👥</div><h3>Sin colaboradores</h3></div>';
 }
-
 // ══════════════════════════════════════════
 // RENDER NOTIFICATIONS
 // ══════════════════════════════════════════
@@ -818,7 +841,6 @@ function updateNotifBadge() {
   const b = document.getElementById('notifBadge');
   if(c>0){b.textContent=c;b.classList.remove('hidden');}else b.classList.add('hidden');
 }
-
 // ══════════════════════════════════════════
 // RENDER USERS (Supervisor only)
 // ══════════════════════════════════════════
@@ -856,7 +878,6 @@ function renderUsers() {
       </table>
     </div>`;
 }
-
 // ══════════════════════════════════════════
 // USER CRUD
 // ══════════════════════════════════════════
@@ -894,12 +915,10 @@ function saveUser() {
   const role = document.getElementById('au_role').value;
   const errEl = document.getElementById('addUserError');
   errEl.classList.add('hidden');
-
   if(!name||!uid) { errEl.textContent='⚠️ Nombre y usuario son obligatorios.'; errEl.classList.remove('hidden'); return; }
   const users = getUsers();
   if(!editingUserId && users[uid]) { errEl.textContent='⚠️ Ese nombre de usuario ya existe.'; errEl.classList.remove('hidden'); return; }
   if(!editingUserId && pass.length < 6) { errEl.textContent='⚠️ La contraseña debe tener mínimo 6 caracteres.'; errEl.classList.remove('hidden'); return; }
-
   if(editingUserId) {
     users[editingUserId].name = name;
     users[editingUserId].role = role;
@@ -923,7 +942,6 @@ function deleteUser(uid) {
   saveUsers(users);
   renderUsers();
 }
-
 // ══════════════════════════════════════════
 // PROJECT CRUD
 // ══════════════════════════════════════════
@@ -938,14 +956,11 @@ function openNewProjectModal() {
 function createProject() {
   const name = document.getElementById('np_name').value.trim();
   const code = document.getElementById('np_code').value.trim();
-
   if(!name || !code){
     alert('Completa el nombre y código.');
     return;
   }
-
   const id = 'p_' + Date.now();
-
   const proyecto = {
     id: id,
     name: name,
@@ -957,7 +972,6 @@ function createProject() {
     createdAt: new Date().toISOString(),
     steps: initSteps()
   };
-
   // 🔥 Guardar en Firebase
   db.collection("proyectos").doc(id).set(proyecto)
     .then(() => {
@@ -967,52 +981,39 @@ function createProject() {
     .catch((error) => {
       console.error("❌ Error Firebase:", error);
     });
-
   closeModal('newProjectModal');
 }
 function openProject(id) {
   const proyectos = window.proyectosFirebase || [];
   currentProject = proyectos.find(p => p.id === id);
-
   if(!currentProject) return;
-
   document.getElementById('detailTitle').textContent = currentProject.name;
-
   const pct = getProgress(currentProject);
   const st  = getStatusBadge(currentProject);
-
   document.getElementById('detailBadges').innerHTML = `
     <span class="badge ${st.cls}">${st.label}</span>
     <span class="badge badge-purple">${pct}% completado</span>
     <span class="badge badge-gray">${currentProject.code}</span>
   `;
-
   switchTab('timeline');
   document.getElementById('projectDetailModal').classList.remove('hidden');
-}
-  
+}  
 function cargarProyectosFirebase() {
   db.collection("proyectos").onSnapshot((querySnapshot) => {
     let proyectos = [];
-
     querySnapshot.forEach((doc) => {
       proyectos.push(doc.data());
     });
-
     console.log("🔥 Tiempo real:", proyectos);
-
     renderProjectsFirebase(proyectos);
   });
-}
-  
+}  
 function renderProjectsFirebase(proyectos) {
   window.proyectosFirebase = proyectos;
-
   renderProjects();
   renderDashboard();
   renderSupervisor();
 }
-
 // ══════════════════════════════════════════
 // TABS
 // ══════════════════════════════════════════
@@ -1029,7 +1030,6 @@ function switchTab(tab) {
   if(tab==='gantt')    renderGantt();
   if(tab==='info')     renderInfo();
 }
-
 // ── TIMELINE ──
 function renderTimeline() {
   const p = currentProject;
@@ -1061,7 +1061,6 @@ function renderTimeline() {
   html+='</div>';
   document.getElementById('tab-timeline').innerHTML=html;
 }
-
 // ── STEPS ──
 function renderStepsTab() {
   const p=currentProject;
@@ -1082,7 +1081,6 @@ function renderStepsTab() {
   html+='</div>';
   document.getElementById('tab-steps').innerHTML=html;
 }
-
 // ── GANTT ──
 function renderGantt() {
   const p=currentProject;
@@ -1101,7 +1099,6 @@ function renderGantt() {
   </div>`;
   document.getElementById('tab-gantt').innerHTML=html;
 }
-
 // ── INFO ──
 function renderInfo() {
   const p=currentProject;
@@ -1117,7 +1114,6 @@ function renderInfo() {
   </div>
   ${p.description?`<div class="divider"></div><div class="text-muted" style="font-size:.74rem;margin-bottom:3px;">DESCRIPCIÓN</div><div>${p.description}</div>`:''}`;
 }
-
 // ══════════════════════════════════════════
 // UPDATE STEP
 // ══════════════════════════════════════════
@@ -1152,7 +1148,6 @@ function saveStepUpdate() {
   renderDashboard();
   updateNotifBadge();
 }
-
 // ══════════════════════════════════════════
 // EXPORT PDF
 // ══════════════════════════════════════════
@@ -1164,13 +1159,11 @@ async function exportProjectPDF() {
   const W = doc.internal.pageSize.getWidth();
   const H = doc.internal.pageSize.getHeight();
   let y = 0;
-
   // ── Header band ──
   doc.setFillColor(37,99,235);
   doc.rect(0,0,W,38,'F');
   doc.setFillColor(124,58,237);
   doc.rect(0,34,W,4,'F');
-
   doc.setFont('helvetica','bold');
   doc.setFontSize(18);
   doc.setTextColor(255,255,255);
@@ -1186,9 +1179,7 @@ async function exportProjectPDF() {
   doc.setFontSize(9);
   doc.setFont('helvetica','normal');
   doc.text('completado', W-14, 26, {align:'right'});
-
   y = 48;
-
   // ── Project info box ──
   doc.setFillColor(241,245,249);
   doc.roundedRect(10, y, W-20, 42, 3, 3, 'F');
@@ -1199,7 +1190,6 @@ async function exportProjectPDF() {
   doc.setFont('helvetica','normal');
   doc.setFontSize(9);
   doc.setTextColor(100,116,139);
-
   const infoLines = [
     [`Código:`, p.code || '—'],
     [`Cliente / Propietario:`, p.client || '—'],
@@ -1220,7 +1210,6 @@ async function exportProjectPDF() {
     ix++;
   });
   y += 52;
-
   // ── Progress bar ──
   doc.setFont('helvetica','bold');
   doc.setFontSize(11);
@@ -1240,14 +1229,12 @@ async function exportProjectPDF() {
   doc.setFont('helvetica','bold');
   if(pct > 8) doc.text(`${pct}%`, 14 + fillW/2, y+5, {align:'center'});
   y += 16;
-
   // ── Steps table ──
   doc.setFont('helvetica','bold');
   doc.setFontSize(11);
   doc.setTextColor(30,41,59);
   doc.text('Detalle de Pasos del Proceso', 14, y);
   y += 6;
-
   // Table header
   doc.setFillColor(37,99,235);
   doc.rect(10, y, W-20, 8, 'F');
@@ -1259,16 +1246,13 @@ async function exportProjectPDF() {
   doc.text('Estado', W-70, y+5.5);
   doc.text('Fecha', W-38, y+5.5);
   y += 8;
-
   const statusColors = { done:[22,163,74], in_progress:[37,99,235], pending:[148,163,184] };
   const statusLabels = { done:'✓ Completado', in_progress:'⟳ En Progreso', pending:'○ Pendiente' };
-
   p.steps.forEach((step, i) => {
     if (y > H - 30) { doc.addPage(); y = 20; }
     const bg = i % 2 === 0 ? [255,255,255] : [248,250,252];
     doc.setFillColor(...bg);
     doc.rect(10, y, W-20, 14, 'F');
-
     // Step number circle
     const sc = statusColors[step.status] || [148,163,184];
     doc.setFillColor(...sc);
@@ -1277,13 +1261,11 @@ async function exportProjectPDF() {
     doc.setFont('helvetica','bold');
     doc.setFontSize(7);
     doc.text(String(i+1), 17, y+9, {align:'center'});
-
     // Step name
     doc.setTextColor(30,41,59);
     doc.setFont('helvetica','bold');
     doc.setFontSize(8.5);
     doc.text(step.name, 24, y+6.5);
-
     // Notes
     if(step.notes) {
       doc.setFont('helvetica','normal');
@@ -1291,7 +1273,6 @@ async function exportProjectPDF() {
       doc.setTextColor(100,116,139);
       doc.text(step.notes.substring(0,55), 24, y+12);
     }
-
     // Status badge
     doc.setFillColor(...sc);
     doc.roundedRect(W-76, y+2.5, 28, 6, 1.5, 1.5, 'F');
@@ -1299,19 +1280,16 @@ async function exportProjectPDF() {
     doc.setFont('helvetica','bold');
     doc.setFontSize(6.5);
     doc.text(statusLabels[step.status]||'—', W-62, y+6.5, {align:'center'});
-
     // Date
     doc.setTextColor(100,116,139);
     doc.setFont('helvetica','normal');
     doc.setFontSize(7.5);
     doc.text(step.completedAt ? fmtDate(step.completedAt) : step.startedAt ? fmtDate(step.startedAt) : '—', W-14, y+7, {align:'right'});
-
     // Bottom border
     doc.setDrawColor(226,232,240);
     doc.line(10, y+14, W-10, y+14);
     y += 14;
   });
-
   // ── Alert section ──
   if(isDaysSinceLastUpdate(p,3)) {
     y += 8;
@@ -1331,7 +1309,6 @@ async function exportProjectPDF() {
     doc.text('Se recomienda al colaborador actualizar el estado de los pasos pendientes a la brevedad posible.', 16, y+15);
     y += 24;
   }
-
   // ── Footer on all pages ──
   const totalPages = doc.internal.getNumberOfPages();
   for(let pg=1; pg<=totalPages; pg++) {
@@ -1344,10 +1321,8 @@ async function exportProjectPDF() {
     doc.text('ProyectoTrack – Sistema de Control de Avance de Proyectos', 14, H-4);
     doc.text(`Página ${pg} de ${totalPages}`, W-14, H-4, {align:'right'});
   }
-
   doc.save(`${p.code}_${p.name.replace(/\s+/g,'-')}.pdf`);
 }
-
 // ══════════════════════════════════════════
 // MODALS
 // ══════════════════════════════════════════
@@ -1355,20 +1330,15 @@ function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 document.addEventListener('click', e => {
   if(e.target.classList.contains('modal-overlay')) e.target.classList.add('hidden');
 });
-
 // ══════════════════════════════════════════
 // SEED DEMO DATA
 // ══════════════════════════════════════════
-
 // INIT
 document.getElementById('loginUser').addEventListener('keydown',e=>e.key==='Enter'&&doLogin());
 document.getElementById('loginPass').addEventListener('keydown',e=>e.key==='Enter'&&doLogin());
-
 setInterval(()=>{ if(currentUser) updateNotifBadge(); }, 60000);
-
 // 🔥 CLAVE
 cargarProyectosFirebase();
-  
 <script>
 cargarProyectosFirebase();
 </script>
