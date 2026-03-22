@@ -860,6 +860,24 @@ function createProject() {
     steps: initSteps()
   });
   saveData(data);
+  // Guardar también en Firebase
+  db.collection("proyectos").add({
+    id:'p_'+Date.now(),
+    name: name,
+    code: code,
+    startDate: document.getElementById('np_startDate').value,
+    description: document.getElementById('np_desc').value.trim(),
+    client: document.getElementById('np_client').value.trim(),
+    owner: currentUser.id,
+    createdAt: new Date().toISOString(),
+    steps: initSteps()
+  })
+    .then(() => {
+    console.log("✅ Guardado en Firebase");
+  })
+    .catch((error) => {
+    console.error("❌ Error Firebase:", error);
+  });
   closeModal('newProjectModal');
   renderProjects();
   renderDashboard();
