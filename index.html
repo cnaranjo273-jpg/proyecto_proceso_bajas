@@ -682,6 +682,7 @@ function renderProjects() {
     : `<div class="empty-state"><div class="icon">📂</div><h3>No hay proyectos</h3><p>Crea el primero con "+ Nuevo Proyecto".</p></div>`;
 }
 
+
 // ══════════════════════════════════════════
 // RENDER SUPERVISOR
 // ══════════════════════════════════════════
@@ -848,21 +849,16 @@ function openNewProjectModal() {
 function createProject() {
   const name = document.getElementById('np_name').value.trim();
   const code = document.getElementById('np_code').value.trim();
-  if(!name||!code){alert('Completa el nombre y código.');return;}
-  const data = getData();
-  data.projects.push({
-    id:'p_'+Date.now(), name, code,
-    startDate: document.getElementById('np_startDate').value,
-    description: document.getElementById('np_desc').value.trim(),
-    client: document.getElementById('np_client').value.trim(),
-    owner: currentUser.id,
-    createdAt: new Date().toISOString(),
-    steps: initSteps()
-  });
-  saveData(data);
-  // Guardar también en Firebase
-  db.collection("proyectos").add({
-    id:'p_'+Date.now(),
+
+  if(!name || !code){
+    alert('Completa el nombre y código.');
+    return;
+  }
+
+  const id = 'p_' + Date.now();
+
+  const proyecto = {
+    id: id,
     name: name,
     code: code,
     startDate: document.getElementById('np_startDate').value,
@@ -871,13 +867,22 @@ function createProject() {
     owner: currentUser.id,
     createdAt: new Date().toISOString(),
     steps: initSteps()
-  })
+  };
+
+  // 🔹 Guardar en local (por ahora)
+  const data = getData();
+  data.projects.push(proyecto);
+  saveData(data);
+
+  // 🔥 Guardar en Firebase
+  db.collection("proyectos").add(proyecto)
     .then(() => {
-    console.log("✅ Guardado en Firebase");
-  })
+      console.log("✅ Guardado en Firebase");
+    })
     .catch((error) => {
-    console.error("❌ Error Firebase:", error);
-  });
+      console.error("❌ Error Firebase:", error);
+    });
+
   closeModal('newProjectModal');
   renderProjects();
   renderDashboard();
