@@ -523,7 +523,12 @@ let editingUserId = null;
 // ── User store (localStorage) ──
 function getUsers() {
   const stored = localStorage.getItem('ptrack_users');
-  return stored ? JSON.parse(stored) : { ...DEFAULT_USERS };
+  let users = stored ? JSON.parse(stored) : {};
+
+  return {
+    ...DEFAULT_USERS,
+    ...users // los personalizados sobrescriben
+  };
 }
 function saveUsers(users) {
   localStorage.setItem('ptrack_users', JSON.stringify(users));
