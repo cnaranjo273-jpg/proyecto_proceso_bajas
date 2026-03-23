@@ -6,7 +6,7 @@
 <title>ProyectoTrack – Control de Proyectos</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-  /* [Mantén todos tus estilos CSS igual que antes] */
+  /* [Todos tus estilos CSS existentes se mantienen igual] */
   :root {
     --primary:#2563eb;--primary-dark:#1d4ed8;--secondary:#7c3aed;
     --success:#16a34a;--warning:#d97706;--danger:#dc2626;
@@ -22,6 +22,35 @@
     box-shadow:0 25px 60px rgba(0,0,0,.3);}
   .login-card h1{font-size:1.6rem;color:var(--primary);margin-bottom:4px;}
   .login-card p{color:var(--muted);font-size:.88rem;margin-bottom:28px;}
+  
+  /* Pestañas específicas para login/register */
+  .auth-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid var(--border);
+  }
+  .auth-tab {
+    flex: 1;
+    padding: 12px;
+    background: transparent;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.3s;
+    border-bottom: 3px solid transparent;
+  }
+  .auth-tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+  }
+  .auth-tab:hover:not(.active) {
+    color: var(--primary-dark);
+    border-bottom-color: var(--border);
+  }
+  
   .form-group{margin-bottom:16px;}
   .form-group label{display:block;font-size:.83rem;font-weight:600;margin-bottom:5px;}
   .form-group input,.form-group select{width:100%;padding:10px 13px;border:1.5px solid var(--border);
@@ -43,6 +72,8 @@
   .btn-full{width:100%;justify-content:center;}
   .demo-users{margin-top:20px;padding:14px;background:#f0f9ff;border-radius:10px;font-size:.78rem;line-height:1.8;}
   .demo-users strong{color:var(--primary);}
+  
+  /* [Resto de estilos... mantén todos los que ya tenías] */
   /* LAYOUT */
   #app{display:none;min-height:100vh;}
   .sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;
@@ -74,7 +105,6 @@
     box-shadow:0 1px 8px rgba(0,0,0,.05);}
   .topbar h1{font-size:1.15rem;font-weight:700;}
   .content{padding:28px;}
-  /* STATS */
   .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:18px;margin-bottom:28px;}
   .stat-card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 1px 8px rgba(0,0,0,.06);
     display:flex;align-items:flex-start;gap:14px;}
@@ -82,7 +112,6 @@
     justify-content:center;font-size:1.3rem;flex-shrink:0;}
   .stat-card h3{font-size:1.75rem;font-weight:800;line-height:1;}
   .stat-card p{font-size:.78rem;color:var(--muted);margin-top:4px;}
-  /* PROJECT CARDS */
   .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
   .section-header h2{font-size:1.05rem;font-weight:700;}
   .projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px;}
@@ -109,7 +138,6 @@
   .fill-yellow{background:linear-gradient(90deg,var(--warning),#fbbf24);}
   .fill-red{background:linear-gradient(90deg,var(--danger),#f87171);}
   .project-meta{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-top:10px;}
-  /* MODAL */
   .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.52);z-index:1000;
     display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);}
   .modal{background:#fff;border-radius:18px;width:100%;max-width:880px;
@@ -123,7 +151,6 @@
     cursor:pointer;display:flex;align-items:center;justify-content:center;
     font-size:1.1rem;color:var(--muted);transition:all .2s;}
   .close-btn:hover{background:#fee2e2;color:var(--danger);}
-  /* TIMELINE */
   .timeline{position:relative;padding-left:26px;}
   .timeline::before{content:'';position:absolute;left:9px;top:0;bottom:0;width:2px;background:var(--border);}
   .timeline-item{position:relative;margin-bottom:18px;}
@@ -143,7 +170,6 @@
   .timeline-step-date{font-size:.72rem;color:var(--muted);}
   .timeline-step-notes{font-size:.8rem;color:var(--muted);margin-top:5px;}
   .timeline-actions{margin-top:9px;display:flex;gap:7px;flex-wrap:wrap;}
-  /* STEPS */
   .steps-list{display:flex;flex-direction:column;gap:10px;}
   .step-row{display:flex;align-items:center;gap:12px;padding:13px 16px;
     background:var(--bg);border-radius:11px;border:1.5px solid var(--border);}
@@ -158,12 +184,10 @@
   .step-name{font-weight:600;font-size:.88rem;}
   .step-date{font-size:.72rem;color:var(--muted);}
   .step-note{font-size:.76rem;color:var(--muted);margin-top:2px;}
-  /* TABS */
   .tabs{display:flex;gap:4px;background:var(--bg);border-radius:11px;padding:3px;margin-bottom:22px;}
   .tab{flex:1;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-size:.84rem;
     font-weight:600;color:var(--muted);background:transparent;transition:all .2s;}
   .tab.active{background:#fff;color:var(--primary);box-shadow:0 1px 6px rgba(0,0,0,.1);}
-  /* GANTT */
   .gantt-wrap{overflow-x:auto;margin-top:16px;}
   .gantt{min-width:620px;}
   .gantt-header{display:flex;padding-left:195px;margin-bottom:6px;}
@@ -177,14 +201,12 @@
   .gantt-cell.done{background:#bbf7d0;}
   .gantt-cell.in_progress{background:#bfdbfe;animation:shimmer 2s infinite;}
   @keyframes shimmer{0%,100%{opacity:1}50%{opacity:.6}}
-  /* ALERTS */
   .alert-banner{display:flex;align-items:center;gap:11px;padding:13px 16px;
     border-radius:11px;margin-bottom:14px;font-size:.86rem;}
   .alert-danger{background:#fff1f2;border:1.5px solid #fecdd3;color:#be123c;}
   .alert-warning{background:#fffbeb;border:1.5px solid #fde68a;color:#92400e;}
   .alert-info{background:#eff6ff;border:1.5px solid #bfdbfe;color:#1e40af;}
   .alert-success{background:#f0fdf4;border:1.5px solid #bbf7d0;color:#166534;}
-  /* NOTIFS */
   .notif-list{display:flex;flex-direction:column;gap:10px;}
   .notif-item{padding:13px 15px;border-radius:11px;border-left:4px solid;}
   .notif-item.red{border-color:var(--danger);background:#fff1f2;}
@@ -193,7 +215,6 @@
   .notif-title{font-weight:600;font-size:.86rem;}
   .notif-body{font-size:.78rem;color:var(--muted);margin-top:3px;}
   .notif-time{font-size:.7rem;color:var(--muted);margin-top:3px;}
-  /* USERS TABLE */
   .users-table{width:100%;border-collapse:collapse;}
   .users-table th{text-align:left;padding:10px 14px;font-size:.78rem;font-weight:700;
     color:var(--muted);text-transform:uppercase;letter-spacing:.05em;
@@ -201,11 +222,9 @@
   .users-table td{padding:12px 14px;font-size:.88rem;border-bottom:1px solid var(--border);}
   .users-table tr:last-child td{border-bottom:none;}
   .users-table tr:hover td{background:#f8fafc;}
-  /* SUPERVISOR */
   .collab-section{margin-bottom:26px;}
   .collab-title{display:flex;align-items:center;gap:10px;margin-bottom:12px;
     padding-bottom:9px;border-bottom:2px solid var(--border);}
-  /* MISC */
   .empty-state{text-align:center;padding:56px 20px;color:var(--muted);}
   .empty-state .icon{font-size:3.5rem;margin-bottom:14px;}
   .empty-state h3{font-size:1.05rem;color:var(--text);margin-bottom:7px;}
@@ -230,49 +249,61 @@
     <h1>🏗️ ProyectoTrack</h1>
     <p>Sistema de Control de Avance de Proyectos</p>
     
-    <!-- Tabs para Login/Registro -->
-    <div class="tabs" style="margin-bottom: 20px;">
-      <button class="tab active" onclick="switchAuthTab('login')">Iniciar Sesión</button>
-      <button class="tab" onclick="switchAuthTab('register')">Registrarse</button>
+    <!-- Pestañas de autenticación -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">🔐 Iniciar Sesión</button>
+      <button class="auth-tab" onclick="switchAuthTab('register')">📝 Registrarse</button>
     </div>
     
     <!-- Formulario de Login -->
     <div id="loginForm">
-      <div class="form-group"><label>Email</label>
-        <input type="email" id="loginUser" placeholder="correo@ejemplo.com" /></div>
-      <div class="form-group"><label>Contraseña</label>
-        <input type="password" id="loginPass" placeholder="Tu contraseña" /></div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="loginUser" placeholder="correo@ejemplo.com" autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" id="loginPass" placeholder="Tu contraseña" autocomplete="current-password" />
+      </div>
       <div id="loginError" class="hidden" style="color:#dc2626;font-size:.83rem;margin-bottom:10px;"></div>
       <button class="btn btn-primary btn-full" onclick="doLogin()">Ingresar →</button>
     </div>
     
-    <!-- Formulario de Registro -->
+    <!-- Formulario de Registro (inicialmente oculto) -->
     <div id="registerForm" class="hidden">
-      <div class="form-group"><label>Nombre Completo</label>
-        <input type="text" id="regName" placeholder="Tu nombre completo" /></div>
-      <div class="form-group"><label>Email</label>
-        <input type="email" id="regEmail" placeholder="correo@ejemplo.com" /></div>
-      <div class="form-group"><label>Contraseña</label>
-        <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres" /></div>
-      <div class="form-group"><label>Rol</label>
+      <div class="form-group">
+        <label>Nombre Completo</label>
+        <input type="text" id="regName" placeholder="Ej: Ana García" autocomplete="name" />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="regEmail" placeholder="correo@ejemplo.com" autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres" autocomplete="new-password" />
+      </div>
+      <div class="form-group">
+        <label>Rol</label>
         <select id="regRole">
           <option value="collaborator">👤 Colaborador</option>
           <option value="supervisor">🔑 Supervisor</option>
-        </select></div>
+        </select>
+      </div>
       <div id="registerError" class="hidden" style="color:#dc2626;font-size:.83rem;margin-bottom:10px;"></div>
       <button class="btn btn-success btn-full" onclick="doRegister()">Crear Cuenta →</button>
     </div>
     
     <div class="demo-users">
-      <strong>Credenciales de prueba:</strong><br>
+      <strong>📋 Credenciales de prueba:</strong><br>
       👤 <b>ana@test.com</b> / pass123 — Colaboradora<br>
       👤 <b>carlos@test.com</b> / pass123 — Colaborador<br>
-      🔑 <b>supervisor@test.com</b> / super123 — Supervisor
+      🔑 <b>supervisor@test.com</b> / super123 — Supervisor (gestiona usuarios)
     </div>
   </div>
 </div>
 
-<!-- APP (mismo contenido que antes) -->
+<!-- APP (resto del contenido) -->
 <div id="app">
   <aside class="sidebar">
     <div class="sidebar-logo">
@@ -348,7 +379,7 @@
   </main>
 </div>
 
-<!-- MODALS (mismo contenido) -->
+<!-- MODALS (todos igual que antes) -->
 <div class="modal-overlay hidden" id="newProjectModal">
   <div class="modal" style="max-width:540px;">
     <div class="modal-header">
@@ -521,17 +552,17 @@ let proyectosFirebase = [];
 function switchAuthTab(tab) {
   const loginForm = document.getElementById('loginForm');
   const registerForm = document.getElementById('registerForm');
-  const tabs = document.querySelectorAll('#loginScreen .tabs .tab');
-  
-  tabs.forEach(t => t.classList.remove('active'));
+  const tabs = document.querySelectorAll('.auth-tab');
   
   if (tab === 'login') {
     loginForm.classList.remove('hidden');
     registerForm.classList.add('hidden');
     tabs[0].classList.add('active');
+    tabs[1].classList.remove('active');
   } else {
     loginForm.classList.add('hidden');
     registerForm.classList.remove('hidden');
+    tabs[0].classList.remove('active');
     tabs[1].classList.add('active');
   }
 }
@@ -553,6 +584,12 @@ async function doRegister() {
   
   if (password.length < 6) {
     errorEl.textContent = '⚠️ La contraseña debe tener al menos 6 caracteres';
+    errorEl.classList.remove('hidden');
+    return;
+  }
+  
+  if (!email.includes('@')) {
+    errorEl.textContent = '⚠️ Ingresa un email válido';
     errorEl.classList.remove('hidden');
     return;
   }
@@ -591,7 +628,7 @@ async function doRegister() {
         errorMessage += 'Email inválido.';
         break;
       case 'auth/weak-password':
-        errorMessage += 'Contraseña muy débil.';
+        errorMessage += 'Contraseña muy débil (mínimo 6 caracteres).';
         break;
       default:
         errorMessage += error.message;
@@ -711,7 +748,7 @@ function setupUI() {
 }
 
 // ══════════════════════════════════════════
-// FUNCIONES DE DATOS
+// FUNCIONES DE DATOS (igual que antes)
 // ══════════════════════════════════════════
 function initSteps() {
   return STEP_NAMES.map((name, i) => ({
@@ -762,7 +799,6 @@ function fillColor(pct) {
   return 'fill-red';
 }
 
-// Obtener nombre de usuario por ID
 async function getUserName(uid) {
   if (!uid) return '—';
   try {
@@ -814,7 +850,6 @@ async function createProject() {
     await db.collection("proyectos").doc(id).set(proyecto);
     console.log("✅ Proyecto creado en Firebase");
     closeModal('newProjectModal');
-    // La vista se actualizará automáticamente por el snapshot
   } catch (error) {
     console.error("❌ Error al crear proyecto:", error);
     alert("Error al crear proyecto: " + error.message);
@@ -886,7 +921,6 @@ async function saveStepUpdate() {
   try {
     await updateStepInFirebase(currentProject.id, updateStepIndex, step);
     closeModal('updateStepModal');
-    // Recargar proyecto actualizado
     const updatedDoc = await db.collection("proyectos").doc(currentProject.id).get();
     currentProject = updatedDoc.data();
     switchTab('timeline');
@@ -896,7 +930,7 @@ async function saveStepUpdate() {
 }
 
 // ══════════════════════════════════════════
-// USUARIOS - CRUD (Solo Supervisor)
+// USUARIOS - CRUD
 // ══════════════════════════════════════════
 async function cargarUsuariosFirebase() {
   if (currentUser?.role !== 'supervisor') return;
@@ -1000,16 +1034,19 @@ async function saveUser() {
         role: role
       });
       
-      // Si se proporcionó nueva contraseña, actualizar en Auth
       if (password && password.length >= 6) {
-        // Nota: Para cambiar contraseña se necesita que el usuario esté autenticado
-        // o usar funciones de admin (requiere backend). Por ahora solo actualizamos Firestore.
         alert("⚠️ La contraseña no se puede cambiar desde aquí. El usuario debe cambiarla desde su perfil.");
       }
       
       alert("✅ Usuario actualizado correctamente");
     } else {
       // Crear nuevo usuario
+      if (!password || password.length < 6) {
+        errEl.textContent = '⚠️ La contraseña debe tener al menos 6 caracteres.';
+        errEl.classList.remove('hidden');
+        return;
+      }
+      
       const userCredential = await auth.createUserWithEmailAndPassword(email, password);
       const user = userCredential.user;
       
@@ -1024,7 +1061,6 @@ async function saveUser() {
     }
     
     closeModal('addUserModal');
-    // La lista se actualizará automáticamente por el snapshot
     
   } catch (error) {
     console.error("Error al guardar usuario:", error);
@@ -1047,7 +1083,6 @@ function confirmDeleteUser(uid) {
 
 async function deleteUser(uid) {
   try {
-    // Eliminar de Firestore
     await db.collection("usuarios").doc(uid).delete();
     alert("✅ Usuario eliminado correctamente");
     closeModal('confirmModal');
@@ -1075,7 +1110,6 @@ function cargarProyectosFirebase() {
 async function renderAllViews() {
   if (!currentUser) return;
   
-  // Filtrar proyectos según rol
   let proyectosMostrar = proyectosFirebase;
   if (currentUser.role !== 'supervisor') {
     proyectosMostrar = proyectosFirebase.filter(p => p.owner === currentUser.id);
@@ -1083,7 +1117,9 @@ async function renderAllViews() {
   
   renderDashboard(proyectosMostrar);
   renderProjects(proyectosMostrar);
-  renderSupervisor(proyectosFirebase);
+  if (currentUser.role === 'supervisor') {
+    renderSupervisor(proyectosFirebase);
+  }
   renderNotifications(proyectosMostrar);
 }
 
@@ -1104,9 +1140,13 @@ function renderDashboard(proyectos) {
     : '';
   
   const recent = [...proyectos].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 6);
-  document.getElementById('recentProjects').innerHTML = recent.length
-    ? await Promise.all(recent.map(p => projectCardHTML(p))).then(cards => cards.join(''))
-    : '<div class="empty-state"><div class="icon">📭</div><h3>Sin proyectos aún</h3></div>';
+  if (recent.length) {
+    Promise.all(recent.map(p => projectCardHTML(p))).then(cards => {
+      document.getElementById('recentProjects').innerHTML = cards.join('');
+    });
+  } else {
+    document.getElementById('recentProjects').innerHTML = '<div class="empty-state"><div class="icon">📭</div><h3>Sin proyectos aún</h3></div>';
+  }
   
   updateNotifBadge(proyectos);
 }
@@ -1120,7 +1160,7 @@ async function projectCardHTML(p) {
   const ownerName = await getUserName(p.owner);
   
   return `
-    <div class="project-card ${alertCls}" onclick="openProject(${JSON.stringify(p).replace(/"/g, '&quot;')})">
+    <div class="project-card ${alertCls}" onclick='openProject(${JSON.stringify(p).replace(/'/g, "\\'")})'>
       <div class="project-header">
         <div><div class="project-title">${p.name}</div><div class="project-code">${p.code}</div></div>
         <span class="badge ${status.cls}">${status.label}</span>
@@ -1180,27 +1220,25 @@ async function renderSupervisor(proyectos) {
           </div>
         </div>
       </div>
-      ${ups.length
-        ? `<div class="projects-grid" id="collab-projects-${collab.id}"></div>`
-        : `<div class="text-muted" style="padding:8px 0;">Sin proyectos registrados.</div>`
-      }
+      <div class="projects-grid" id="collab-projects-${collab.id}"></div>
     </div>`;
-    
-    if (ups.length) {
-      setTimeout(() => {
-        const container = document.getElementById(`collab-projects-${collab.id}`);
-        if (container) {
-          Promise.all(ups.map(p => projectCardHTML(p))).then(cards => {
-            container.innerHTML = cards.join('');
-          });
-        }
-      }, 0);
-    }
   }
   
   const supervisorContent = document.getElementById('supervisorContent');
   if (supervisorContent) {
     supervisorContent.innerHTML = html || '<div class="empty-state"><div class="icon">👥</div><h3>Sin colaboradores</h3></div>';
+    
+    // Cargar proyectos de cada colaborador
+    for (const collab of collaborators) {
+      const ups = proyectos.filter(p => p.owner === collab.id);
+      if (ups.length) {
+        const container = document.getElementById(`collab-projects-${collab.id}`);
+        if (container) {
+          const cards = await Promise.all(ups.map(p => projectCardHTML(p)));
+          container.innerHTML = cards.join('');
+        }
+      }
+    }
   }
 }
 
@@ -1235,7 +1273,7 @@ function updateNotifBadge(proyectos) {
 }
 
 // ══════════════════════════════════════════
-// NAVEGACIÓN Y TABS
+// NAVEGACIÓN Y TABS DEL PROYECTO
 // ══════════════════════════════════════════
 function showPage(page) {
   const pages = ['dashboard', 'projects', 'supervisor', 'users', 'notifications'];
@@ -1390,7 +1428,7 @@ function renderInfo() {
 }
 
 // ══════════════════════════════════════════
-// EXPORT PDF
+// EXPORT PDF (simplificado)
 // ══════════════════════════════════════════
 async function exportProjectPDF() {
   if (!currentProject) return;
@@ -1601,6 +1639,7 @@ document.addEventListener('click', e => {
   }
 });
 
+// Event listeners para Enter
 document.getElementById('loginUser')?.addEventListener('keydown', e => e.key === 'Enter' && doLogin());
 document.getElementById('loginPass')?.addEventListener('keydown', e => e.key === 'Enter' && doLogin());
 document.getElementById('regEmail')?.addEventListener('keydown', e => e.key === 'Enter' && doRegister());
