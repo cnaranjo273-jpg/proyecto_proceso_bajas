@@ -6,6 +6,7 @@
 <title>ProyectoTrack – Control de Proyectos</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
+  /* [Mantén todos tus estilos CSS igual que antes] */
   :root {
     --primary:#2563eb;--primary-dark:#1d4ed8;--secondary:#7c3aed;
     --success:#16a34a;--warning:#d97706;--danger:#dc2626;
@@ -228,21 +229,50 @@
   <div class="login-card">
     <h1>🏗️ ProyectoTrack</h1>
     <p>Sistema de Control de Avance de Proyectos</p>
-    <div class="form-group"><label>Usuario</label>
-      <input type="text" id="loginUser" placeholder="Tu usuario" /></div>
-    <div class="form-group"><label>Contraseña</label>
-      <input type="password" id="loginPass" placeholder="Tu contraseña" /></div>
-    <div id="loginError" class="hidden" style="color:#dc2626;font-size:.83rem;margin-bottom:10px;"></div>
-    <button class="btn btn-primary btn-full" onclick="doLogin()">Ingresar →</button>
+    
+    <!-- Tabs para Login/Registro -->
+    <div class="tabs" style="margin-bottom: 20px;">
+      <button class="tab active" onclick="switchAuthTab('login')">Iniciar Sesión</button>
+      <button class="tab" onclick="switchAuthTab('register')">Registrarse</button>
+    </div>
+    
+    <!-- Formulario de Login -->
+    <div id="loginForm">
+      <div class="form-group"><label>Email</label>
+        <input type="email" id="loginUser" placeholder="correo@ejemplo.com" /></div>
+      <div class="form-group"><label>Contraseña</label>
+        <input type="password" id="loginPass" placeholder="Tu contraseña" /></div>
+      <div id="loginError" class="hidden" style="color:#dc2626;font-size:.83rem;margin-bottom:10px;"></div>
+      <button class="btn btn-primary btn-full" onclick="doLogin()">Ingresar →</button>
+    </div>
+    
+    <!-- Formulario de Registro -->
+    <div id="registerForm" class="hidden">
+      <div class="form-group"><label>Nombre Completo</label>
+        <input type="text" id="regName" placeholder="Tu nombre completo" /></div>
+      <div class="form-group"><label>Email</label>
+        <input type="email" id="regEmail" placeholder="correo@ejemplo.com" /></div>
+      <div class="form-group"><label>Contraseña</label>
+        <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres" /></div>
+      <div class="form-group"><label>Rol</label>
+        <select id="regRole">
+          <option value="collaborator">👤 Colaborador</option>
+          <option value="supervisor">🔑 Supervisor</option>
+        </select></div>
+      <div id="registerError" class="hidden" style="color:#dc2626;font-size:.83rem;margin-bottom:10px;"></div>
+      <button class="btn btn-success btn-full" onclick="doRegister()">Crear Cuenta →</button>
+    </div>
+    
     <div class="demo-users">
       <strong>Credenciales de prueba:</strong><br>
-      👤 <b>ana</b> / pass123 — Colaboradora<br>
-      👤 <b>carlos</b> / pass123 — Colaborador<br>
-      🔑 <b>supervisor</b> / super123 — Supervisor (puede gestionar usuarios)
+      👤 <b>ana@test.com</b> / pass123 — Colaboradora<br>
+      👤 <b>carlos@test.com</b> / pass123 — Colaborador<br>
+      🔑 <b>supervisor@test.com</b> / super123 — Supervisor
     </div>
   </div>
 </div>
-<!-- APP -->
+
+<!-- APP (mismo contenido que antes) -->
 <div id="app">
   <aside class="sidebar">
     <div class="sidebar-logo">
@@ -292,14 +322,12 @@
       </div>
     </div>
     <div class="content">
-      <!-- DASHBOARD -->
       <div id="page-dashboard">
         <div class="stats-grid" id="statsGrid"></div>
         <div id="alertsSection"></div>
         <div class="section-header"><h2>Proyectos Recientes</h2></div>
         <div class="projects-grid" id="recentProjects"></div>
       </div>
-      <!-- PROJECTS -->
       <div id="page-projects" class="hidden">
         <div class="section-header">
           <h2 id="projectsPageTitle">Mis Proyectos</h2>
@@ -307,24 +335,20 @@
         </div>
         <div class="projects-grid" id="projectsGrid"></div>
       </div>
-      <!-- SUPERVISOR -->
       <div id="page-supervisor" class="hidden">
         <div id="supervisorContent"></div>
       </div>
-      <!-- USERS -->
       <div id="page-users" class="hidden">
         <div id="usersContent"></div>
       </div>
-      <!-- NOTIFICATIONS -->
       <div id="page-notifications" class="hidden">
         <div class="notif-list" id="notifList"></div>
       </div>
-
     </div>
   </main>
 </div>
-<!-- ══ MODALS ══ -->
-<!-- New Project -->
+
+<!-- MODALS (mismo contenido) -->
 <div class="modal-overlay hidden" id="newProjectModal">
   <div class="modal" style="max-width:540px;">
     <div class="modal-header">
@@ -351,7 +375,7 @@
     </div>
   </div>
 </div>
-<!-- Project Detail -->
+
 <div class="modal-overlay hidden" id="projectDetailModal">
   <div class="modal">
     <div class="modal-header">
@@ -360,9 +384,7 @@
         <div style="display:flex;gap:7px;margin-top:5px;" id="detailBadges"></div>
       </div>
       <div class="flex gap-2 items-center">
-        <button class="btn btn-pdf" onclick="exportProjectPDF()" title="Exportar PDF">
-          📄 Exportar PDF
-        </button>
+        <button class="btn btn-pdf" onclick="exportProjectPDF()" title="Exportar PDF">📄 Exportar PDF</button>
         <button class="close-btn" onclick="closeModal('projectDetailModal')">✕</button>
       </div>
     </div>
@@ -380,7 +402,7 @@
     </div>
   </div>
 </div>
-<!-- Update Step -->
+
 <div class="modal-overlay hidden" id="updateStepModal">
   <div class="modal" style="max-width:470px;">
     <div class="modal-header">
@@ -405,7 +427,7 @@
     </div>
   </div>
 </div>
-<!-- Add / Edit User -->
+
 <div class="modal-overlay hidden" id="addUserModal">
   <div class="modal" style="max-width:480px;">
     <div class="modal-header">
@@ -416,8 +438,8 @@
       <div class="form-group"><label>Nombre Completo *</label>
         <input type="text" id="au_name" placeholder="Ej: María López"/></div>
       <div class="form-row">
-        <div class="form-group"><label>Usuario (login) *</label>
-          <input type="text" id="au_username" placeholder="ej: maria"/></div>
+        <div class="form-group"><label>Email *</label>
+          <input type="email" id="au_email" placeholder="maria@ejemplo.com"/></div>
         <div class="form-group"><label>Contraseña *</label>
           <input type="password" id="au_pass" placeholder="Mínimo 6 caracteres"/></div>
       </div>
@@ -434,7 +456,7 @@
     </div>
   </div>
 </div>
-<!-- Confirm Delete -->
+
 <div class="modal-overlay hidden" id="confirmModal">
   <div class="modal" style="max-width:400px;">
     <div class="modal-header"><h2>⚠️ Confirmar</h2>
@@ -448,37 +470,15 @@
     </div>
   </div>
 </div>
-<div id="usersView" class="view hidden">
-  <h2>👥 Gestión de Usuarios</h2>
-  <!-- FORMULARIO -->
-  <div style="margin-bottom:20px;">
-    <input id="u_name" placeholder="Nombre">
-    <input id="u_email" placeholder="Correo">
-    <input id="u_pass" type="password" placeholder="Contraseña">
-    <select id="u_role">
-      <option value="admin">Admin</option>
-      <option value="supervisor">Supervisor</option>
-      <option value="collaborator">Colaborador</option>
-    </select>
-    <button onclick="crearUsuario()">Crear Usuario</button>
-  </div>
-  <!-- LISTA -->
-  <table border="1" width="100%">
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Email</th>
-        <th>Rol</th>
-        <th>Acción</th>
-      </tr>
-    </thead>
-    <tbody id="usersTable"></tbody>
-  </table>
-</div>
+
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
 <script>
+// ══════════════════════════════════════════
+// CONFIGURACIÓN FIREBASE
+// ══════════════════════════════════════════
 const firebaseConfig = {
   apiKey: "AIzaSyC40UAPgOwuEW1P7ZOvr4NYlvTh9eEdsFw",
   authDomain: "proyectotrack-d3556.firebaseapp.com",
@@ -487,15 +487,14 @@ const firebaseConfig = {
   messagingSenderId: "319794903621",
   appId: "1:319794903621:web:63c6c5fcc1988392c2c12c"
 };
+
+// Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
-</script>
-</head>
-<body>
-<script>
+
 // ══════════════════════════════════════════
-// DATA
+// CONSTANTES
 // ══════════════════════════════════════════
 const STEP_NAMES = [
   "Informe Técnico",
@@ -507,147 +506,202 @@ const STEP_NAMES = [
   "Número de Reingreso",
   "Quipux – Finalización"
 ];
-// Default system users (cannot be deleted)
-const DEFAULT_USERS = {
-  ana:        { name:"Ana García",     role:"collaborator", password:"pass123",  system:true },
-  carlos:     { name:"Carlos Mendoza", role:"collaborator", password:"pass123",  system:true },
-  supervisor: { name:"Supervisor Jefe",role:"supervisor",   password:"super123", system:true }
-};
+
 let currentUser = null;
 let currentProject = null;
 let updateStepIndex = null;
 let editingUserId = null;
-// ── User store (localStorage) ──
-function registerUser(email, password, role, name) {
-  auth.createUserWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      return db.collection("usuarios").doc(user.uid).set({
-        email: email,
-        role: role,
-        name: name,
-        createdAt: new Date().toISOString()
-      });
-    })
-    .then(() => {
-      alert("✅ Usuario creado correctamente");
-    })
-    .catch((error) => {
-      console.error(error);
-      alert("❌ Error: " + error.message);
-    });
+let proyectosFirebase = [];
+
+// ══════════════════════════════════════════
+// FUNCIONES DE AUTENTICACIÓN
+// ══════════════════════════════════════════
+
+// Cambiar entre login y registro
+function switchAuthTab(tab) {
+  const loginForm = document.getElementById('loginForm');
+  const registerForm = document.getElementById('registerForm');
+  const tabs = document.querySelectorAll('#loginScreen .tabs .tab');
+  
+  tabs.forEach(t => t.classList.remove('active'));
+  
+  if (tab === 'login') {
+    loginForm.classList.remove('hidden');
+    registerForm.classList.add('hidden');
+    tabs[0].classList.add('active');
+  } else {
+    loginForm.classList.add('hidden');
+    registerForm.classList.remove('hidden');
+    tabs[1].classList.add('active');
+  }
 }
-function crearUsuario() {
-  const name = document.getElementById('u_name').value;
-  const email = document.getElementById('u_email').value;
-  const pass = document.getElementById('u_pass').value;
-  const role = document.getElementById('u_role').value;
-  if (!name || !email || !pass) {
-    alert("Completa todos los campos");
+
+// Registrar nuevo usuario
+async function doRegister() {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const role = document.getElementById('regRole').value;
+  const errorEl = document.getElementById('registerError');
+  
+  // Validaciones
+  if (!name || !email || !password) {
+    errorEl.textContent = '⚠️ Todos los campos son obligatorios';
+    errorEl.classList.remove('hidden');
     return;
   }
-  auth.createUserWithEmailAndPassword(email, pass)
-    .then((userCredential) => {
-      const user = userCredential.user;
-
-      return db.collection("usuarios").doc(user.uid).set({
-        name,
-        email,
-        role,
-        createdAt: new Date().toISOString()
-      });
-    })
-    .then(() => {
-      alert("✅ Usuario creado");
-      cargarUsuarios();
-    })
-    .catch((error) => {
-      console.error(error);
-      alert("❌ " + error.message);
+  
+  if (password.length < 6) {
+    errorEl.textContent = '⚠️ La contraseña debe tener al menos 6 caracteres';
+    errorEl.classList.remove('hidden');
+    return;
+  }
+  
+  errorEl.classList.add('hidden');
+  
+  try {
+    // 1. Crear usuario en Firebase Authentication
+    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+    const user = userCredential.user;
+    
+    // 2. Guardar datos del usuario en Firestore
+    await db.collection("usuarios").doc(user.uid).set({
+      name: name,
+      email: email,
+      role: role,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
+    
+    alert('✅ ¡Registro exitoso! Ahora puedes iniciar sesión.');
+    
+    // Limpiar formulario y mostrar login
+    document.getElementById('regName').value = '';
+    document.getElementById('regEmail').value = '';
+    document.getElementById('regPassword').value = '';
+    switchAuthTab('login');
+    
+  } catch (error) {
+    console.error("Error en registro:", error);
+    let errorMessage = '❌ Error al registrar: ';
+    switch (error.code) {
+      case 'auth/email-already-in-use':
+        errorMessage += 'Este email ya está registrado.';
+        break;
+      case 'auth/invalid-email':
+        errorMessage += 'Email inválido.';
+        break;
+      case 'auth/weak-password':
+        errorMessage += 'Contraseña muy débil.';
+        break;
+      default:
+        errorMessage += error.message;
+    }
+    errorEl.textContent = errorMessage;
+    errorEl.classList.remove('hidden');
+  }
 }
-function cargarUsuarios() {
-  db.collection("usuarios").onSnapshot((snapshot) => {
-    const tbody = document.getElementById("usersTable");
-    tbody.innerHTML = "";
-    snapshot.forEach((doc) => {
-      const u = doc.data();
-      tbody.innerHTML += `
-        <tr>
-          <td>${u.name}</td>
-          <td>${u.email}</td>
-          <td>${u.role}</td>
-          <td>
-            <button onclick="eliminarUsuario('${doc.id}')">Eliminar</button>
-          </td>
-        </tr>
-      `;
-    });
+
+// Iniciar sesión
+async function doLogin() {
+  const email = document.getElementById('loginUser').value.trim();
+  const password = document.getElementById('loginPass').value;
+  const errorEl = document.getElementById('loginError');
+  
+  if (!email || !password) {
+    errorEl.textContent = '⚠️ Completa todos los campos';
+    errorEl.classList.remove('hidden');
+    return;
+  }
+  
+  errorEl.classList.add('hidden');
+  
+  try {
+    // Autenticar usuario
+    const userCredential = await auth.signInWithEmailAndPassword(email, password);
+    const user = userCredential.user;
+    
+    // Obtener datos adicionales desde Firestore
+    const userDoc = await db.collection("usuarios").doc(user.uid).get();
+    
+    if (!userDoc.exists) {
+      throw new Error('Usuario no tiene datos configurados');
+    }
+    
+    const userData = userDoc.data();
+    currentUser = {
+      id: user.uid,
+      email: userData.email,
+      role: userData.role,
+      name: userData.name
+    };
+    
+    console.log("✅ Login exitoso:", currentUser);
+    
+    // Ocultar login, mostrar app
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    
+    // Configurar UI según rol
+    setupUI();
+    
+    // Cargar datos iniciales
+    cargarProyectosFirebase();
+    cargarUsuariosFirebase();
+    
+    // Mostrar dashboard
+    showPage('dashboard');
+    
+  } catch (error) {
+    console.error("Error en login:", error);
+    let errorMessage = '❌ Error al iniciar sesión: ';
+    switch (error.code) {
+      case 'auth/user-not-found':
+        errorMessage += 'Usuario no encontrado.';
+        break;
+      case 'auth/wrong-password':
+        errorMessage += 'Contraseña incorrecta.';
+        break;
+      case 'auth/invalid-email':
+        errorMessage += 'Email inválido.';
+        break;
+      default:
+        errorMessage += error.message;
+    }
+    errorEl.textContent = errorMessage;
+    errorEl.classList.remove('hidden');
+  }
+}
+
+// Cerrar sesión
+function doLogout() {
+  auth.signOut().then(() => {
+    currentUser = null;
+    proyectosFirebase = [];
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+    
+    // Limpiar formularios
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+    document.getElementById('regName').value = '';
+    document.getElementById('regEmail').value = '';
+    document.getElementById('regPassword').value = '';
+    
+    switchAuthTab('login');
+  }).catch(error => {
+    console.error("Error al cerrar sesión:", error);
   });
 }
-function eliminarUsuario(uid) {
-  if (!confirm("¿Eliminar usuario?")) return;
 
-  db.collection("usuarios").doc(uid).delete()
-    .then(() => {
-      alert("🗑 Usuario eliminado (Firestore)");
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-} 
-function getUsers() {
-  const stored = localStorage.getItem('ptrack_users');
-  if (!stored) return { ...DEFAULT_USERS };
-  const users = JSON.parse(stored);
-  // 🔥 SI ESTÁ VACÍO → restaurar defaults
-  if (Object.keys(users).length === 0) {
-    return { ...DEFAULT_USERS };
-  }
-  return users;
-}
-function saveUsers(users) {
-  localStorage.setItem('ptrack_users', JSON.stringify(users));
-}
-// ── Project store ──
-function getData() { return JSON.parse(localStorage.getItem('ptrack_data') || '{"projects":[]}'); }
-function saveData(d) { localStorage.setItem('ptrack_data', JSON.stringify(d)); }
-function initSteps() {
-  return STEP_NAMES.map((name, i) => ({
-    id:i, name, status:"pending", notes:"",
-    startedAt:null, completedAt:null, updatedAt:null
-  }));
-}
 // ══════════════════════════════════════════
-// AUTH
+// CONFIGURACIÓN UI
 // ══════════════════════════════════════════
-function doLogin(){
-  const email = document.getElementById('loginUser').value;
-  const password = document.getElementById('loginPass').value;
-
-  auth.signInWithEmailAndPassword(email,password)
-    .then(()=>{
-      cargarProyectosFirebase();
-      renderDashboard();
-    })
-    .catch(err=>alert(err.message));
-}
-
-function logout(){
-  auth.signOut();
-}
-function doLogout() {
-  currentUser = null;
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('loginUser').value = '';
-  document.getElementById('loginPass').value = '';
-}
 function setupUI() {
   document.getElementById('sidebarAvatar').textContent = currentUser.name[0].toUpperCase();
   document.getElementById('sidebarName').textContent = currentUser.name;
   document.getElementById('sidebarRole').textContent = currentUser.role === 'supervisor' ? '🔑 Supervisor' : '👤 Colaborador';
-  document.getElementById('topbarDate').textContent = new Date().toLocaleDateString('es-EC',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('topbarDate').textContent = new Date().toLocaleDateString('es-EC', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  
   if (currentUser.role === 'supervisor') {
     document.getElementById('nav-supervisor').classList.remove('hidden');
     document.getElementById('nav-users').classList.remove('hidden');
@@ -655,320 +709,123 @@ function setupUI() {
     document.getElementById('btnNewProject2').classList.add('hidden');
   }
 }
+
 // ══════════════════════════════════════════
-// NAVIGATION
+// FUNCIONES DE DATOS
 // ══════════════════════════════════════════
-function showPage(page) {
-  ['dashboard','projects','supervisor','users','notifications'].forEach(p => {
-    document.getElementById('page-'+p)?.classList.add('hidden');
-    document.getElementById('nav-'+p)?.classList.remove('active');
-  });
-  document.getElementById('page-'+page)?.classList.remove('hidden');
-  document.getElementById('nav-'+page)?.classList.add('active');
-  const titles = {dashboard:'Dashboard',projects:currentUser?.role==='supervisor'?'Todos los Proyectos':'Mis Proyectos',
-    supervisor:'Vista Supervisor',users:'Gestión de Usuarios',notifications:'Alertas y Notificaciones'};
-  document.getElementById('pageTitle').textContent = titles[page]||'';
-  document.getElementById('btnNewProject').classList.toggle('hidden', page!=='projects' || currentUser?.role==='supervisor');
-  document.getElementById('btnAddUser').classList.toggle('hidden', page!=='users');
-  if (page==='dashboard')      renderDashboard();
-  if (page==='projects')       renderProjects();
-  if (page==='supervisor')     renderSupervisor();
-  if (page==='users')          renderUsers();
-  if (page==='notifications')  renderNotifications();
+function initSteps() {
+  return STEP_NAMES.map((name, i) => ({
+    id: i,
+    name: name,
+    status: "pending",
+    notes: "",
+    startedAt: null,
+    completedAt: null,
+    updatedAt: null
+  }));
 }
-// ══════════════════════════════════════════
-// HELPERS
-// ══════════════════════════════════════════
-function getProgress(p) { return Math.round(p.steps.filter(s=>s.status==='done').length/STEP_NAMES.length*100); }
+
+function getProgress(p) {
+  const completedSteps = p.steps.filter(s => s.status === 'done').length;
+  return Math.round((completedSteps / STEP_NAMES.length) * 100);
+}
+
 function getStatusBadge(p) {
   const pct = getProgress(p);
-  if (pct===100) return {label:'Completado',cls:'badge-green'};
-  if (pct===0)   return {label:'Sin Iniciar',cls:'badge-gray'};
-  if (isDaysSinceLastUpdate(p,3)) return {label:'Sin Avance 3d',cls:'badge-red'};
-  return {label:'En Progreso',cls:'badge-blue'};
+  if (pct === 100) return { label: 'Completado', cls: 'badge-green' };
+  if (pct === 0) return { label: 'Sin Iniciar', cls: 'badge-gray' };
+  if (isDaysSinceLastUpdate(p, 3)) return { label: 'Sin Avance 3d', cls: 'badge-red' };
+  return { label: 'En Progreso', cls: 'badge-blue' };
 }
-function isDaysSinceLastUpdate(p,days) {
-  const all = p.steps.filter(s=>s.updatedAt).map(s=>new Date(s.updatedAt));
+
+function isDaysSinceLastUpdate(p, days) {
+  const all = p.steps.filter(s => s.updatedAt).map(s => new Date(s.updatedAt));
   const ref = all.length ? Math.max(...all) : new Date(p.createdAt);
-  return (Date.now()-ref)/86400000 >= days && getProgress(p)<100;
+  return (Date.now() - ref) / 86400000 >= days && getProgress(p) < 100;
 }
+
 function daysSinceUpdate(p) {
-  const all = p.steps.filter(s=>s.updatedAt).map(s=>new Date(s.updatedAt));
+  const all = p.steps.filter(s => s.updatedAt).map(s => new Date(s.updatedAt));
   const ref = all.length ? Math.max(...all) : new Date(p.createdAt);
-  return Math.floor((Date.now()-ref)/86400000);
+  return Math.floor((Date.now() - ref) / 86400000);
 }
+
 function fmtDate(iso) {
-  if(!iso) return '—';
-  return new Date(iso).toLocaleDateString('es-EC',{day:'2-digit',month:'short',year:'numeric'});
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('es-EC', { day: '2-digit', month: 'short', year: 'numeric' });
 }
-function getUserProjects() {
-  const data = getData();
-  return currentUser.role==='supervisor' ? data.projects : data.projects.filter(p=>p.owner===currentUser.id);
-}
+
 function fillColor(pct) {
-  if(pct===100) return 'fill-green';
-  if(pct>=60)   return 'fill-blue';
-  if(pct>=30)   return 'fill-yellow';
+  if (pct === 100) return 'fill-green';
+  if (pct >= 60) return 'fill-blue';
+  if (pct >= 30) return 'fill-yellow';
   return 'fill-red';
 }
-function getUserName(uid) {
-  const users = getUsers();
-  return users[uid]?.name || uid;
-}
-// ══════════════════════════════════════════
-// RENDER DASHBOARD
-// ══════════════════════════════════════════
-function renderDashboard() {
-  const projects = window.proyectosFirebase || [];
-  const total = projects.length;
-  const done  = projects.filter(p=>getProgress(p)===100).length;
-  const inPrg = projects.filter(p=>getProgress(p)>0&&getProgress(p)<100).length;
-  const alrts = projects.filter(p=>isDaysSinceLastUpdate(p,3)).length;
-  document.getElementById('statsGrid').innerHTML = `
-    <div class="stat-card"><div class="stat-icon" style="background:#dbeafe">📁</div><div><h3>${total}</h3><p>Total Proyectos</p></div></div>
-    <div class="stat-card"><div class="stat-icon" style="background:#dcfce7">✅</div><div><h3>${done}</h3><p>Completados</p></div></div>
-    <div class="stat-card"><div class="stat-icon" style="background:#ede9fe">🔄</div><div><h3>${inPrg}</h3><p>En Progreso</p></div></div>
-    <div class="stat-card"><div class="stat-icon" style="background:#fee2e2">🔔</div><div><h3>${alrts}</h3><p>Con Alertas</p></div></div>`;
-  document.getElementById('alertsSection').innerHTML = alrts
-    ? `<div class="alert-banner alert-danger">🚨 <strong>${alrts} proyecto(s)</strong> llevan más de 3 días sin reportar avances.</div>` : '';
-  const recent = [...projects].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,6);
-  document.getElementById('recentProjects').innerHTML = recent.length
-    ? recent.map(p=>projectCardHTML(p)).join('')
-    : '<div class="empty-state"><div class="icon">📭</div><h3>Sin proyectos aún</h3></div>';
-  updateNotifBadge();
-}
-// ══════════════════════════════════════════
-// PROJECT CARD
-// ══════════════════════════════════════════
-function projectCardHTML(p) {
-  const pct = getProgress(p), status = getStatusBadge(p);
-  const alertCls = isDaysSinceLastUpdate(p,3) ? 'alert-card' : '';
-  const days = daysSinceUpdate(p);
-  const curStep = p.steps.find(s=>s.status==='in_progress') || p.steps.find(s=>s.status==='pending');
-  return `
-  <div class="project-card ${alertCls}" onclick="openProject('${p.id}')">
-    <div class="project-header">
-      <div><div class="project-title">${p.name}</div><div class="project-code">${p.code}</div></div>
-      <span class="badge ${status.cls}">${status.label}</span>
-    </div>
-    ${isDaysSinceLastUpdate(p,3)?`<div style="font-size:.76rem;color:#dc2626;margin-bottom:7px;font-weight:600;">⚠️ ${days} días sin avance</div>`:''}
-    <div class="progress-wrap">
-      <div class="progress-label"><span>Progreso</span><span>${pct}%</span></div>
-      <div class="progress-bar"><div class="progress-fill ${fillColor(pct)}" style="width:${pct}%"></div></div>
-    </div>
-    <div style="font-size:.78rem;color:var(--muted);margin-top:5px;">📌 ${curStep?curStep.name:'✅ Finalizado'}</div>
-    <div class="project-meta"><span>👤 ${getUserName(p.owner)}</span><span>📅 ${fmtDate(p.createdAt)}</span></div>
-  </div>`;
-}
-// ══════════════════════════════════════════
-// RENDER PROJECTS
-// ══════════════════════════════════════════
-function renderProjects() {
-  const proyectos = window.proyectosFirebase || [];
-  const container = document.getElementById('projectsGrid');
-  container.innerHTML = proyectos.length
-    ? proyectos.map(p => projectCardHTML(p)).join('')
-    : `<div class="empty-state">
-        <div class="icon">📂</div>
-        <h3>No hay proyectos</h3>
-        <p>Crea el primero con "+ Nuevo Proyecto".</p>
-      </div>`;
-}
-// ══════════════════════════════════════════
-// RENDER SUPERVISOR
-// ══════════════════════════════════════════
-function renderSupervisor() {
-  const proyectos = window.proyectosFirebase || [];
-  const users = getUsers();
-  const collaborators = Object.entries(users).filter(([,u])=>u.role==='collaborator');
-  let html = '';
-  collaborators.forEach(([uid,uinfo]) => {
-    const ups = proyectos.filter(p=>p.owner===uid);
-    const al = ups.filter(p=>isDaysSinceLastUpdate(p,3)).length;
-    html += `<div class="collab-section">
-      <div class="collab-title">
-        <div class="avatar avatar-purple">${uinfo.name[0]}</div>
-        <div>
-          <div class="font-bold">${uinfo.name}</div>
-          <div class="text-sm text-muted">
-            ${ups.length} proyectos
-            ${al?` · <span style="color:#dc2626">⚠️ ${al} con alerta</span>`:''}
-          </div>
-        </div>
-      </div>
-      ${ups.length
-        ? `<div class="projects-grid">${ups.map(p=>projectCardHTML(p)).join('')}</div>`
-        : `<div class="text-muted" style="padding:8px 0;">Sin proyectos registrados.</div>`
-      }
-    </div>`;
-  });
-  document.getElementById('supervisorContent').innerHTML =
-    html || '<div class="empty-state"><div class="icon">👥</div><h3>Sin colaboradores</h3></div>';
-}
-// ══════════════════════════════════════════
-// RENDER NOTIFICATIONS
-// ══════════════════════════════════════════
-function renderNotifications() {
-  const notifs = buildNotifications(getUserProjects());
-  const el = document.getElementById('notifList');
-  el.innerHTML = notifs.length
-    ? notifs.map(n=>`<div class="notif-item ${n.color}"><div class="notif-title">${n.icon} ${n.title}</div><div class="notif-body">${n.body}</div><div class="notif-time">${n.time}</div></div>`).join('')
-    : '<div class="empty-state"><div class="icon">🎉</div><h3>Sin alertas</h3><p>Todo al día.</p></div>';
-}
-function buildNotifications(projects) {
-  return projects.filter(p=>getProgress(p)<100).map(p=>{
-    const d=daysSinceUpdate(p), pct=getProgress(p);
-    if(d>=5) return {color:'red',icon:'🚨',title:`URGENTE: ${p.name}`,body:`${p.code} — sin avances hace ${d} días.`,time:`${d} días sin actualización`};
-    if(d>=3) return {color:'yellow',icon:'⚠️',title:`Alerta: ${p.name}`,body:`${p.code} — lleva ${d} días sin avances.`,time:`${d} días`};
-    return {color:'blue',icon:'📊',title:`En progreso: ${p.name}`,body:`Avance: ${pct}%. Paso activo: ${p.steps.find(s=>s.status==='in_progress')?.name||'—'}`,time:`Hace ${d} día(s)`};
-  });
-}
-function updateNotifBadge() {
-  const c = getUserProjects().filter(p=>isDaysSinceLastUpdate(p,3)).length;
-  const b = document.getElementById('notifBadge');
-  if(c>0){b.textContent=c;b.classList.remove('hidden');}else b.classList.add('hidden');
-}
-// ══════════════════════════════════════════
-// RENDER USERS (Supervisor only)
-// ══════════════════════════════════════════
-function renderUsers() {
-  const users = getUsers();
-  const data  = getData();
-  let rows = '';
-  Object.entries(users).forEach(([uid,u]) => {
-    const pcount = data.projects.filter(p=>p.owner===uid).length;
-    const roleBadge = u.role==='supervisor' ? '<span class="badge badge-purple">🔑 Supervisor</span>' : '<span class="badge badge-blue">👤 Colaborador</span>';
-    const sysBadge  = u.system ? '<span class="badge badge-gray" style="font-size:.64rem;">sistema</span>' : '';
-    rows += `<tr>
-      <td><strong>${u.name}</strong> ${sysBadge}</td>
-      <td><code style="background:#f1f5f9;padding:2px 7px;border-radius:5px;font-size:.82rem;">${uid}</code></td>
-      <td>${roleBadge}</td>
-      <td>${pcount} proyectos</td>
-      <td>
-        <div class="flex gap-2">
-          <button class="btn btn-ghost" style="padding:5px 11px;font-size:.78rem;" onclick="openEditUser('${uid}')">✏️ Editar</button>
-          ${!u.system?`<button class="btn btn-danger" style="padding:5px 11px;font-size:.78rem;" onclick="confirmDeleteUser('${uid}')">🗑️</button>`:''}
-        </div>
-      </td>
-    </tr>`;
-  });
-  document.getElementById('usersContent').innerHTML = `
-    <div class="alert-banner alert-info" style="margin-bottom:20px;">
-      ℹ️ Solo el supervisor puede agregar, editar o eliminar colaboradores.
-    </div>
-    <div style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,.06);">
-      <table class="users-table">
-        <thead><tr>
-          <th>Nombre</th><th>Usuario</th><th>Rol</th><th>Proyectos</th><th>Acciones</th>
-        </tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>`;
-}
-// ══════════════════════════════════════════
-// USER CRUD
-// ══════════════════════════════════════════
-function openAddUserModal() {
-  editingUserId = null;
-  document.getElementById('addUserTitle').textContent = '➕ Nuevo Colaborador';
-  document.getElementById('au_name').value = '';
-  document.getElementById('au_username').value = '';
-  document.getElementById('au_pass').value = '';
-  document.getElementById('au_role').value = 'collaborator';
-  document.getElementById('au_username').disabled = false;
-  document.getElementById('addUserError').classList.add('hidden');
-  document.getElementById('saveUserBtn').textContent = '💾 Crear Usuario';
-  document.getElementById('addUserModal').classList.remove('hidden');
-}
-function openEditUser(uid) {
-  const users = getUsers();
-  const u = users[uid];
-  if(!u) return;
-  editingUserId = uid;
-  document.getElementById('addUserTitle').textContent = '✏️ Editar Usuario';
-  document.getElementById('au_name').value = u.name;
-  document.getElementById('au_username').value = uid;
-  document.getElementById('au_pass').value = '';
-  document.getElementById('au_role').value = u.role;
-  document.getElementById('au_username').disabled = true;
-  document.getElementById('addUserError').classList.add('hidden');
-  document.getElementById('saveUserBtn').textContent = '💾 Guardar Cambios';
-  document.getElementById('addUserModal').classList.remove('hidden');
-}
-function saveUser() {
-  const name = document.getElementById('au_name').value.trim();
-  const uid  = document.getElementById('au_username').value.trim().toLowerCase().replace(/\s/g,'');
-  const pass = document.getElementById('au_pass').value;
-  const role = document.getElementById('au_role').value;
-  const errEl = document.getElementById('addUserError');
-  errEl.classList.add('hidden');
-  if(!name||!uid) { errEl.textContent='⚠️ Nombre y usuario son obligatorios.'; errEl.classList.remove('hidden'); return; }
-  const users = getUsers();
-  if(!editingUserId && users[uid]) { errEl.textContent='⚠️ Ese nombre de usuario ya existe.'; errEl.classList.remove('hidden'); return; }
-  if(!editingUserId && pass.length < 6) { errEl.textContent='⚠️ La contraseña debe tener mínimo 6 caracteres.'; errEl.classList.remove('hidden'); return; }
-  if(editingUserId) {
-    users[editingUserId].name = name;
-    users[editingUserId].role = role;
-    if(pass.length >= 6) users[editingUserId].password = pass;
-  } else {
-    users[uid] = { name, role, password:pass, system:false };
+
+// Obtener nombre de usuario por ID
+async function getUserName(uid) {
+  if (!uid) return '—';
+  try {
+    const userDoc = await db.collection("usuarios").doc(uid).get();
+    if (userDoc.exists) {
+      return userDoc.data().name;
+    }
+  } catch (error) {
+    console.error("Error al obtener usuario:", error);
   }
-  saveUsers(users);
-  closeModal('addUserModal');
-  renderUsers();
+  return uid.substring(0, 8);
 }
-function confirmDeleteUser(uid) {
-  const users = getUsers();
-  document.getElementById('confirmMsg').textContent = `¿Eliminar al usuario "${users[uid]?.name}"? Sus proyectos no se eliminarán.`;
-  document.getElementById('confirmOkBtn').onclick = () => { deleteUser(uid); closeModal('confirmModal'); };
-  document.getElementById('confirmModal').classList.remove('hidden');
-}
-function deleteUser(uid) {
-  const users = getUsers();
-  delete users[uid];
-  saveUsers(users);
-  renderUsers();
-}
+
 // ══════════════════════════════════════════
-// PROJECT CRUD
+// PROYECTOS - CRUD
 // ══════════════════════════════════════════
 function openNewProjectModal() {
-  document.getElementById('np_name').value='';
-  document.getElementById('np_code').value='';
-  document.getElementById('np_startDate').value=new Date().toISOString().split('T')[0];
-  document.getElementById('np_desc').value='';
-  document.getElementById('np_client').value='';
+  document.getElementById('np_name').value = '';
+  document.getElementById('np_code').value = '';
+  document.getElementById('np_startDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('np_desc').value = '';
+  document.getElementById('np_client').value = '';
   document.getElementById('newProjectModal').classList.remove('hidden');
 }
-function createProject(){
+
+async function createProject() {
   const name = document.getElementById('np_name').value.trim();
   const code = document.getElementById('np_code').value.trim();
-
-  if(!name||!code){alert('Completa datos');return;}
-
-  db.collection("proyectos").add({
-    name,
-    code,
-    createdAt: new Date().toISOString()
-  })
-  .then(()=>{
-    cargarProyectosFirebase();
-  })
-  .catch(err=>console.error(err));
+  
+  if (!name || !code) {
+    alert('⚠️ Completa el nombre y código del proyecto.');
+    return;
+  }
+  
+  const id = 'p_' + Date.now();
+  const proyecto = {
+    id: id,
+    name: name,
+    code: code,
+    startDate: document.getElementById('np_startDate').value,
+    description: document.getElementById('np_desc').value.trim(),
+    client: document.getElementById('np_client').value.trim(),
+    owner: currentUser.id,
+    createdAt: new Date().toISOString(),
+    steps: initSteps()
+  };
+  
+  try {
+    await db.collection("proyectos").doc(id).set(proyecto);
+    console.log("✅ Proyecto creado en Firebase");
+    closeModal('newProjectModal');
+    // La vista se actualizará automáticamente por el snapshot
+  } catch (error) {
+    console.error("❌ Error al crear proyecto:", error);
+    alert("Error al crear proyecto: " + error.message);
+  }
 }
 
-async function cargarProyectosFirebase(){
-  const snapshot = await db.collection("proyectos").get();
-  window.projects = snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
-  renderProjects();
-}
-function openProject(id) {
-  const proyectos = window.proyectosFirebase || [];
-  currentProject = proyectos.find(p => p.id === id);
-  if(!currentProject) return;
+function openProject(project) {
+  currentProject = project;
   document.getElementById('detailTitle').textContent = currentProject.name;
   const pct = getProgress(currentProject);
-  const st  = getStatusBadge(currentProject);
+  const st = getStatusBadge(currentProject);
   document.getElementById('detailBadges').innerHTML = `
     <span class="badge ${st.cls}">${st.label}</span>
     <span class="badge badge-purple">${pct}% completado</span>
@@ -976,350 +833,784 @@ function openProject(id) {
   `;
   switchTab('timeline');
   document.getElementById('projectDetailModal').classList.remove('hidden');
-}  
+}
+
+async function updateStepInFirebase(projectId, stepIndex, stepData) {
+  try {
+    const projectRef = db.collection("proyectos").doc(projectId);
+    const projectDoc = await projectRef.get();
+    const project = projectDoc.data();
+    
+    project.steps[stepIndex] = { ...project.steps[stepIndex], ...stepData };
+    
+    await projectRef.update({ steps: project.steps });
+    console.log("✅ Paso actualizado en Firebase");
+  } catch (error) {
+    console.error("❌ Error al actualizar paso:", error);
+    throw error;
+  }
+}
+
+function openUpdateStep(idx) {
+  updateStepIndex = idx;
+  const step = currentProject.steps[idx];
+  document.getElementById('updateStepTitle').textContent = `✏️ Paso ${idx + 1}: ${step.name}`;
+  document.getElementById('us_status').value = step.status;
+  document.getElementById('us_notes').value = step.notes || '';
+  document.getElementById('us_date').value = step.completedAt ? step.completedAt.split('T')[0] : new Date().toISOString().split('T')[0];
+  document.getElementById('updateStepModal').classList.remove('hidden');
+}
+
+async function saveStepUpdate() {
+  if (!currentProject || updateStepIndex === null) return;
+  
+  const step = currentProject.steps[updateStepIndex];
+  const newStatus = document.getElementById('us_status').value;
+  
+  step.status = newStatus;
+  step.notes = document.getElementById('us_notes').value.trim();
+  step.updatedAt = new Date().toISOString();
+  
+  if (newStatus === 'in_progress' && !step.startedAt) {
+    step.startedAt = new Date().toISOString();
+  }
+  
+  if (newStatus === 'done') {
+    const dateValue = document.getElementById('us_date').value;
+    step.completedAt = dateValue ? new Date(dateValue).toISOString() : new Date().toISOString();
+    step.startedAt = step.startedAt || step.completedAt;
+  } else {
+    step.completedAt = null;
+  }
+  
+  try {
+    await updateStepInFirebase(currentProject.id, updateStepIndex, step);
+    closeModal('updateStepModal');
+    // Recargar proyecto actualizado
+    const updatedDoc = await db.collection("proyectos").doc(currentProject.id).get();
+    currentProject = updatedDoc.data();
+    switchTab('timeline');
+  } catch (error) {
+    alert("Error al guardar: " + error.message);
+  }
+}
+
+// ══════════════════════════════════════════
+// USUARIOS - CRUD (Solo Supervisor)
+// ══════════════════════════════════════════
+async function cargarUsuariosFirebase() {
+  if (currentUser?.role !== 'supervisor') return;
+  
+  db.collection("usuarios").onSnapshot((snapshot) => {
+    renderUsersList(snapshot);
+  });
+}
+
+function renderUsersList(snapshot) {
+  const usersContent = document.getElementById('usersContent');
+  if (!usersContent) return;
+  
+  let rows = '';
+  snapshot.forEach((doc) => {
+    const u = doc.data();
+    const roleBadge = u.role === 'supervisor' 
+      ? '<span class="badge badge-purple">🔑 Supervisor</span>' 
+      : '<span class="badge badge-blue">👤 Colaborador</span>';
+    
+    rows += `
+      <tr>
+        <td><strong>${u.name || '—'}</strong></td>
+        <td><code style="background:#f1f5f9;padding:2px 7px;border-radius:5px;font-size:.82rem;">${u.email}</code></td>
+        <td>${roleBadge}</td>
+        <td>
+          <div class="flex gap-2">
+            <button class="btn btn-ghost" style="padding:5px 11px;font-size:.78rem;" onclick="openEditUser('${doc.id}', '${u.name}', '${u.email}', '${u.role}')">✏️ Editar</button>
+            <button class="btn btn-danger" style="padding:5px 11px;font-size:.78rem;" onclick="confirmDeleteUser('${doc.id}')">🗑️</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  });
+  
+  usersContent.innerHTML = `
+    <div class="alert-banner alert-info" style="margin-bottom:20px;">
+      ℹ️ Solo el supervisor puede agregar, editar o eliminar colaboradores.
+    </div>
+    <div style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,.06);">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>${rows || '<tr><td colspan="4" class="empty-state">No hay usuarios registrados</td></tr>'}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function openAddUserModal() {
+  editingUserId = null;
+  document.getElementById('addUserTitle').textContent = '➕ Nuevo Colaborador';
+  document.getElementById('au_name').value = '';
+  document.getElementById('au_email').value = '';
+  document.getElementById('au_pass').value = '';
+  document.getElementById('au_role').value = 'collaborator';
+  document.getElementById('addUserError').classList.add('hidden');
+  document.getElementById('saveUserBtn').textContent = '💾 Crear Usuario';
+  document.getElementById('addUserModal').classList.remove('hidden');
+}
+
+function openEditUser(uid, name, email, role) {
+  editingUserId = uid;
+  document.getElementById('addUserTitle').textContent = '✏️ Editar Usuario';
+  document.getElementById('au_name').value = name;
+  document.getElementById('au_email').value = email;
+  document.getElementById('au_pass').value = '';
+  document.getElementById('au_role').value = role;
+  document.getElementById('addUserError').classList.add('hidden');
+  document.getElementById('saveUserBtn').textContent = '💾 Guardar Cambios';
+  document.getElementById('addUserModal').classList.remove('hidden');
+}
+
+async function saveUser() {
+  const name = document.getElementById('au_name').value.trim();
+  const email = document.getElementById('au_email').value.trim();
+  const password = document.getElementById('au_pass').value;
+  const role = document.getElementById('au_role').value;
+  const errEl = document.getElementById('addUserError');
+  
+  errEl.classList.add('hidden');
+  
+  if (!name || !email) {
+    errEl.textContent = '⚠️ Nombre y email son obligatorios.';
+    errEl.classList.remove('hidden');
+    return;
+  }
+  
+  try {
+    if (editingUserId) {
+      // Editar usuario existente
+      const userRef = db.collection("usuarios").doc(editingUserId);
+      await userRef.update({
+        name: name,
+        role: role
+      });
+      
+      // Si se proporcionó nueva contraseña, actualizar en Auth
+      if (password && password.length >= 6) {
+        // Nota: Para cambiar contraseña se necesita que el usuario esté autenticado
+        // o usar funciones de admin (requiere backend). Por ahora solo actualizamos Firestore.
+        alert("⚠️ La contraseña no se puede cambiar desde aquí. El usuario debe cambiarla desde su perfil.");
+      }
+      
+      alert("✅ Usuario actualizado correctamente");
+    } else {
+      // Crear nuevo usuario
+      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+      const user = userCredential.user;
+      
+      await db.collection("usuarios").doc(user.uid).set({
+        name: name,
+        email: email,
+        role: role,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      
+      alert("✅ Usuario creado correctamente");
+    }
+    
+    closeModal('addUserModal');
+    // La lista se actualizará automáticamente por el snapshot
+    
+  } catch (error) {
+    console.error("Error al guardar usuario:", error);
+    let errorMsg = "Error: ";
+    if (error.code === 'auth/email-already-in-use') {
+      errorMsg += "Este email ya está registrado.";
+    } else {
+      errorMsg += error.message;
+    }
+    errEl.textContent = errorMsg;
+    errEl.classList.remove('hidden');
+  }
+}
+
+function confirmDeleteUser(uid) {
+  document.getElementById('confirmMsg').textContent = `¿Eliminar este usuario? Se eliminarán sus datos de Firestore.`;
+  document.getElementById('confirmOkBtn').onclick = () => deleteUser(uid);
+  document.getElementById('confirmModal').classList.remove('hidden');
+}
+
+async function deleteUser(uid) {
+  try {
+    // Eliminar de Firestore
+    await db.collection("usuarios").doc(uid).delete();
+    alert("✅ Usuario eliminado correctamente");
+    closeModal('confirmModal');
+  } catch (error) {
+    console.error("Error al eliminar usuario:", error);
+    alert("Error al eliminar usuario: " + error.message);
+  }
+}
+
+// ══════════════════════════════════════════
+// CARGA DE PROYECTOS EN TIEMPO REAL
+// ══════════════════════════════════════════
 function cargarProyectosFirebase() {
-  db.collection("proyectos").onSnapshot((querySnapshot) => {
-    let proyectos = [];
-    querySnapshot.forEach((doc) => {
-      proyectos.push(doc.data());
+  db.collection("proyectos").onSnapshot(async (snapshot) => {
+    const proyectos = [];
+    for (const doc of snapshot.docs) {
+      const proyecto = doc.data();
+      proyectos.push(proyecto);
+    }
+    proyectosFirebase = proyectos;
+    await renderAllViews();
+  });
+}
+
+async function renderAllViews() {
+  if (!currentUser) return;
+  
+  // Filtrar proyectos según rol
+  let proyectosMostrar = proyectosFirebase;
+  if (currentUser.role !== 'supervisor') {
+    proyectosMostrar = proyectosFirebase.filter(p => p.owner === currentUser.id);
+  }
+  
+  renderDashboard(proyectosMostrar);
+  renderProjects(proyectosMostrar);
+  renderSupervisor(proyectosFirebase);
+  renderNotifications(proyectosMostrar);
+}
+
+function renderDashboard(proyectos) {
+  const total = proyectos.length;
+  const done = proyectos.filter(p => getProgress(p) === 100).length;
+  const inPrg = proyectos.filter(p => getProgress(p) > 0 && getProgress(p) < 100).length;
+  const alerts = proyectos.filter(p => isDaysSinceLastUpdate(p, 3)).length;
+  
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card"><div class="stat-icon" style="background:#dbeafe">📁</div><div><h3>${total}</h3><p>Total Proyectos</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#dcfce7">✅</div><div><h3>${done}</h3><p>Completados</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#ede9fe">🔄</div><div><h3>${inPrg}</h3><p>En Progreso</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#fee2e2">🔔</div><div><h3>${alerts}</h3><p>Con Alertas</p></div></div>`;
+  
+  document.getElementById('alertsSection').innerHTML = alerts
+    ? `<div class="alert-banner alert-danger">🚨 <strong>${alerts} proyecto(s)</strong> llevan más de 3 días sin reportar avances.</div>`
+    : '';
+  
+  const recent = [...proyectos].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 6);
+  document.getElementById('recentProjects').innerHTML = recent.length
+    ? await Promise.all(recent.map(p => projectCardHTML(p))).then(cards => cards.join(''))
+    : '<div class="empty-state"><div class="icon">📭</div><h3>Sin proyectos aún</h3></div>';
+  
+  updateNotifBadge(proyectos);
+}
+
+async function projectCardHTML(p) {
+  const pct = getProgress(p);
+  const status = getStatusBadge(p);
+  const alertCls = isDaysSinceLastUpdate(p, 3) ? 'alert-card' : '';
+  const days = daysSinceUpdate(p);
+  const curStep = p.steps.find(s => s.status === 'in_progress') || p.steps.find(s => s.status === 'pending');
+  const ownerName = await getUserName(p.owner);
+  
+  return `
+    <div class="project-card ${alertCls}" onclick="openProject(${JSON.stringify(p).replace(/"/g, '&quot;')})">
+      <div class="project-header">
+        <div><div class="project-title">${p.name}</div><div class="project-code">${p.code}</div></div>
+        <span class="badge ${status.cls}">${status.label}</span>
+      </div>
+      ${isDaysSinceLastUpdate(p, 3) ? `<div style="font-size:.76rem;color:#dc2626;margin-bottom:7px;font-weight:600;">⚠️ ${days} días sin avance</div>` : ''}
+      <div class="progress-wrap">
+        <div class="progress-label"><span>Progreso</span><span>${pct}%</span></div>
+        <div class="progress-bar"><div class="progress-fill ${fillColor(pct)}" style="width:${pct}%"></div></div>
+      </div>
+      <div style="font-size:.78rem;color:var(--muted);margin-top:5px;">📌 ${curStep ? curStep.name : '✅ Finalizado'}</div>
+      <div class="project-meta"><span>👤 ${ownerName}</span><span>📅 ${fmtDate(p.createdAt)}</span></div>
+    </div>`;
+}
+
+function renderProjects(proyectos) {
+  const container = document.getElementById('projectsGrid');
+  if (!container) return;
+  
+  if (proyectos.length) {
+    Promise.all(proyectos.map(p => projectCardHTML(p))).then(cards => {
+      container.innerHTML = cards.join('');
     });
-    console.log("🔥 Tiempo real:", proyectos);
-    renderProjectsFirebase(proyectos);
-  });
-}  
-function renderProjectsFirebase(proyectos) {
-  window.proyectosFirebase = proyectos;
-  renderProjects();
-  renderDashboard();
-  renderSupervisor();
+  } else {
+    container.innerHTML = `<div class="empty-state">
+        <div class="icon">📂</div>
+        <h3>No hay proyectos</h3>
+        <p>Crea el primero con "+ Nuevo Proyecto".</p>
+      </div>`;
+  }
 }
-// ══════════════════════════════════════════
-// TABS
-// ══════════════════════════════════════════
-function switchTab(tab) {
-  const tabs=['timeline','steps','gantt','info'];
-  tabs.forEach((t,i)=>{
-    document.getElementById('tab-'+t).classList.add('hidden');
-    document.querySelectorAll('.tab')[i]?.classList.remove('active');
+
+async function renderSupervisor(proyectos) {
+  if (currentUser?.role !== 'supervisor') return;
+  
+  const snapshot = await db.collection("usuarios").get();
+  const collaborators = [];
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    if (data.role === 'collaborator') {
+      collaborators.push({ id: doc.id, ...data });
+    }
   });
-  document.getElementById('tab-'+tab).classList.remove('hidden');
-  document.querySelectorAll('.tab')[tabs.indexOf(tab)]?.classList.add('active');
-  if(tab==='timeline') renderTimeline();
-  if(tab==='steps')    renderStepsTab();
-  if(tab==='gantt')    renderGantt();
-  if(tab==='info')     renderInfo();
-}
-// ── TIMELINE ──
-function renderTimeline() {
-  const p = currentProject;
-  const canEdit = currentUser.role==='collaborator' && p.owner===currentUser.id;
-  const pct = getProgress(p), days = daysSinceUpdate(p);
+  
   let html = '';
-  if(isDaysSinceLastUpdate(p,3))
-    html+=`<div class="alert-banner alert-danger">🚨 ${days} días sin avances. Alertas enviadas.</div>`;
-  html+=`<div class="progress-wrap" style="margin-bottom:18px;">
+  for (const collab of collaborators) {
+    const ups = proyectos.filter(p => p.owner === collab.id);
+    const al = ups.filter(p => isDaysSinceLastUpdate(p, 3)).length;
+    
+    html += `<div class="collab-section">
+      <div class="collab-title">
+        <div class="avatar avatar-purple">${collab.name ? collab.name[0] : 'U'}</div>
+        <div>
+          <div class="font-bold">${collab.name || collab.email}</div>
+          <div class="text-sm text-muted">
+            ${ups.length} proyectos
+            ${al ? ` · <span style="color:#dc2626">⚠️ ${al} con alerta</span>` : ''}
+          </div>
+        </div>
+      </div>
+      ${ups.length
+        ? `<div class="projects-grid" id="collab-projects-${collab.id}"></div>`
+        : `<div class="text-muted" style="padding:8px 0;">Sin proyectos registrados.</div>`
+      }
+    </div>`;
+    
+    if (ups.length) {
+      setTimeout(() => {
+        const container = document.getElementById(`collab-projects-${collab.id}`);
+        if (container) {
+          Promise.all(ups.map(p => projectCardHTML(p))).then(cards => {
+            container.innerHTML = cards.join('');
+          });
+        }
+      }, 0);
+    }
+  }
+  
+  const supervisorContent = document.getElementById('supervisorContent');
+  if (supervisorContent) {
+    supervisorContent.innerHTML = html || '<div class="empty-state"><div class="icon">👥</div><h3>Sin colaboradores</h3></div>';
+  }
+}
+
+function renderNotifications(proyectos) {
+  const notifs = proyectos.filter(p => getProgress(p) < 100).map(p => {
+    const d = daysSinceUpdate(p);
+    const pct = getProgress(p);
+    if (d >= 5) return { color: 'red', icon: '🚨', title: `URGENTE: ${p.name}`, body: `${p.code} — sin avances hace ${d} días.`, time: `${d} días sin actualización` };
+    if (d >= 3) return { color: 'yellow', icon: '⚠️', title: `Alerta: ${p.name}`, body: `${p.code} — lleva ${d} días sin avances.`, time: `${d} días` };
+    return { color: 'blue', icon: '📊', title: `En progreso: ${p.name}`, body: `Avance: ${pct}%. Paso activo: ${p.steps.find(s => s.status === 'in_progress')?.name || '—'}`, time: `Hace ${d} día(s)` };
+  });
+  
+  const el = document.getElementById('notifList');
+  if (el) {
+    el.innerHTML = notifs.length
+      ? notifs.map(n => `<div class="notif-item ${n.color}"><div class="notif-title">${n.icon} ${n.title}</div><div class="notif-body">${n.body}</div><div class="notif-time">${n.time}</div></div>`).join('')
+      : '<div class="empty-state"><div class="icon">🎉</div><h3>Sin alertas</h3><p>Todo al día.</p></div>';
+  }
+}
+
+function updateNotifBadge(proyectos) {
+  const c = proyectos.filter(p => isDaysSinceLastUpdate(p, 3)).length;
+  const b = document.getElementById('notifBadge');
+  if (b) {
+    if (c > 0) {
+      b.textContent = c;
+      b.classList.remove('hidden');
+    } else {
+      b.classList.add('hidden');
+    }
+  }
+}
+
+// ══════════════════════════════════════════
+// NAVEGACIÓN Y TABS
+// ══════════════════════════════════════════
+function showPage(page) {
+  const pages = ['dashboard', 'projects', 'supervisor', 'users', 'notifications'];
+  pages.forEach(p => {
+    const pageEl = document.getElementById('page-' + p);
+    const navEl = document.getElementById('nav-' + p);
+    if (pageEl) pageEl.classList.add('hidden');
+    if (navEl) navEl.classList.remove('active');
+  });
+  
+  const activePage = document.getElementById('page-' + page);
+  const activeNav = document.getElementById('nav-' + page);
+  if (activePage) activePage.classList.remove('hidden');
+  if (activeNav) activeNav.classList.add('active');
+  
+  const titles = {
+    dashboard: 'Dashboard',
+    projects: currentUser?.role === 'supervisor' ? 'Todos los Proyectos' : 'Mis Proyectos',
+    supervisor: 'Vista Supervisor',
+    users: 'Gestión de Usuarios',
+    notifications: 'Alertas y Notificaciones'
+  };
+  document.getElementById('pageTitle').textContent = titles[page] || '';
+  
+  const btnNewProject = document.getElementById('btnNewProject');
+  const btnAddUser = document.getElementById('btnAddUser');
+  
+  if (btnNewProject) btnNewProject.classList.toggle('hidden', page !== 'projects' || currentUser?.role === 'supervisor');
+  if (btnAddUser) btnAddUser.classList.toggle('hidden', page !== 'users');
+}
+
+function switchTab(tab) {
+  const tabs = ['timeline', 'steps', 'gantt', 'info'];
+  tabs.forEach((t, i) => {
+    const tabEl = document.getElementById('tab-' + t);
+    const tabBtn = document.querySelectorAll('.tab')[i];
+    if (tabEl) tabEl.classList.add('hidden');
+    if (tabBtn) tabBtn.classList.remove('active');
+  });
+  
+  const activeTab = document.getElementById('tab-' + tab);
+  const activeBtn = document.querySelectorAll('.tab')[tabs.indexOf(tab)];
+  if (activeTab) activeTab.classList.remove('hidden');
+  if (activeBtn) activeBtn.classList.add('active');
+  
+  if (tab === 'timeline') renderTimeline();
+  if (tab === 'steps') renderStepsTab();
+  if (tab === 'gantt') renderGantt();
+  if (tab === 'info') renderInfo();
+}
+
+function renderTimeline() {
+  if (!currentProject) return;
+  
+  const p = currentProject;
+  const canEdit = currentUser.role === 'collaborator' && p.owner === currentUser.id;
+  const pct = getProgress(p);
+  const days = daysSinceUpdate(p);
+  
+  let html = '';
+  if (isDaysSinceLastUpdate(p, 3))
+    html += `<div class="alert-banner alert-danger">🚨 ${days} días sin avances. Alertas enviadas.</div>`;
+  
+  html += `<div class="progress-wrap" style="margin-bottom:18px;">
     <div class="progress-label"><span>Progreso total</span><span>${pct}%</span></div>
     <div class="progress-bar" style="height:11px;"><div class="progress-fill ${fillColor(pct)}" style="width:${pct}%"></div></div>
   </div><div class="timeline">`;
-  p.steps.forEach((step,i)=>{
-    const dc=step.status==='done'?'dot-done':step.status==='in_progress'?'dot-active':'dot-pending';
-    const cc=step.status==='done'?'done':step.status==='in_progress'?'active':'';
-    const ic=step.status==='done'?'✓':step.status==='in_progress'?'●':'';
-    html+=`<div class="timeline-item">
+  
+  p.steps.forEach((step, i) => {
+    const dc = step.status === 'done' ? 'dot-done' : step.status === 'in_progress' ? 'dot-active' : 'dot-pending';
+    const cc = step.status === 'done' ? 'done' : step.status === 'in_progress' ? 'active' : '';
+    const ic = step.status === 'done' ? '✓' : step.status === 'in_progress' ? '●' : '';
+    html += `<div class="timeline-item">
       <div class="timeline-dot ${dc}">${ic}</div>
       <div class="timeline-content ${cc}">
         <div class="timeline-step-header">
-          <span class="timeline-step-title">${i+1}. ${step.name}</span>
-          <span class="timeline-step-date">${step.completedAt?'✅ '+fmtDate(step.completedAt):step.startedAt?'🔄 '+fmtDate(step.startedAt):'⏳ Pendiente'}</span>
+          <span class="timeline-step-title">${i + 1}. ${step.name}</span>
+          <span class="timeline-step-date">${step.completedAt ? '✅ ' + fmtDate(step.completedAt) : step.startedAt ? '🔄 ' + fmtDate(step.startedAt) : '⏳ Pendiente'}</span>
         </div>
-        ${step.notes?`<div class="timeline-step-notes">📝 ${step.notes}</div>`:''}
-        ${canEdit&&pct<100?`<div class="timeline-actions"><button class="btn btn-primary" style="padding:5px 13px;font-size:.78rem;" onclick="openUpdateStep(${i})">✏️ Actualizar</button></div>`:''}
+        ${step.notes ? `<div class="timeline-step-notes">📝 ${step.notes}</div>` : ''}
+        ${canEdit && pct < 100 ? `<div class="timeline-actions"><button class="btn btn-primary" style="padding:5px 13px;font-size:.78rem;" onclick="openUpdateStep(${i})">✏️ Actualizar</button></div>` : ''}
       </div>
     </div>`;
   });
-  html+='</div>';
-  document.getElementById('tab-timeline').innerHTML=html;
+  
+  html += '</div>';
+  document.getElementById('tab-timeline').innerHTML = html;
 }
-// ── STEPS ──
+
 function renderStepsTab() {
-  const p=currentProject;
-  const canEdit=currentUser.role==='collaborator'&&p.owner===currentUser.id;
-  let html='<div class="steps-list">';
-  p.steps.forEach((step,i)=>{
-    const lbl=step.status==='done'?'✅ Completado':step.status==='in_progress'?'🔄 En Progreso':'⏳ Pendiente';
-    html+=`<div class="step-row ${step.status}">
-      <div class="step-number ${step.status}">${step.status==='done'?'✓':i+1}</div>
+  if (!currentProject) return;
+  
+  const p = currentProject;
+  const canEdit = currentUser.role === 'collaborator' && p.owner === currentUser.id;
+  let html = '<div class="steps-list">';
+  
+  p.steps.forEach((step, i) => {
+    const lbl = step.status === 'done' ? '✅ Completado' : step.status === 'in_progress' ? '🔄 En Progreso' : '⏳ Pendiente';
+    html += `<div class="step-row ${step.status}">
+      <div class="step-number ${step.status}">${step.status === 'done' ? '✓' : i + 1}</div>
       <div class="step-info">
         <div class="step-name">${step.name}</div>
-        <div class="step-date">${lbl}${step.completedAt?' · '+fmtDate(step.completedAt):''}</div>
-        ${step.notes?`<div class="step-note">📝 ${step.notes}</div>`:''}
+        <div class="step-date">${lbl}${step.completedAt ? ' · ' + fmtDate(step.completedAt) : ''}</div>
+        ${step.notes ? `<div class="step-note">📝 ${step.notes}</div>` : ''}
       </div>
-      ${canEdit?`<button class="btn btn-ghost" style="padding:5px 11px;font-size:.78rem;" onclick="openUpdateStep(${i})">✏️</button>`:''}
+      ${canEdit ? `<button class="btn btn-ghost" style="padding:5px 11px;font-size:.78rem;" onclick="openUpdateStep(${i})">✏️</button>` : ''}
     </div>`;
   });
-  html+='</div>';
-  document.getElementById('tab-steps').innerHTML=html;
+  
+  html += '</div>';
+  document.getElementById('tab-steps').innerHTML = html;
 }
-// ── GANTT ──
+
 function renderGantt() {
-  const p=currentProject;
-  let html='<div class="gantt-wrap"><div class="gantt"><div class="gantt-header">';
-  STEP_NAMES.forEach((_,i)=>html+=`<div class="gantt-step-label">${i+1}</div>`);
-  html+=`</div><div class="gantt-row"><div class="gantt-name" title="${p.name}">${p.name}</div>`;
-  p.steps.forEach(s=>html+=`<div class="gantt-cell ${s.status}" title="${s.name}"></div>`);
-  html+=`</div></div></div>
+  if (!currentProject) return;
+  
+  const p = currentProject;
+  let html = '<div class="gantt-wrap"><div class="gantt"><div class="gantt-header">';
+  STEP_NAMES.forEach((_, i) => html += `<div class="gantt-step-label">${i + 1}</div>`);
+  html += `</div><div class="gantt-row"><div class="gantt-name" title="${p.name}">${p.name}</div>`;
+  p.steps.forEach(s => html += `<div class="gantt-cell ${s.status}" title="${s.name}"></div>`);
+  html += `</div></div></div>
   <div style="display:flex;gap:14px;margin-top:14px;flex-wrap:wrap;font-size:.78rem;">
     <span><span style="display:inline-block;width:13px;height:13px;background:#bbf7d0;border-radius:3px;margin-right:4px;vertical-align:middle;"></span>Completado</span>
     <span><span style="display:inline-block;width:13px;height:13px;background:#bfdbfe;border-radius:3px;margin-right:4px;vertical-align:middle;"></span>En Progreso</span>
     <span><span style="display:inline-block;width:13px;height:13px;background:#e2e8f0;border-radius:3px;margin-right:4px;vertical-align:middle;"></span>Pendiente</span>
   </div>
   <div style="margin-top:12px;font-size:.74rem;color:var(--muted);">
-    <strong>Pasos:</strong> ${STEP_NAMES.map((n,i)=>`<strong>${i+1}</strong>. ${n}`).join(' | ')}
+    <strong>Pasos:</strong> ${STEP_NAMES.map((n, i) => `<strong>${i + 1}</strong>. ${n}`).join(' | ')}
   </div>`;
-  document.getElementById('tab-gantt').innerHTML=html;
+  document.getElementById('tab-gantt').innerHTML = html;
 }
-// ── INFO ──
+
 function renderInfo() {
-  const p=currentProject;
-  const pct=getProgress(p);
-  document.getElementById('tab-info').innerHTML=`
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
-    <div><div class="text-muted" style="font-size:.74rem;margin-bottom:3px;">NOMBRE</div><div class="font-bold">${p.name}</div></div>
-    <div><div class="text-muted" style="font-size:.74rem;margin-bottom:3px;">CÓDIGO</div><div class="font-bold">${p.code}</div></div>
-    <div><div class="text-muted" style="font-size:.74rem;margin-bottom:3px;">RESPONSABLE</div><div>${getUserName(p.owner)}</div></div>
-    <div><div class="text-muted" style="font-size:.74rem;margin-bottom:3px;">CLIENTE</div><div>${p.client||'—'}</div></div>
-    <div><div class="text-muted" style="font-size:.74rem;margin-bottom:3px;">FECHA INICIO</div><div>${fmtDate(p.startDate||p.createdAt)}</div></div>
-    <div><div class="text-muted" style="font-size:.74rem;margin-bottom:3px;">PROGRESO</div><div>${p.steps.filter(s=>s.status==='done').length}/${STEP_NAMES.length} pasos (${pct}%)</div></div>
-  </div>
-  ${p.description?`<div class="divider"></div><div class="text-muted" style="font-size:.74rem;margin-bottom:3px;">DESCRIPCIÓN</div><div>${p.description}</div>`:''}`;
+  if (!currentProject) return;
+  
+  const p = currentProject;
+  const pct = getProgress(p);
+  getUserName(p.owner).then(ownerName => {
+    document.getElementById('tab-info').innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+        <div><div class="text-muted" style="font-size:.74rem;margin-bottom:3px;">NOMBRE</div><div class="font-bold">${p.name}</div></div>
+        <div><div class="text-muted" style="font-size:.74rem;margin-bottom:3px;">CÓDIGO</div><div class="font-bold">${p.code}</div></div>
+        <div><div class="text-muted" style="font-size:.74rem;margin-bottom:3px;">RESPONSABLE</div><div>${ownerName}</div></div>
+        <div><div class="text-muted" style="font-size:.74rem;margin-bottom:3px;">CLIENTE</div><div>${p.client || '—'}</div></div>
+        <div><div class="text-muted" style="font-size:.74rem;margin-bottom:3px;">FECHA INICIO</div><div>${fmtDate(p.startDate || p.createdAt)}</div></div>
+        <div><div class="text-muted" style="font-size:.74rem;margin-bottom:3px;">PROGRESO</div><div>${p.steps.filter(s => s.status === 'done').length}/${STEP_NAMES.length} pasos (${pct}%)</div></div>
+      </div>
+      ${p.description ? `<div class="divider"></div><div class="text-muted" style="font-size:.74rem;margin-bottom:3px;">DESCRIPCIÓN</div><div>${p.description}</div>` : ''}
+    `;
+  });
 }
-// ══════════════════════════════════════════
-// UPDATE STEP
-// ══════════════════════════════════════════
-function openUpdateStep(idx) {
-  updateStepIndex=idx;
-  const step=currentProject.steps[idx];
-  document.getElementById('updateStepTitle').textContent=`✏️ Paso ${idx+1}: ${step.name}`;
-  document.getElementById('us_status').value=step.status;
-  document.getElementById('us_notes').value=step.notes||'';
-  document.getElementById('us_date').value=step.completedAt?step.completedAt.split('T')[0]:new Date().toISOString().split('T')[0];
-  document.getElementById('updateStepModal').classList.remove('hidden');
-}
-function saveStepUpdate() {
-  const data=getData();
-  const pi=data.projects.findIndex(p=>p.id===currentProject.id);
-  if(pi===-1) return;
-  const step=data.projects[pi].steps[updateStepIndex];
-  const ns=document.getElementById('us_status').value;
-  step.status=ns;
-  step.notes=document.getElementById('us_notes').value.trim();
-  step.updatedAt=new Date().toISOString();
-  if(ns==='in_progress'&&!step.startedAt) step.startedAt=new Date().toISOString();
-  if(ns==='done'){
-    const d=document.getElementById('us_date').value;
-    step.completedAt=d?new Date(d).toISOString():new Date().toISOString();
-    step.startedAt=step.startedAt||step.completedAt;
-  } else step.completedAt=null;
-  saveData(data);
-  currentProject=data.projects[pi];
-  closeModal('updateStepModal');
-  switchTab('timeline');
-  renderDashboard();
-  updateNotifBadge();
-}
+
 // ══════════════════════════════════════════
 // EXPORT PDF
 // ══════════════════════════════════════════
 async function exportProjectPDF() {
+  if (!currentProject) return;
+  
   const { jsPDF } = window.jspdf;
   const p = currentProject;
   const pct = getProgress(p);
-  const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  const ownerName = await getUserName(p.owner);
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
   const W = doc.internal.pageSize.getWidth();
   const H = doc.internal.pageSize.getHeight();
   let y = 0;
-  // ── Header band ──
-  doc.setFillColor(37,99,235);
-  doc.rect(0,0,W,38,'F');
-  doc.setFillColor(124,58,237);
-  doc.rect(0,34,W,4,'F');
-  doc.setFont('helvetica','bold');
+  
+  // Header
+  doc.setFillColor(37, 99, 235);
+  doc.rect(0, 0, W, 38, 'F');
+  doc.setFillColor(124, 58, 237);
+  doc.rect(0, 34, W, 4, 'F');
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(18);
-  doc.setTextColor(255,255,255);
+  doc.setTextColor(255, 255, 255);
   doc.text('INFORME DE PROYECTO', 14, 15);
   doc.setFontSize(10);
-  doc.setFont('helvetica','normal');
+  doc.setFont('helvetica', 'normal');
   doc.text('ProyectoTrack – Sistema de Control de Avance', 14, 22);
-  doc.text(`Generado: ${new Date().toLocaleDateString('es-EC',{day:'2-digit',month:'long',year:'numeric'})}`, 14, 29);
-  // Right side: progress circle text
-  doc.setFont('helvetica','bold');
+  doc.text(`Generado: ${new Date().toLocaleDateString('es-EC', { day: '2-digit', month: 'long', year: 'numeric' })}`, 14, 29);
+  
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(22);
-  doc.text(`${pct}%`, W-28, 19, {align:'right'});
+  doc.text(`${pct}%`, W - 28, 19, { align: 'right' });
   doc.setFontSize(9);
-  doc.setFont('helvetica','normal');
-  doc.text('completado', W-14, 26, {align:'right'});
+  doc.setFont('helvetica', 'normal');
+  doc.text('completado', W - 14, 26, { align: 'right' });
   y = 48;
-  // ── Project info box ──
-  doc.setFillColor(241,245,249);
-  doc.roundedRect(10, y, W-20, 42, 3, 3, 'F');
-  doc.setTextColor(30,41,59);
-  doc.setFont('helvetica','bold');
+  
+  // Project info
+  doc.setFillColor(241, 245, 249);
+  doc.roundedRect(10, y, W - 20, 42, 3, 3, 'F');
+  doc.setTextColor(30, 41, 59);
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(14);
-  doc.text(p.name, 16, y+10);
-  doc.setFont('helvetica','normal');
+  doc.text(p.name, 16, y + 10);
+  doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
-  doc.setTextColor(100,116,139);
+  doc.setTextColor(100, 116, 139);
+  
   const infoLines = [
     [`Código:`, p.code || '—'],
     [`Cliente / Propietario:`, p.client || '—'],
-    [`Responsable:`, getUserName(p.owner)],
+    [`Responsable:`, ownerName],
     [`Fecha de inicio:`, fmtDate(p.startDate || p.createdAt)],
     [`Descripción:`, p.description || '—'],
   ];
+  
   let ix = 0;
   infoLines.forEach(([lbl, val]) => {
     const col = ix % 2;
     const row = Math.floor(ix / 2);
-    const cx = col === 0 ? 16 : W/2 + 6;
+    const cx = col === 0 ? 16 : W / 2 + 6;
     const cy = y + 20 + row * 9;
-    doc.setFont('helvetica','bold'); doc.setTextColor(71,85,105);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(71, 85, 105);
     doc.text(lbl, cx, cy);
-    doc.setFont('helvetica','normal'); doc.setTextColor(30,41,59);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(30, 41, 59);
     doc.text(String(val).substring(0, 38), cx + (lbl.length > 10 ? 42 : 22), cy);
     ix++;
   });
   y += 52;
-  // ── Progress bar ──
-  doc.setFont('helvetica','bold');
+  
+  // Progress bar
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(11);
-  doc.setTextColor(30,41,59);
+  doc.setTextColor(30, 41, 59);
   doc.text('Progreso General', 14, y);
   y += 5;
-  doc.setFillColor(226,232,240);
-  doc.roundedRect(14, y, W-28, 7, 2, 2, 'F');
-  const fillW = Math.max(4, (W-28) * pct / 100);
-  if(pct === 100) doc.setFillColor(22,163,74);
-  else if(pct >= 60) doc.setFillColor(37,99,235);
-  else if(pct >= 30) doc.setFillColor(217,119,6);
-  else doc.setFillColor(220,38,38);
+  doc.setFillColor(226, 232, 240);
+  doc.roundedRect(14, y, W - 28, 7, 2, 2, 'F');
+  const fillW = Math.max(4, (W - 28) * pct / 100);
+  if (pct === 100) doc.setFillColor(22, 163, 74);
+  else if (pct >= 60) doc.setFillColor(37, 99, 235);
+  else if (pct >= 30) doc.setFillColor(217, 119, 6);
+  else doc.setFillColor(220, 38, 38);
   doc.roundedRect(14, y, fillW, 7, 2, 2, 'F');
-  doc.setTextColor(255,255,255);
+  doc.setTextColor(255, 255, 255);
   doc.setFontSize(7);
-  doc.setFont('helvetica','bold');
-  if(pct > 8) doc.text(`${pct}%`, 14 + fillW/2, y+5, {align:'center'});
+  doc.setFont('helvetica', 'bold');
+  if (pct > 8) doc.text(`${pct}%`, 14 + fillW / 2, y + 5, { align: 'center' });
   y += 16;
-  // ── Steps table ──
-  doc.setFont('helvetica','bold');
+  
+  // Steps table
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(11);
-  doc.setTextColor(30,41,59);
+  doc.setTextColor(30, 41, 59);
   doc.text('Detalle de Pasos del Proceso', 14, y);
   y += 6;
-  // Table header
-  doc.setFillColor(37,99,235);
-  doc.rect(10, y, W-20, 8, 'F');
-  doc.setTextColor(255,255,255);
-  doc.setFont('helvetica','bold');
+  
+  doc.setFillColor(37, 99, 235);
+  doc.rect(10, y, W - 20, 8, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(8);
-  doc.text('#', 14, y+5.5);
-  doc.text('Paso', 22, y+5.5);
-  doc.text('Estado', W-70, y+5.5);
-  doc.text('Fecha', W-38, y+5.5);
+  doc.text('#', 14, y + 5.5);
+  doc.text('Paso', 22, y + 5.5);
+  doc.text('Estado', W - 70, y + 5.5);
+  doc.text('Fecha', W - 38, y + 5.5);
   y += 8;
-  const statusColors = { done:[22,163,74], in_progress:[37,99,235], pending:[148,163,184] };
-  const statusLabels = { done:'✓ Completado', in_progress:'⟳ En Progreso', pending:'○ Pendiente' };
-  p.steps.forEach((step, i) => {
-    if (y > H - 30) { doc.addPage(); y = 20; }
-    const bg = i % 2 === 0 ? [255,255,255] : [248,250,252];
-    doc.setFillColor(...bg);
-    doc.rect(10, y, W-20, 14, 'F');
-    // Step number circle
-    const sc = statusColors[step.status] || [148,163,184];
-    doc.setFillColor(...sc);
-    doc.circle(17, y+7, 4, 'F');
-    doc.setTextColor(255,255,255);
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(7);
-    doc.text(String(i+1), 17, y+9, {align:'center'});
-    // Step name
-    doc.setTextColor(30,41,59);
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(8.5);
-    doc.text(step.name, 24, y+6.5);
-    // Notes
-    if(step.notes) {
-      doc.setFont('helvetica','normal');
-      doc.setFontSize(7);
-      doc.setTextColor(100,116,139);
-      doc.text(step.notes.substring(0,55), 24, y+12);
+  
+  const statusColors = { done: [22, 163, 74], in_progress: [37, 99, 235], pending: [148, 163, 184] };
+  const statusLabels = { done: '✓ Completado', in_progress: '⟳ En Progreso', pending: '○ Pendiente' };
+  
+  for (const step of p.steps) {
+    if (y > H - 30) {
+      doc.addPage();
+      y = 20;
     }
-    // Status badge
+    const bg = (p.steps.indexOf(step) % 2 === 0) ? [255, 255, 255] : [248, 250, 252];
+    doc.setFillColor(...bg);
+    doc.rect(10, y, W - 20, 14, 'F');
+    
+    const sc = statusColors[step.status] || [148, 163, 184];
     doc.setFillColor(...sc);
-    doc.roundedRect(W-76, y+2.5, 28, 6, 1.5, 1.5, 'F');
-    doc.setTextColor(255,255,255);
-    doc.setFont('helvetica','bold');
+    doc.circle(17, y + 7, 4, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.text(String(p.steps.indexOf(step) + 1), 17, y + 9, { align: 'center' });
+    
+    doc.setTextColor(30, 41, 59);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8.5);
+    doc.text(step.name, 24, y + 6.5);
+    
+    if (step.notes) {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7);
+      doc.setTextColor(100, 116, 139);
+      doc.text(step.notes.substring(0, 55), 24, y + 12);
+    }
+    
+    doc.setFillColor(...sc);
+    doc.roundedRect(W - 76, y + 2.5, 28, 6, 1.5, 1.5, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(6.5);
-    doc.text(statusLabels[step.status]||'—', W-62, y+6.5, {align:'center'});
-    // Date
-    doc.setTextColor(100,116,139);
-    doc.setFont('helvetica','normal');
+    doc.text(statusLabels[step.status] || '—', W - 62, y + 6.5, { align: 'center' });
+    
+    doc.setTextColor(100, 116, 139);
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(7.5);
-    doc.text(step.completedAt ? fmtDate(step.completedAt) : step.startedAt ? fmtDate(step.startedAt) : '—', W-14, y+7, {align:'right'});
-    // Bottom border
-    doc.setDrawColor(226,232,240);
-    doc.line(10, y+14, W-10, y+14);
+    doc.text(step.completedAt ? fmtDate(step.completedAt) : step.startedAt ? fmtDate(step.startedAt) : '—', W - 14, y + 7, { align: 'right' });
+    
+    doc.setDrawColor(226, 232, 240);
+    doc.line(10, y + 14, W - 10, y + 14);
     y += 14;
-  });
-  // ── Alert section ──
-  if(isDaysSinceLastUpdate(p,3)) {
+  }
+  
+  // Alert section
+  if (isDaysSinceLastUpdate(p, 3)) {
     y += 8;
-    if(y > H-30) { doc.addPage(); y = 20; }
-    doc.setFillColor(255,241,242);
-    doc.roundedRect(10, y, W-20, 18, 3, 3, 'F');
-    doc.setDrawColor(252,165,165);
-    doc.roundedRect(10, y, W-20, 18, 3, 3, 'S');
-    doc.setTextColor(190,18,60);
-    doc.setFont('helvetica','bold');
+    if (y > H - 30) {
+      doc.addPage();
+      y = 20;
+    }
+    doc.setFillColor(255, 241, 242);
+    doc.roundedRect(10, y, W - 20, 18, 3, 3, 'F');
+    doc.setDrawColor(252, 165, 165);
+    doc.roundedRect(10, y, W - 20, 18, 3, 3, 'S');
+    doc.setTextColor(190, 18, 60);
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
-    doc.text('⚠ ALERTA: ', 16, y+8);
-    doc.setFont('helvetica','normal');
-    doc.text(`Este proyecto lleva ${daysSinceUpdate(p)} días sin reportar avances.`, 38, y+8);
+    doc.text('⚠ ALERTA: ', 16, y + 8);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Este proyecto lleva ${daysSinceUpdate(p)} días sin reportar avances.`, 38, y + 8);
     doc.setFontSize(8);
-    doc.setTextColor(153,27,27);
-    doc.text('Se recomienda al colaborador actualizar el estado de los pasos pendientes a la brevedad posible.', 16, y+15);
+    doc.setTextColor(153, 27, 27);
+    doc.text('Se recomienda al colaborador actualizar el estado de los pasos pendientes a la brevedad posible.', 16, y + 15);
     y += 24;
   }
-  // ── Footer on all pages ──
+  
+  // Footer
   const totalPages = doc.internal.getNumberOfPages();
-  for(let pg=1; pg<=totalPages; pg++) {
+  for (let pg = 1; pg <= totalPages; pg++) {
     doc.setPage(pg);
-    doc.setFillColor(241,245,249);
-    doc.rect(0, H-12, W, 12, 'F');
-    doc.setTextColor(100,116,139);
-    doc.setFont('helvetica','normal');
+    doc.setFillColor(241, 245, 249);
+    doc.rect(0, H - 12, W, 12, 'F');
+    doc.setTextColor(100, 116, 139);
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(7.5);
-    doc.text('ProyectoTrack – Sistema de Control de Avance de Proyectos', 14, H-4);
-    doc.text(`Página ${pg} de ${totalPages}`, W-14, H-4, {align:'right'});
+    doc.text('ProyectoTrack – Sistema de Control de Avance de Proyectos', 14, H - 4);
+    doc.text(`Página ${pg} de ${totalPages}`, W - 14, H - 4, { align: 'right' });
   }
-  doc.save(`${p.code}_${p.name.replace(/\s+/g,'-')}.pdf`);
+  
+  doc.save(`${p.code}_${p.name.replace(/\s+/g, '-')}.pdf`);
 }
+
 // ══════════════════════════════════════════
-// MODALS
+// UTILIDADES
 // ══════════════════════════════════════════
-function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+function closeModal(id) {
+  const modal = document.getElementById(id);
+  if (modal) modal.classList.add('hidden');
+}
+
 document.addEventListener('click', e => {
-  if(e.target.classList.contains('modal-overlay')) e.target.classList.add('hidden');
-});
-// ══════════════════════════════════════════
-// SEED DEMO DATA
-// ══════════════════════════════════════════
-// INIT
-auth.onAuthStateChanged(user=>{
-  if(user){
-    cargarProyectosFirebase();
+  if (e.target.classList && e.target.classList.contains('modal-overlay')) {
+    e.target.classList.add('hidden');
   }
 });
 
-</script>
+document.getElementById('loginUser')?.addEventListener('keydown', e => e.key === 'Enter' && doLogin());
+document.getElementById('loginPass')?.addEventListener('keydown', e => e.key === 'Enter' && doLogin());
+document.getElementById('regEmail')?.addEventListener('keydown', e => e.key === 'Enter' && doRegister());
+document.getElementById('regPassword')?.addEventListener('keydown', e => e.key === 'Enter' && doRegister());
 
+setInterval(() => {
+  if (currentUser && proyectosFirebase.length) {
+    updateNotifBadge(proyectosFirebase);
+  }
+}, 60000);
+</script>
 </body>
 </html>
