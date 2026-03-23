@@ -833,7 +833,19 @@ async function createProject() {
     return;
   }
   
-  const id = 'p_' + Date.now();
+  const now = new Date();
+  const year = now.getFullYear();
+  // El mes es 0-indexado, por eso le sumamos 1 y usamos padStart para asegurar dos dígitos
+  const month = (now.getMonth() + 1).toString().padStart(2, '0');
+  // Usamos padStart para asegurar dos dígitos para el día
+  const day = now.getDate().toString().padStart(2, '0');
+  
+  // Genera un sufijo aleatorio corto para mayor unicidad y distribución
+  const randomSuffix = Math.random().toString(36).substring(2, 8); 
+  
+  // Combina las dos letras ("PR" de Proyecto, puedes cambiarlo), la fecha y el sufijo aleatorio
+  const id = `PR_${year}${month}${day}_${randomSuffix}`;
+
   const proyecto = {
     id: id,
     name: name,
