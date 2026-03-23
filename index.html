@@ -841,10 +841,10 @@ async function createProject() {
   const day = now.getDate().toString().padStart(2, '0');
   
   // Genera un sufijo aleatorio corto para mayor unicidad y distribución
-  const randomSuffix = Math.random().toString(36).substring(2, 8); 
+  const randomNumber = Math.random().toString(36).substring(2, 8); 
   
   // Combina las dos letras ("PR" de Proyecto, puedes cambiarlo), la fecha y el sufijo aleatorio
-  const id = `PR_${year}${month}${day}_${randomSuffix}`;
+  const id = `${year}${month}${day}_${randomSuffix}`;
 
   const proyecto = {
     id: id,
