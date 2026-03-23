@@ -833,21 +833,27 @@ async function createProject() {
     return;
   }
   
+  // --- GENERACIÓN DEL ID PERSONALIZADO (con número aleatorio del 1 al 100) ---
   const now = new Date();
-  const year = now.getFullYear();
-  // El mes es 0-indexado, por eso le sumamos 1 y usamos padStart para asegurar dos dígitos
-  const month = (now.getMonth() + 1).toString().padStart(2, '0');
-  // Usamos padStart para asegurar dos dígitos para el día
-  const day = now.getDate().toString().padStart(2, '0');
+  const year = now.getFullYear().toString().slice(-2); // Obtiene los últimos 2 dígitos del año (ej. 26)
+  const month = (now.getMonth() + 1).toString().padStart(2, '0'); // Mes (ej. 03)
+  const day = now.getDate().toString().padStart(2, '0'); // Día (ej. 23)
   
-  // Genera un sufijo aleatorio corto para mayor unicidad y distribución
-  const randomNumber = Math.random().toString(36).substring(2, 8); 
+  const datePrefix = `${year}${month}${day}`; // Construye el prefijo de fecha (ej. "260323")
   
-  // Combina las dos letras ("PR" de Proyecto, puedes cambiarlo), la fecha y el sufijo aleatorio
-  const id = `${year}${month}${day}_${randomSuffix}`;
+  // Genera un número entero aleatorio entre 1 y 100 (ambos inclusive)
+  const randomNumber = Math.floor(Math.random() * 100) + 1;
+  
+  // Formatea el número aleatorio para que siempre tenga 3 dígitos, rellenando con ceros a la izquierda
+  // Por ejemplo: 1 -> "001", 15 -> "015", 100 -> "100"
+  const paddedRandomNumber = randomNumber.toString().padStart(3, '0'); 
+  
+  // Combina la fecha y el número aleatorio
+  const id = `${datePrefix}_${paddedRandomNumber}`; // Ej: "260323_045"
+  // --- FIN DE LA GENERACIÓN DEL ID PERSONALIZADO ---
 
   const proyecto = {
-    id: id,
+    id: id, // Es buena práctica guardar el ID también como un campo dentro del documento
     name: name,
     code: code,
     startDate: document.getElementById('np_startDate').value,
@@ -855,12 +861,14 @@ async function createProject() {
     client: document.getElementById('np_client').value.trim(),
     owner: currentUser.id,
     createdAt: new Date().toISOString(),
-    steps: initSteps()
+    steps: initSteps(),
   };
   
   try {
-    await db.collection("proyectos").doc(id).set(proyecto);
-    console.log("✅ Proyecto creado en Firebase");
+    // Guarda el documento con el ID personalizado.
+    // ⚠️ RECUERDA: Si este 'id' ya existe, el documento existente será SOBRESCRITO.
+    await db.collection("proyectos").doc(id).set(proyecto); 
+    console.log("✅ Proyecto creado en Firebase con ID:", id);
     closeModal('newProjectModal');
   } catch (error) {
     console.error("❌ Error al crear proyecto:", error);
