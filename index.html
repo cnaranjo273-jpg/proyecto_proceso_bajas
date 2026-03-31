@@ -116,6 +116,8 @@
     cursor:pointer;transition:all .2s;border:2px solid transparent;position:relative;}
   .project-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.1);border-color:var(--primary);}
   .project-card.alert-card{border-color:var(--danger);}
+  .project-card.deleted-card{opacity:0.6;background:#f1f5f9;border-color:#94a3b8;cursor:default;}
+  .project-card.deleted-card:hover{transform:none;border-color:#94a3b8;}
   .project-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
   .project-title{font-weight:700;font-size:.97rem;}
   .project-code{font-size:.72rem;color:var(--muted);margin-top:2px;}
@@ -126,6 +128,7 @@
   .badge-red{background:#fee2e2;color:#b91c1c;}
   .badge-purple{background:#ede9fe;color:#6d28d9;}
   .badge-gray{background:#f1f5f9;color:#475569;}
+  .badge-deleted{background:#cbd5e1;color:#334155;}
   .progress-wrap{margin:12px 0;}
   .progress-label{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:5px;}
   .progress-bar{height:7px;background:#e2e8f0;border-radius:99px;overflow:hidden;}
@@ -240,6 +243,10 @@
     border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:12px;display:flex;align-items:center;
     justify-content:center;transition:all .2s;z-index:10;}
   .delete-btn:hover{background:#b91c1c;transform:scale(1.1);}
+  .restore-btn{position:absolute;top:10px;right:45px;background:rgba(22,163,74,0.9);color:white;border:none;
+    border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:12px;display:flex;align-items:center;
+    justify-content:center;transition:all .2s;z-index:10;}
+  .restore-btn:hover{background:#15803d;transform:scale(1.1);}
   @media(max-width:768px){:root{--sidebar-w:0}.sidebar{display:none}.form-row{grid-template-columns:1fr}}
 </style>
 </head>
@@ -250,13 +257,11 @@
     <h1>🏗️ ProyectoTrack</h1>
     <p>Sistema de Control de Avance de Proyectos</p>
     
-    <!-- Pestañas de autenticación -->
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="switchAuthTab('login')">🔐 Iniciar Sesión</button>
       <button class="auth-tab" onclick="switchAuthTab('register')">📝 Registrarse</button>
     </div>
     
-    <!-- Formulario de Login -->
     <div id="loginForm">
       <div class="form-group">
         <label>Email</label>
@@ -270,7 +275,6 @@
       <button class="btn btn-primary btn-full" onclick="doLogin()">Ingresar →</button>
     </div>
     
-    <!-- Formulario de Registro -->
     <div id="registerForm" class="hidden">
       <div class="form-group">
         <label>Nombre Completo</label>
@@ -299,7 +303,7 @@
       <strong>📋 Credenciales de prueba:</strong><br>
       👤 <b>ana@test.com</b> / pass123 — Colaboradora<br>
       👤 <b>carlos@test.com</b> / pass123 — Colaborador<br>
-      🔑 <b>supervisor@test.com</b> / super123 — Supervisor (puede eliminar proyectos)
+      🔑 <b>supervisor@test.com</b> / super123 — Supervisor (puede eliminar/restaurar proyectos)
     </div>
   </div>
 </div>
@@ -335,6 +339,10 @@
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
       Gestión Usuarios
     </div>
+    <div class="nav-item" onclick="showPage('deleted')" id="nav-deleted">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+      Proyectos Eliminados
+    </div>
     <div class="nav-item" onclick="showPage('notifications')" id="nav-notifications">
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.002 2.002 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
       Alertas
@@ -367,6 +375,13 @@
         </div>
         <div class="projects-grid" id="projectsGrid"></div>
       </div>
+      <div id="page-deleted" class="hidden">
+        <div class="section-header">
+          <h2>Proyectos Eliminados</h2>
+          <p class="text-muted">Estos proyectos están archivados y pueden ser restaurados</p>
+        </div>
+        <div class="projects-grid" id="deletedProjectsGrid"></div>
+      </div>
       <div id="page-supervisor" class="hidden">
         <div id="supervisorContent"></div>
       </div>
@@ -384,7 +399,7 @@
 <div class="modal-overlay hidden" id="newProjectModal">
   <div class="modal" style="max-width:540px;">
     <div class="modal-header">
-      <h2>➕ Nuevo Proyecto</h2>
+      <h2>Nuevo Proyecto</h2>
       <button class="close-btn" onclick="closeModal('newProjectModal')">✕</button>
     </div>
     <div class="modal-body">
@@ -491,13 +506,13 @@
 
 <div class="modal-overlay hidden" id="confirmModal">
   <div class="modal" style="max-width:400px;">
-    <div class="modal-header"><h2>⚠️ Confirmar Eliminación</h2>
+    <div class="modal-header"><h2>⚠️ Confirmar</h2>
       <button class="close-btn" onclick="closeModal('confirmModal')">✕</button></div>
     <div class="modal-body">
       <p id="confirmMsg" style="margin-bottom:20px;"></p>
       <div class="flex gap-2" style="justify-content:flex-end;">
         <button class="btn btn-ghost" onclick="closeModal('confirmModal')">Cancelar</button>
-        <button class="btn btn-danger" id="confirmOkBtn">Eliminar Proyecto</button>
+        <button class="btn btn-danger" id="confirmOkBtn">Confirmar</button>
       </div>
     </div>
   </div>
@@ -518,12 +533,10 @@ const firebaseConfig = {
   appId: "1:319794903621:web:63c6c5fcc1988392c2c12c"
 };
 
-// Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
-// CONSTANTES
 const STEP_NAMES = [
   "Informe Técnico",
   "Certificado de Pre-existencia",
@@ -540,10 +553,8 @@ let currentProject = null;
 let updateStepIndex = null;
 let editingUserId = null;
 let proyectosFirebase = [];
-let projectToDelete = null;
+let confirmAction = null;
 
-// FUNCIONES DE AUTENTICACIÓN
-// Cambiar entre login y registro
 function switchAuthTab(tab) {
   const loginForm = document.getElementById('loginForm');
   const registerForm = document.getElementById('registerForm');
@@ -562,7 +573,6 @@ function switchAuthTab(tab) {
   }
 }
 
-// Registrar nuevo usuario
 async function doRegister() {
   const name = document.getElementById('regName').value.trim();
   const email = document.getElementById('regEmail').value.trim();
@@ -571,19 +581,19 @@ async function doRegister() {
   const errorEl = document.getElementById('registerError');
   
   if (!name || !email || !password) {
-    errorEl.textContent = '⚠️ Todos los campos son obligatorios';
+    errorEl.textContent = 'Todos los campos son obligatorios';
     errorEl.classList.remove('hidden');
     return;
   }
   
   if (password.length < 6) {
-    errorEl.textContent = '⚠️ La contraseña debe tener al menos 6 caracteres';
+    errorEl.textContent = 'La contraseña debe tener al menos 6 caracteres';
     errorEl.classList.remove('hidden');
     return;
   }
   
   if (!email.includes('@')) {
-    errorEl.textContent = '⚠️ Ingresa un email válido';
+    errorEl.textContent = 'Ingresa un email válido';
     errorEl.classList.remove('hidden');
     return;
   }
@@ -601,7 +611,7 @@ async function doRegister() {
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     
-    alert('✅ ¡Registro exitoso! Ahora puedes iniciar sesión.');
+    alert('¡Registro exitoso! Ahora puedes iniciar sesión.');
     
     document.getElementById('regName').value = '';
     document.getElementById('regEmail').value = '';
@@ -610,7 +620,7 @@ async function doRegister() {
     
   } catch (error) {
     console.error("Error en registro:", error);
-    let errorMessage = '❌ Error al registrar: ';
+    let errorMessage = 'Error al registrar: ';
     switch (error.code) {
       case 'auth/email-already-in-use':
         errorMessage += 'Este email ya está registrado.';
@@ -629,14 +639,13 @@ async function doRegister() {
   }
 }
 
-// Iniciar sesión
 async function doLogin() {
   const email = document.getElementById('loginUser').value.trim();
   const password = document.getElementById('loginPass').value;
   const errorEl = document.getElementById('loginError');
   
   if (!email || !password) {
-    errorEl.textContent = '⚠️ Completa todos los campos';
+    errorEl.textContent = 'Completa todos los campos';
     errorEl.classList.remove('hidden');
     return;
   }
@@ -660,7 +669,7 @@ async function doLogin() {
       name: userData.name
     };
     
-    console.log("✅ Login exitoso:", currentUser);
+    console.log("Login exitoso:", currentUser);
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     setupUI();
@@ -670,7 +679,7 @@ async function doLogin() {
     
   } catch (error) {
     console.error("Error en login:", error);
-    let errorMessage = '❌ Error al iniciar sesión: ';
+    let errorMessage = 'Error al iniciar sesión: ';
     switch (error.code) {
       case 'auth/user-not-found':
         errorMessage += 'Usuario no encontrado.';
@@ -689,7 +698,6 @@ async function doLogin() {
   }
 }
 
-// Verificar sesión al cargar la página
 auth.onAuthStateChanged(async (user) => {
   if (user) {
     try {
@@ -703,7 +711,7 @@ auth.onAuthStateChanged(async (user) => {
           name: userData.name
         };
         
-        console.log("✅ Sesión restaurada:", currentUser);
+        console.log("Sesión restaurada:", currentUser);
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('app').style.display = 'block';
         setupUI();
@@ -720,7 +728,6 @@ auth.onAuthStateChanged(async (user) => {
   }
 });
 
-// Cerrar sesión
 function doLogout() {
   auth.signOut().then(() => {
     currentUser = null;
@@ -739,7 +746,6 @@ function doLogout() {
   });
 }
 
-// CONFIGURACIÓN UI
 function setupUI() {
   document.getElementById('sidebarAvatar').textContent = currentUser.name[0].toUpperCase();
   document.getElementById('sidebarName').textContent = currentUser.name;
@@ -749,12 +755,12 @@ function setupUI() {
   if (currentUser.role === 'supervisor') {
     document.getElementById('nav-supervisor').classList.remove('hidden');
     document.getElementById('nav-users').classList.remove('hidden');
+    document.getElementById('nav-deleted').classList.remove('hidden');
     document.getElementById('navProjectsLabel').textContent = 'Todos los Proyectos';
     document.getElementById('btnNewProject2').classList.add('hidden');
   }
 }
 
-// FUNCIONES DE DATOS
 function initSteps() {
   return STEP_NAMES.map((name, i) => ({
     id: i,
@@ -773,6 +779,7 @@ function getProgress(p) {
 }
 
 function getStatusBadge(p) {
+  if (p.deleted) return { label: 'Eliminado', cls: 'badge-deleted' };
   const pct = getProgress(p);
   if (pct === 100) return { label: 'Completado', cls: 'badge-green' };
   if (pct === 0) return { label: 'Sin Iniciar', cls: 'badge-gray' };
@@ -781,12 +788,14 @@ function getStatusBadge(p) {
 }
 
 function isDaysSinceLastUpdate(p, days) {
+  if (p.deleted) return false;
   const all = p.steps.filter(s => s.updatedAt).map(s => new Date(s.updatedAt));
   const ref = all.length ? Math.max(...all) : new Date(p.createdAt);
   return (Date.now() - ref) / 86400000 >= days && getProgress(p) < 100;
 }
 
 function daysSinceUpdate(p) {
+  if (p.deleted) return 0;
   const all = p.steps.filter(s => s.updatedAt).map(s => new Date(s.updatedAt));
   const ref = all.length ? Math.max(...all) : new Date(p.createdAt);
   return Math.floor((Date.now() - ref) / 86400000);
@@ -817,37 +826,65 @@ async function getUserName(uid) {
   return uid.substring(0, 8);
 }
 
-// FUNCIÓN PARA ELIMINAR PROYECTO (SOLO SUPERVISOR)
-async function deleteProject(projectId) {
+// SOFT DELETE - Marcar proyecto como eliminado (no se borra de Firestore)
+async function softDeleteProject(projectId) {
   if (currentUser.role !== 'supervisor') {
-    alert('⚠️ Solo los supervisores pueden eliminar proyectos.');
+    alert('Solo los supervisores pueden eliminar proyectos.');
     return;
   }
   
   try {
-    await db.collection("proyectos").doc(projectId).delete();
-    console.log("✅ Proyecto eliminado:", projectId);
-    alert('✅ Proyecto eliminado correctamente');
+    await db.collection("proyectos").doc(projectId).update({
+      deleted: true,
+      deletedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      deletedBy: currentUser.id
+    });
+    console.log("Proyecto marcado como eliminado:", projectId);
+    alert('Proyecto eliminado. La información permanece en la base de datos.');
     closeModal('confirmModal');
-    
-    // Recargar proyectos
-    cargarProyectosFirebase();
   } catch (error) {
-    console.error("❌ Error al eliminar proyecto:", error);
+    console.error("Error al marcar proyecto como eliminado:", error);
     alert("Error al eliminar proyecto: " + error.message);
+  }
+}
+
+// RESTAURAR proyecto eliminado
+async function restoreProject(projectId) {
+  if (currentUser.role !== 'supervisor') {
+    alert('Solo los supervisores pueden restaurar proyectos.');
+    return;
+  }
+  
+  try {
+    await db.collection("proyectos").doc(projectId).update({
+      deleted: false,
+      restoredAt: firebase.firestore.FieldValue.serverTimestamp(),
+      restoredBy: currentUser.id
+    });
+    console.log("Proyecto restaurado:", projectId);
+    alert('Proyecto restaurado correctamente');
+  } catch (error) {
+    console.error("Error al restaurar proyecto:", error);
+    alert("Error al restaurar proyecto: " + error.message);
   }
 }
 
 function confirmDeleteProject(projectId, projectName) {
   if (currentUser.role !== 'supervisor') return;
   
-  projectToDelete = projectId;
-  document.getElementById('confirmMsg').textContent = `¿Estás seguro de eliminar el proyecto "${projectName}"? Esta acción no se puede deshacer.`;
-  document.getElementById('confirmOkBtn').onclick = () => deleteProject(projectToDelete);
+  document.getElementById('confirmMsg').textContent = `¿Marcar como eliminado el proyecto "${projectName}"? La información permanecerá en la base de datos y podrá ser restaurada.`;
+  document.getElementById('confirmOkBtn').onclick = () => softDeleteProject(projectId);
   document.getElementById('confirmModal').classList.remove('hidden');
 }
 
-// PROYECTOS
+function confirmRestoreProject(projectId, projectName) {
+  if (currentUser.role !== 'supervisor') return;
+  
+  document.getElementById('confirmMsg').textContent = `¿Restaurar el proyecto "${projectName}"? Volverá a aparecer en la lista de proyectos activos.`;
+  document.getElementById('confirmOkBtn').onclick = () => restoreProject(projectId);
+  document.getElementById('confirmModal').classList.remove('hidden');
+}
+
 function openNewProjectModal() {
   document.getElementById('np_name').value = '';
   document.getElementById('np_code').value = '';
@@ -862,7 +899,7 @@ async function createProject() {
   const code = document.getElementById('np_code').value.trim();
   
   if (!name || !code) {
-    alert('⚠️ Completa el nombre y código del proyecto.');
+    alert('Completa el nombre y código del proyecto.');
     return;
   }
   
@@ -885,14 +922,15 @@ async function createProject() {
     owner: currentUser.id,
     createdAt: new Date().toISOString(),
     steps: initSteps(),
+    deleted: false
   };
   
   try {
     await db.collection("proyectos").doc(id).set(proyecto);
-    console.log("✅ Proyecto creado en Firebase con ID:", id);
+    console.log("Proyecto creado en Firebase con ID:", id);
     closeModal('newProjectModal');
   } catch (error) {
-    console.error("❌ Error al crear proyecto:", error);
+    console.error("Error al crear proyecto:", error);
     alert("Error al crear proyecto: " + error.message);
   }
 }
@@ -906,6 +944,7 @@ function openProject(project) {
     <span class="badge ${st.cls}">${st.label}</span>
     <span class="badge badge-purple">${pct}% completado</span>
     <span class="badge badge-gray">${currentProject.code}</span>
+    ${currentProject.deleted ? '<span class="badge badge-deleted">🗑️ Eliminado</span>' : ''}
   `;
   switchTab('timeline');
   document.getElementById('projectDetailModal').classList.remove('hidden');
@@ -920,9 +959,9 @@ async function updateStepInFirebase(projectId, stepIndex, stepData) {
     project.steps[stepIndex] = { ...project.steps[stepIndex], ...stepData };
     
     await projectRef.update({ steps: project.steps });
-    console.log("✅ Paso actualizado en Firebase");
+    console.log("Paso actualizado en Firebase");
   } catch (error) {
-    console.error("❌ Error al actualizar paso:", error);
+    console.error("Error al actualizar paso:", error);
     throw error;
   }
 }
@@ -930,7 +969,7 @@ async function updateStepInFirebase(projectId, stepIndex, stepData) {
 function openUpdateStep(idx) {
   updateStepIndex = idx;
   const step = currentProject.steps[idx];
-  document.getElementById('updateStepTitle').textContent = `✏️ Paso ${idx + 1}: ${step.name}`;
+  document.getElementById('updateStepTitle').textContent = `Paso ${idx + 1}: ${step.name}`;
   document.getElementById('us_status').value = step.status;
   document.getElementById('us_notes').value = step.notes || '';
   document.getElementById('us_date').value = step.completedAt ? step.completedAt.split('T')[0] : new Date().toISOString().split('T')[0];
@@ -970,7 +1009,6 @@ async function saveStepUpdate() {
   }
 }
 
-// USUARIOS 
 async function cargarUsuariosFirebase() {
   if (currentUser?.role !== 'supervisor') return;
   
@@ -1000,14 +1038,14 @@ function renderUsersList(snapshot) {
             <button class="btn btn-ghost" style="padding:5px 11px;font-size:.78rem;" onclick="openEditUser('${doc.id}', '${u.name}', '${u.email}', '${u.role}')">✏️ Editar</button>
             <button class="btn btn-danger" style="padding:5px 11px;font-size:.78rem;" onclick="confirmDeleteUser('${doc.id}')">🗑️</button>
           </div>
-        </td>
-      </tr>
+         </td>
+       </tr>
     `;
   });
   
   usersContent.innerHTML = `
     <div class="alert-banner alert-info" style="margin-bottom:20px;">
-      ℹ️ Solo el supervisor puede agregar, editar o eliminar colaboradores.
+      Solo el supervisor puede agregar, editar o eliminar colaboradores.
     </div>
     <div style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,.06);">
       <table class="users-table">
@@ -1017,7 +1055,7 @@ function renderUsersList(snapshot) {
             <th>Email</th>
             <th>Rol</th>
             <th>Acciones</th>
-          </tr>
+           </tr>
         </thead>
         <tbody>${rows || '<tr><td colspan="4" class="empty-state">No hay usuarios registrados</td></tr>'}</tbody>
       </table>
@@ -1027,25 +1065,25 @@ function renderUsersList(snapshot) {
 
 function openAddUserModal() {
   editingUserId = null;
-  document.getElementById('addUserTitle').textContent = '➕ Nuevo Colaborador';
+  document.getElementById('addUserTitle').textContent = 'Nuevo Colaborador';
   document.getElementById('au_name').value = '';
   document.getElementById('au_email').value = '';
   document.getElementById('au_pass').value = '';
   document.getElementById('au_role').value = 'collaborator';
   document.getElementById('addUserError').classList.add('hidden');
-  document.getElementById('saveUserBtn').textContent = '💾 Crear Usuario';
+  document.getElementById('saveUserBtn').textContent = 'Crear Usuario';
   document.getElementById('addUserModal').classList.remove('hidden');
 }
 
 function openEditUser(uid, name, email, role) {
   editingUserId = uid;
-  document.getElementById('addUserTitle').textContent = '✏️ Editar Usuario';
+  document.getElementById('addUserTitle').textContent = 'Editar Usuario';
   document.getElementById('au_name').value = name;
   document.getElementById('au_email').value = email;
   document.getElementById('au_pass').value = '';
   document.getElementById('au_role').value = role;
   document.getElementById('addUserError').classList.add('hidden');
-  document.getElementById('saveUserBtn').textContent = '💾 Guardar Cambios';
+  document.getElementById('saveUserBtn').textContent = 'Guardar Cambios';
   document.getElementById('addUserModal').classList.remove('hidden');
 }
 
@@ -1059,7 +1097,7 @@ async function saveUser() {
   errEl.classList.add('hidden');
   
   if (!name || !email) {
-    errEl.textContent = '⚠️ Nombre y email son obligatorios.';
+    errEl.textContent = 'Nombre y email son obligatorios.';
     errEl.classList.remove('hidden');
     return;
   }
@@ -1073,13 +1111,13 @@ async function saveUser() {
       });
       
       if (password && password.length >= 6) {
-        alert("⚠️ La contraseña no se puede cambiar desde aquí. El usuario debe cambiarla desde su perfil.");
+        alert("La contraseña no se puede cambiar desde aquí. El usuario debe cambiarla desde su perfil.");
       }
       
       alert("✅ Usuario actualizado correctamente");
     } else {
       if (!password || password.length < 6) {
-        errEl.textContent = '⚠️ La contraseña debe tener al menos 6 caracteres.';
+        errEl.textContent = 'La contraseña debe tener al menos 6 caracteres.';
         errEl.classList.remove('hidden');
         return;
       }
@@ -1094,7 +1132,7 @@ async function saveUser() {
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
       
-      alert("✅ Usuario creado correctamente");
+      alert("Usuario creado correctamente");
     }
     
     closeModal('addUserModal');
@@ -1121,7 +1159,7 @@ function confirmDeleteUser(uid) {
 async function deleteUser(uid) {
   try {
     await db.collection("usuarios").doc(uid).delete();
-    alert("✅ Usuario eliminado correctamente");
+    alert("Usuario eliminado correctamente");
     closeModal('confirmModal');
   } catch (error) {
     console.error("Error al eliminar usuario:", error);
@@ -1129,7 +1167,6 @@ async function deleteUser(uid) {
   }
 }
 
-// CARGA DE PROYECTOS EN TIEMPO REAL
 function cargarProyectosFirebase() {
   db.collection("proyectos").onSnapshot(async (snapshot) => {
     const proyectos = [];
@@ -1145,17 +1182,23 @@ function cargarProyectosFirebase() {
 async function renderAllViews() {
   if (!currentUser) return;
   
-  let proyectosMostrar = proyectosFirebase;
+  // Filtrar proyectos activos (no eliminados)
+  let proyectosActivos = proyectosFirebase.filter(p => !p.deleted);
+  // Filtrar proyectos eliminados (para la vista de eliminados)
+  let proyectosEliminados = proyectosFirebase.filter(p => p.deleted === true);
+  
   if (currentUser.role !== 'supervisor') {
-    proyectosMostrar = proyectosFirebase.filter(p => p.owner === currentUser.id);
+    proyectosActivos = proyectosActivos.filter(p => p.owner === currentUser.id);
+    proyectosEliminados = proyectosEliminados.filter(p => p.owner === currentUser.id);
   }
   
-  renderDashboard(proyectosMostrar);
-  renderProjects(proyectosMostrar);
+  renderDashboard(proyectosActivos);
+  renderProjects(proyectosActivos);
+  renderDeletedProjects(proyectosEliminados);
   if (currentUser.role === 'supervisor') {
-    renderSupervisor(proyectosFirebase);
+    renderSupervisor(proyectosActivos);
   }
-  renderNotifications(proyectosMostrar);
+  renderNotifications(proyectosActivos);
 }
 
 function renderDashboard(proyectos) {
@@ -1180,7 +1223,7 @@ function renderDashboard(proyectos) {
       document.getElementById('recentProjects').innerHTML = cards.join('');
     });
   } else {
-    document.getElementById('recentProjects').innerHTML = '<div class="empty-state"><div class="icon">📭</div><h3>Sin proyectos aún</h3></div>';
+    document.getElementById('recentProjects').innerHTML = '<div class="empty-state"><div class="icon">📭</div><h3>Sin proyectos activos</h3></div>';
   }
   
   updateNotifBadge(proyectos);
@@ -1189,15 +1232,28 @@ function renderDashboard(proyectos) {
 async function projectCardHTML(p, showDeleteBtn = false) {
   const pct = getProgress(p);
   const status = getStatusBadge(p);
-  const alertCls = isDaysSinceLastUpdate(p, 3) ? 'alert-card' : '';
+  const alertCls = (!p.deleted && isDaysSinceLastUpdate(p, 3)) ? 'alert-card' : '';
   const days = daysSinceUpdate(p);
   const curStep = p.steps.find(s => s.status === 'in_progress') || p.steps.find(s => s.status === 'pending');
   const ownerName = await getUserName(p.owner);
-  const canDelete = currentUser.role === 'supervisor';
+  const canDelete = currentUser.role === 'supervisor' && !p.deleted;
+  const isDeleted = p.deleted === true;
+  
+  if (isDeleted) {
+    return `
+      <div class="project-card deleted-card" style="position:relative; opacity:0.7;">
+        <div class="project-header">
+          <div><div class="project-title">${p.name}</div><div class="project-code">${p.code}</div></div>
+          <span class="badge badge-deleted">Eliminado</span>
+        </div>
+        <div class="project-meta"><span>👤 ${ownerName}</span><span>📅 ${fmtDate(p.createdAt)}</span></div>
+        <div class="text-muted" style="font-size:.72rem; margin-top:8px;">Este proyecto fue eliminado el ${fmtDate(p.deletedAt)}</div>
+      </div>`;
+  }
   
   return `
     <div class="project-card ${alertCls}" style="position:relative;">
-      ${canDelete ? `<button class="delete-btn" onclick="event.stopPropagation(); confirmDeleteProject('${p.id}', '${p.name.replace(/'/g, "\\'")}')" title="Eliminar proyecto">🗑️</button>` : ''}
+      ${canDelete ? `<button class="delete-btn" onclick="event.stopPropagation(); confirmDeleteProject('${p.id}', '${p.name.replace(/'/g, "\\'")}')" title="Eliminar proyecto (soft delete)">🗑️</button>` : ''}
       <div onclick='openProject(${JSON.stringify(p).replace(/'/g, "\\'")})'>
         <div class="project-header">
           <div><div class="project-title">${p.name}</div><div class="project-code">${p.code}</div></div>
@@ -1214,6 +1270,41 @@ async function projectCardHTML(p, showDeleteBtn = false) {
     </div>`;
 }
 
+async function renderDeletedProjects(proyectosEliminados) {
+  const container = document.getElementById('deletedProjectsGrid');
+  if (!container) return;
+  
+  if (proyectosEliminados.length) {
+    let cards = '';
+    for (const p of proyectosEliminados) {
+      const ownerName = await getUserName(p.owner);
+      const canRestore = currentUser.role === 'supervisor';
+      cards += `
+        <div class="project-card deleted-card" style="position:relative; background:#f8fafc;">
+          ${canRestore ? `<button class="restore-btn" onclick="event.stopPropagation(); confirmRestoreProject('${p.id}', '${p.name.replace(/'/g, "\\'")}')" title="Restaurar proyecto">↺</button>` : ''}
+          <div onclick='openProject(${JSON.stringify(p).replace(/'/g, "\\'")})'>
+            <div class="project-header">
+              <div><div class="project-title">${p.name}</div><div class="project-code">${p.code}</div></div>
+              <span class="badge badge-deleted">🗑️ Eliminado</span>
+            </div>
+            <div class="progress-wrap">
+              <div class="progress-label"><span>Progreso al eliminar</span><span>${getProgress(p)}%</span></div>
+              <div class="progress-bar"><div class="progress-fill ${fillColor(getProgress(p))}" style="width:${getProgress(p)}%"></div></div>
+            </div>
+            <div class="project-meta"><span>👤 ${ownerName}</span><span>📅 Eliminado: ${fmtDate(p.deletedAt)}</span></div>
+          </div>
+        </div>`;
+    }
+    container.innerHTML = cards;
+  } else {
+    container.innerHTML = `<div class="empty-state">
+        <div class="icon">🗑️</div>
+        <h3>No hay proyectos eliminados</h3>
+        <p>Los proyectos que elimines aparecerán aquí y podrán ser restaurados.</p>
+      </div>`;
+  }
+}
+
 function renderProjects(proyectos) {
   const container = document.getElementById('projectsGrid');
   if (!container) return;
@@ -1225,7 +1316,7 @@ function renderProjects(proyectos) {
   } else {
     container.innerHTML = `<div class="empty-state">
         <div class="icon">📂</div>
-        <h3>No hay proyectos</h3>
+        <h3>No hay proyectos activos</h3>
         <p>Crea el primero con "+ Nuevo Proyecto".</p>
       </div>`;
   }
@@ -1254,7 +1345,7 @@ async function renderSupervisor(proyectos) {
         <div>
           <div class="font-bold">${collab.name || collab.email}</div>
           <div class="text-sm text-muted">
-            ${ups.length} proyectos
+            ${ups.length} proyectos activos
             ${al ? ` · <span style="color:#dc2626">⚠️ ${al} con alerta</span>` : ''}
           </div>
         </div>
@@ -1311,7 +1402,7 @@ function updateNotifBadge(proyectos) {
 }
 
 function showPage(page) {
-  const pages = ['dashboard', 'projects', 'supervisor', 'users', 'notifications'];
+  const pages = ['dashboard', 'projects', 'supervisor', 'users', 'notifications', 'deleted'];
   pages.forEach(p => {
     const pageEl = document.getElementById('page-' + p);
     const navEl = document.getElementById('nav-' + p);
@@ -1329,7 +1420,8 @@ function showPage(page) {
     projects: currentUser?.role === 'supervisor' ? 'Todos los Proyectos' : 'Mis Proyectos',
     supervisor: 'Vista Supervisor',
     users: 'Gestión de Usuarios',
-    notifications: 'Alertas y Notificaciones'
+    notifications: 'Alertas y Notificaciones',
+    deleted: 'Proyectos Eliminados'
   };
   document.getElementById('pageTitle').textContent = titles[page] || '';
   
@@ -1364,13 +1456,16 @@ function renderTimeline() {
   if (!currentProject) return;
   
   const p = currentProject;
-  const canEdit = currentUser.role === 'collaborator' && p.owner === currentUser.id;
+  const canEdit = currentUser.role === 'collaborator' && p.owner === currentUser.id && !p.deleted;
   const pct = getProgress(p);
   const days = daysSinceUpdate(p);
   
   let html = '';
-  if (isDaysSinceLastUpdate(p, 3))
+  if (p.deleted) {
+    html += `<div class="alert-banner alert-warning">🗑️ Este proyecto está eliminado. Solo se puede visualizar, no editar.</div>`;
+  } else if (isDaysSinceLastUpdate(p, 3)) {
     html += `<div class="alert-banner alert-danger">🚨 ${days} días sin avances. Alertas enviadas.</div>`;
+  }
   
   html += `<div class="progress-wrap" style="margin-bottom:18px;">
     <div class="progress-label"><span>Progreso total</span><span>${pct}%</span></div>
@@ -1402,7 +1497,7 @@ function renderStepsTab() {
   if (!currentProject) return;
   
   const p = currentProject;
-  const canEdit = currentUser.role === 'collaborator' && p.owner === currentUser.id;
+  const canEdit = currentUser.role === 'collaborator' && p.owner === currentUser.id && !p.deleted;
   let html = '<div class="steps-list">';
   
   p.steps.forEach((step, i) => {
@@ -1456,6 +1551,7 @@ function renderInfo() {
         <div><div class="text-muted" style="font-size:.74rem;margin-bottom:3px;">CLIENTE</div><div>${p.client || '—'}</div></div>
         <div><div class="text-muted" style="font-size:.74rem;margin-bottom:3px;">FECHA INICIO</div><div>${fmtDate(p.startDate || p.createdAt)}</div></div>
         <div><div class="text-muted" style="font-size:.74rem;margin-bottom:3px;">PROGRESO</div><div>${p.steps.filter(s => s.status === 'done').length}/${STEP_NAMES.length} pasos (${pct}%)</div></div>
+        ${p.deleted ? `<div><div class="text-muted" style="font-size:.74rem;margin-bottom:3px;">FECHA ELIMINACIÓN</div><div>${fmtDate(p.deletedAt)}</div></div>` : ''}
       </div>
       ${p.description ? `<div class="divider"></div><div class="text-muted" style="font-size:.74rem;margin-bottom:3px;">DESCRIPCIÓN</div><div>${p.description}</div>` : ''}
     `;
@@ -1507,10 +1603,11 @@ async function exportProjectPDF() {
   
   const infoLines = [
     [`Código:`, p.code || '—'],
-    [`Cliente / Propietario:`, p.client || '—'],
+    [`Subestación:`, p.client || '—'],
     [`Responsable:`, ownerName],
     [`Fecha de inicio:`, fmtDate(p.startDate || p.createdAt)],
-    [`Descripción:`, p.description || '—'],
+    [`Estado:`, p.deleted ? 'ELIMINADO (archivado)' : 'ACTIVO'],
+    [`Caracteristicas técnicas:`, p.description || '—'],
   ];
   
   let ix = 0;
@@ -1614,7 +1711,7 @@ async function exportProjectPDF() {
     y += 14;
   }
   
-  if (isDaysSinceLastUpdate(p, 3)) {
+  if (!p.deleted && isDaysSinceLastUpdate(p, 3)) {
     y += 8;
     if (y > H - 30) {
       doc.addPage();
@@ -1627,7 +1724,7 @@ async function exportProjectPDF() {
     doc.setTextColor(190, 18, 60);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
-    doc.text('⚠ ALERTA: ', 16, y + 8);
+    doc.text('ALERTA: ', 16, y + 8);
     doc.setFont('helvetica', 'normal');
     doc.text(`Este proyecto lleva ${daysSinceUpdate(p)} días sin reportar avances.`, 38, y + 8);
     doc.setFontSize(8);
@@ -1651,7 +1748,6 @@ async function exportProjectPDF() {
   doc.save(`${p.code}_${p.name.replace(/\s+/g, '-')}.pdf`);
 }
 
-// UTILIDADES
 function closeModal(id) {
   const modal = document.getElementById(id);
   if (modal) modal.classList.add('hidden');
@@ -1670,7 +1766,7 @@ document.getElementById('regPassword')?.addEventListener('keydown', e => e.key =
 
 setInterval(() => {
   if (currentUser && proyectosFirebase.length) {
-    updateNotifBadge(proyectosFirebase);
+    updateNotifBadge(proyectosFirebase.filter(p => !p.deleted));
   }
 }, 60000);
 </script>
