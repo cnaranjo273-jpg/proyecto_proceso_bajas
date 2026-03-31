@@ -113,7 +113,7 @@
   .section-header h2{font-size:1.05rem;font-weight:700;}
   .projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px;}
   .project-card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 1px 8px rgba(0,0,0,.06);
-    cursor:pointer;transition:all .2s;border:2px solid transparent;}
+    cursor:pointer;transition:all .2s;border:2px solid transparent;position:relative;}
   .project-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.1);border-color:var(--primary);}
   .project-card.alert-card{border-color:var(--danger);}
   .project-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
@@ -236,6 +236,10 @@
   .flex{display:flex;}.gap-2{gap:8px;}.gap-3{gap:12px;}
   .items-center{align-items:center;}.justify-between{justify-content:space-between;}
   .font-bold{font-weight:700;}.text-sm{font-size:.83rem;}
+  .delete-btn{position:absolute;top:10px;right:10px;background:rgba(220,38,38,0.9);color:white;border:none;
+    border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:12px;display:flex;align-items:center;
+    justify-content:center;transition:all .2s;z-index:10;}
+  .delete-btn:hover{background:#b91c1c;transform:scale(1.1);}
   @media(max-width:768px){:root{--sidebar-w:0}.sidebar{display:none}.form-row{grid-template-columns:1fr}}
 </style>
 </head>
@@ -295,7 +299,7 @@
       <strong>📋 Credenciales de prueba:</strong><br>
       👤 <b>ana@test.com</b> / pass123 — Colaboradora<br>
       👤 <b>carlos@test.com</b> / pass123 — Colaborador<br>
-      🔑 <b>supervisor@test.com</b> / super123 — Supervisor (gestiona usuarios)
+      🔑 <b>supervisor@test.com</b> / super123 — Supervisor (puede eliminar proyectos)
     </div>
   </div>
 </div>
@@ -332,7 +336,7 @@
       Gestión Usuarios
     </div>
     <div class="nav-item" onclick="showPage('notifications')" id="nav-notifications">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.002 2.002 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
       Alertas
       <span id="notifBadge" class="hidden" style="margin-left:auto;background:#dc2626;color:#fff;border-radius:99px;padding:1px 7px;font-size:.68rem;font-weight:700;"></span>
     </div>
@@ -487,13 +491,13 @@
 
 <div class="modal-overlay hidden" id="confirmModal">
   <div class="modal" style="max-width:400px;">
-    <div class="modal-header"><h2>⚠️ Confirmar</h2>
+    <div class="modal-header"><h2>⚠️ Confirmar Eliminación</h2>
       <button class="close-btn" onclick="closeModal('confirmModal')">✕</button></div>
     <div class="modal-body">
       <p id="confirmMsg" style="margin-bottom:20px;"></p>
       <div class="flex gap-2" style="justify-content:flex-end;">
         <button class="btn btn-ghost" onclick="closeModal('confirmModal')">Cancelar</button>
-        <button class="btn btn-danger" id="confirmOkBtn">Eliminar</button>
+        <button class="btn btn-danger" id="confirmOkBtn">Eliminar Proyecto</button>
       </div>
     </div>
   </div>
@@ -536,6 +540,7 @@ let currentProject = null;
 let updateStepIndex = null;
 let editingUserId = null;
 let proyectosFirebase = [];
+let projectToDelete = null;
 
 // FUNCIONES DE AUTENTICACIÓN
 // Cambiar entre login y registro
@@ -565,7 +570,6 @@ async function doRegister() {
   const role = document.getElementById('regRole').value;
   const errorEl = document.getElementById('registerError');
   
-  // Validaciones
   if (!name || !email || !password) {
     errorEl.textContent = '⚠️ Todos los campos son obligatorios';
     errorEl.classList.remove('hidden');
@@ -587,11 +591,9 @@ async function doRegister() {
   errorEl.classList.add('hidden');
   
   try {
-    // 1. Crear usuario en Firebase Authentication
     const userCredential = await auth.createUserWithEmailAndPassword(email, password);
     const user = userCredential.user;
     
-    // 2. Guardar datos del usuario en Firestore
     await db.collection("usuarios").doc(user.uid).set({
       name: name,
       email: email,
@@ -601,7 +603,6 @@ async function doRegister() {
     
     alert('✅ ¡Registro exitoso! Ahora puedes iniciar sesión.');
     
-    // Limpiar formulario y mostrar login
     document.getElementById('regName').value = '';
     document.getElementById('regEmail').value = '';
     document.getElementById('regPassword').value = '';
@@ -688,6 +689,37 @@ async function doLogin() {
   }
 }
 
+// Verificar sesión al cargar la página
+auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    try {
+      const userDoc = await db.collection("usuarios").doc(user.uid).get();
+      if (userDoc.exists) {
+        const userData = userDoc.data();
+        currentUser = {
+          id: user.uid,
+          email: userData.email,
+          role: userData.role,
+          name: userData.name
+        };
+        
+        console.log("✅ Sesión restaurada:", currentUser);
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        setupUI();
+        cargarProyectosFirebase();
+        cargarUsuariosFirebase();
+        showPage('dashboard');
+      }
+    } catch (error) {
+      console.error("Error al restaurar sesión:", error);
+    }
+  } else {
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+  }
+});
+
 // Cerrar sesión
 function doLogout() {
   auth.signOut().then(() => {
@@ -722,7 +754,7 @@ function setupUI() {
   }
 }
 
-// FUNCIONES DE DATOS (igual que antes)
+// FUNCIONES DE DATOS
 function initSteps() {
   return STEP_NAMES.map((name, i) => ({
     id: i,
@@ -785,6 +817,36 @@ async function getUserName(uid) {
   return uid.substring(0, 8);
 }
 
+// FUNCIÓN PARA ELIMINAR PROYECTO (SOLO SUPERVISOR)
+async function deleteProject(projectId) {
+  if (currentUser.role !== 'supervisor') {
+    alert('⚠️ Solo los supervisores pueden eliminar proyectos.');
+    return;
+  }
+  
+  try {
+    await db.collection("proyectos").doc(projectId).delete();
+    console.log("✅ Proyecto eliminado:", projectId);
+    alert('✅ Proyecto eliminado correctamente');
+    closeModal('confirmModal');
+    
+    // Recargar proyectos
+    cargarProyectosFirebase();
+  } catch (error) {
+    console.error("❌ Error al eliminar proyecto:", error);
+    alert("Error al eliminar proyecto: " + error.message);
+  }
+}
+
+function confirmDeleteProject(projectId, projectName) {
+  if (currentUser.role !== 'supervisor') return;
+  
+  projectToDelete = projectId;
+  document.getElementById('confirmMsg').textContent = `¿Estás seguro de eliminar el proyecto "${projectName}"? Esta acción no se puede deshacer.`;
+  document.getElementById('confirmOkBtn').onclick = () => deleteProject(projectToDelete);
+  document.getElementById('confirmModal').classList.remove('hidden');
+}
+
 // PROYECTOS
 function openNewProjectModal() {
   document.getElementById('np_name').value = '';
@@ -804,19 +866,17 @@ async function createProject() {
     return;
   }
   
-  // GENERACIÓN DEL ID 
   const now = new Date();
-  const year = now.getFullYear().toString().slice(-2); //últimos 2 dígitos del año
-  const month = (now.getMonth() + 1).toString().padStart(2, '0'); // Mes
-  const day = now.getDate().toString().padStart(2, '0'); // Día 
-  const datePrefix = `${year}${month}${day}`; // Prefijo 
+  const year = now.getFullYear().toString().slice(-2);
+  const month = (now.getMonth() + 1).toString().padStart(2, '0');
+  const day = now.getDate().toString().padStart(2, '0');
+  const datePrefix = `${year}${month}${day}`;
   const randomNumber = Math.floor(Math.random() * 100) + 1;
-  const paddedRandomNumber = randomNumber.toString().padStart(3, '0'); 
-  const id = `${datePrefix}_${paddedRandomNumber}`; 
-  //FIN DE LA GENERACIÓN DEL ID 
+  const paddedRandomNumber = randomNumber.toString().padStart(3, '0');
+  const id = `${datePrefix}_${paddedRandomNumber}`;
 
   const proyecto = {
-    id: id, 
+    id: id,
     name: name,
     code: code,
     startDate: document.getElementById('np_startDate').value,
@@ -828,7 +888,7 @@ async function createProject() {
   };
   
   try {
-    await db.collection("proyectos").doc(id).set(proyecto); 
+    await db.collection("proyectos").doc(id).set(proyecto);
     console.log("✅ Proyecto creado en Firebase con ID:", id);
     closeModal('newProjectModal');
   } catch (error) {
@@ -1116,7 +1176,7 @@ function renderDashboard(proyectos) {
   
   const recent = [...proyectos].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 6);
   if (recent.length) {
-    Promise.all(recent.map(p => projectCardHTML(p))).then(cards => {
+    Promise.all(recent.map(p => projectCardHTML(p, true))).then(cards => {
       document.getElementById('recentProjects').innerHTML = cards.join('');
     });
   } else {
@@ -1126,27 +1186,31 @@ function renderDashboard(proyectos) {
   updateNotifBadge(proyectos);
 }
 
-async function projectCardHTML(p) {
+async function projectCardHTML(p, showDeleteBtn = false) {
   const pct = getProgress(p);
   const status = getStatusBadge(p);
   const alertCls = isDaysSinceLastUpdate(p, 3) ? 'alert-card' : '';
   const days = daysSinceUpdate(p);
   const curStep = p.steps.find(s => s.status === 'in_progress') || p.steps.find(s => s.status === 'pending');
   const ownerName = await getUserName(p.owner);
+  const canDelete = currentUser.role === 'supervisor';
   
   return `
-    <div class="project-card ${alertCls}" onclick='openProject(${JSON.stringify(p).replace(/'/g, "\\'")})'>
-      <div class="project-header">
-        <div><div class="project-title">${p.name}</div><div class="project-code">${p.code}</div></div>
-        <span class="badge ${status.cls}">${status.label}</span>
+    <div class="project-card ${alertCls}" style="position:relative;">
+      ${canDelete ? `<button class="delete-btn" onclick="event.stopPropagation(); confirmDeleteProject('${p.id}', '${p.name.replace(/'/g, "\\'")}')" title="Eliminar proyecto">🗑️</button>` : ''}
+      <div onclick='openProject(${JSON.stringify(p).replace(/'/g, "\\'")})'>
+        <div class="project-header">
+          <div><div class="project-title">${p.name}</div><div class="project-code">${p.code}</div></div>
+          <span class="badge ${status.cls}">${status.label}</span>
+        </div>
+        ${isDaysSinceLastUpdate(p, 3) ? `<div style="font-size:.76rem;color:#dc2626;margin-bottom:7px;font-weight:600;">⚠️ ${days} días sin avance</div>` : ''}
+        <div class="progress-wrap">
+          <div class="progress-label"><span>Progreso</span><span>${pct}%</span></div>
+          <div class="progress-bar"><div class="progress-fill ${fillColor(pct)}" style="width:${pct}%"></div></div>
+        </div>
+        <div style="font-size:.78rem;color:var(--muted);margin-top:5px;">📌 ${curStep ? curStep.name : '✅ Finalizado'}</div>
+        <div class="project-meta"><span>👤 ${ownerName}</span><span>📅 ${fmtDate(p.createdAt)}</span></div>
       </div>
-      ${isDaysSinceLastUpdate(p, 3) ? `<div style="font-size:.76rem;color:#dc2626;margin-bottom:7px;font-weight:600;">⚠️ ${days} días sin avance</div>` : ''}
-      <div class="progress-wrap">
-        <div class="progress-label"><span>Progreso</span><span>${pct}%</span></div>
-        <div class="progress-bar"><div class="progress-fill ${fillColor(pct)}" style="width:${pct}%"></div></div>
-      </div>
-      <div style="font-size:.78rem;color:var(--muted);margin-top:5px;">📌 ${curStep ? curStep.name : '✅ Finalizado'}</div>
-      <div class="project-meta"><span>👤 ${ownerName}</span><span>📅 ${fmtDate(p.createdAt)}</span></div>
     </div>`;
 }
 
@@ -1155,7 +1219,7 @@ function renderProjects(proyectos) {
   if (!container) return;
   
   if (proyectos.length) {
-    Promise.all(proyectos.map(p => projectCardHTML(p))).then(cards => {
+    Promise.all(proyectos.map(p => projectCardHTML(p, true))).then(cards => {
       container.innerHTML = cards.join('');
     });
   } else {
@@ -1208,7 +1272,7 @@ async function renderSupervisor(proyectos) {
       if (ups.length) {
         const container = document.getElementById(`collab-projects-${collab.id}`);
         if (container) {
-          const cards = await Promise.all(ups.map(p => projectCardHTML(p)));
+          const cards = await Promise.all(ups.map(p => projectCardHTML(p, true)));
           container.innerHTML = cards.join('');
         }
       }
@@ -1410,7 +1474,6 @@ async function exportProjectPDF() {
   const H = doc.internal.pageSize.getHeight();
   let y = 0;
   
-  // Encabezado 
   doc.setFillColor(37, 99, 235);
   doc.rect(0, 0, W, 38, 'F');
   doc.setFillColor(124, 58, 237);
@@ -1432,7 +1495,6 @@ async function exportProjectPDF() {
   doc.text('completado', W - 14, 26, { align: 'right' });
   y = 48;
   
-  // informción proyecto 
   doc.setFillColor(241, 245, 249);
   doc.roundedRect(10, y, W - 20, 42, 3, 3, 'F');
   doc.setTextColor(30, 41, 59);
@@ -1467,7 +1529,6 @@ async function exportProjectPDF() {
   });
   y += 52;
   
-  // barra progreso
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(11);
   doc.setTextColor(30, 41, 59);
@@ -1487,7 +1548,6 @@ async function exportProjectPDF() {
   if (pct > 8) doc.text(`${pct}%`, 14 + fillW / 2, y + 5, { align: 'center' });
   y += 16;
   
-  // Tabla 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(11);
   doc.setTextColor(30, 41, 59);
@@ -1554,7 +1614,6 @@ async function exportProjectPDF() {
     y += 14;
   }
   
-  // Alerta
   if (isDaysSinceLastUpdate(p, 3)) {
     y += 8;
     if (y > H - 30) {
