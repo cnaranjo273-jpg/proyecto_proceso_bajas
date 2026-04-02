@@ -70,7 +70,7 @@
   .btn-pdf:hover{opacity:.9;transform:translateY(-2px);}
   .btn-full{width:100%;justify-content:center;}
   
-  /* Botón menú móvil - solo visible en móvil */
+  /* Botón menú móvil */
   .menu-toggle {
     display: none;
     position: fixed;
@@ -161,6 +161,80 @@
   .stat-card p{font-size:.78rem;color:var(--muted);margin-top:4px;}
   .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
   .section-header h2{font-size:1.1rem;font-weight:700;}
+  
+  /* Estilos para la estructura de carpetas */
+  .folder-structure {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 1px 8px rgba(0,0,0,.06);
+    overflow: hidden;
+  }
+  .folder-item {
+    border-bottom: 1px solid var(--border);
+  }
+  .folder-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    cursor: pointer;
+    background: #fff;
+    transition: background .2s;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .folder-header:hover {
+    background: #f8fafc;
+  }
+  .folder-header svg {
+    width: 20px;
+    height: 20px;
+    color: #fbbf24;
+    flex-shrink: 0;
+  }
+  .folder-name {
+    flex: 1;
+    font-size: .95rem;
+  }
+  .folder-count {
+    background: var(--bg);
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .folder-arrow {
+    font-size: .8rem;
+    color: var(--muted);
+    transition: transform .2s;
+  }
+  .folder-content {
+    display: none;
+    background: #fafcff;
+    padding: 16px 20px 20px 52px;
+    border-top: 1px solid var(--border);
+  }
+  .folder-content.open {
+    display: block;
+  }
+  .folder-actions {
+    margin-bottom: 16px;
+  }
+  .projects-inside {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+  .empty-folder {
+    color: var(--muted);
+    text-align: center;
+    padding: 30px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px dashed var(--border);
+  }
+  
   .projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px;}
   .project-card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 1px 8px rgba(0,0,0,.06);
     cursor:pointer;transition:all .2s;border:2px solid transparent;position:relative;}
@@ -267,100 +341,40 @@
   .restore-btn{right:45px;background:rgba(22,163,74,0.9);}
   .delete-btn:active,.restore-btn:active{transform:scale(0.9);}
   
-  /* Media Queries Móvil - Solo afecta a pantallas pequeñas */
   @media(max-width:768px){
-    .menu-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .sidebar {
-      left: -100%;
-    }
-    .sidebar.open {
-      left: 0;
-    }
-    .sidebar-overlay.active {
-      display: block;
-    }
-    .main {
-      margin-left: 0;
-      width: 100%;
-    }
-    .topbar {
-      padding-left: 60px;
-      padding-right: 16px;
-    }
-    .topbar h1 {
-      font-size: 0.95rem;
-    }
-    .btn {
-      padding: 10px 16px;
-      font-size: 0.85rem;
-    }
-    .stats-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-    .stat-card {
-      padding: 14px;
-    }
-    .stat-icon {
-      width: 40px;
-      height: 40px;
-      font-size: 1.1rem;
-    }
-    .stat-card h3 {
-      font-size: 1.4rem;
-    }
-    .projects-grid {
-      grid-template-columns: 1fr;
-      gap: 14px;
-    }
-    .form-row {
-      grid-template-columns: 1fr;
-    }
-    .modal-body {
-      padding: 18px;
-    }
-    .modal-header {
-      padding: 16px 18px;
-    }
-    .content {
-      padding: 16px;
-    }
-    .tabs {
-      gap: 2px;
-    }
-    .tab {
-      padding: 8px 10px;
-      font-size: 0.75rem;
-      min-width: 65px;
-    }
+    .menu-toggle { display: flex; align-items: center; justify-content: center; }
+    .sidebar { left: -100%; }
+    .sidebar.open { left: 0; }
+    .sidebar-overlay.active { display: block; }
+    .main { margin-left: 0; width: 100%; }
+    .topbar { padding-left: 60px; padding-right: 16px; }
+    .topbar h1 { font-size: 0.95rem; }
+    .btn { padding: 10px 16px; font-size: 0.85rem; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .stat-card { padding: 14px; }
+    .stat-icon { width: 40px; height: 40px; font-size: 1.1rem; }
+    .stat-card h3 { font-size: 1.4rem; }
+    .projects-grid { grid-template-columns: 1fr; gap: 14px; }
+    .form-row { grid-template-columns: 1fr; }
+    .modal-body { padding: 18px; }
+    .modal-header { padding: 16px 18px; }
+    .content { padding: 16px; }
+    .tabs { gap: 2px; }
+    .tab { padding: 8px 10px; font-size: 0.75rem; min-width: 65px; }
+    .folder-content { padding-left: 20px; }
+    .projects-inside { grid-template-columns: 1fr; }
   }
   
   @media(max-width:480px){
-    .stats-grid {
-      grid-template-columns: 1fr;
-    }
-    .login-card {
-      padding: 24px 20px;
-    }
-    .topbar {
-      padding-left: 56px;
-      padding-right: 12px;
-    }
-    .topbar h1 {
-      font-size: 0.85rem;
-    }
-    .stat-card h3 {
-      font-size: 1.25rem;
-    }
+    .stats-grid { grid-template-columns: 1fr; }
+    .login-card { padding: 24px 20px; }
+    .topbar { padding-left: 56px; padding-right: 12px; }
+    .topbar h1 { font-size: 0.85rem; }
+    .stat-card h3 { font-size: 1.25rem; }
   }
 </style>
 </head>
 <body>
-<!-- Botón menú móvil - solo visible en móvil -->
 <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()">☰</button>
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
@@ -454,6 +468,11 @@
       Alertas
       <span id="notifBadge" class="hidden" style="margin-left:auto;background:#dc2626;color:#fff;border-radius:99px;padding:1px 7px;font-size:.68rem;font-weight:700;"></span>
     </div>
+    <!-- NUEVA PESTAÑA REPOSITORIO DOCUMENTOS -->
+    <div class="nav-item" onclick="openDocumentRepo(); closeSidebarIfMobile();" id="nav-repo">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+      Repositorio documentos
+    </div>
     <div class="sidebar-footer">
       <button class="btn btn-ghost btn-full" onclick="doLogout()" style="color:#fff;border-color:rgba(255,255,255,.3);">← Cerrar Sesión</button>
     </div>
@@ -479,7 +498,8 @@
           <h2 id="projectsPageTitle">Mis Proyectos</h2>
           <button class="btn btn-primary" id="btnNewProject2" onclick="openNewProjectModal()">+ Nuevo Proyecto</button>
         </div>
-        <div class="projects-grid" id="projectsGrid"></div>
+        <!-- Aquí se renderizará la estructura de carpetas -->
+        <div id="folderStructureContainer"></div>
       </div>
       <div id="page-deleted" class="hidden">
         <div class="section-header">
@@ -501,7 +521,7 @@
   </main>
 </div>
 
-<!-- MODALS (resto igual pero con ajustes de tamaño) -->
+<!-- MODALS -->
 <div class="modal-overlay hidden" id="newProjectModal">
   <div class="modal" style="max-width:540px;">
     <div class="modal-header">
@@ -517,8 +537,40 @@
         <div class="form-group"><label>Fecha de Inicio *</label>
           <input type="date" id="np_startDate"/></div>
       </div>
-      <div class="form-group"><label>Subestación</label>
-        <input type="text" id="np_client" placeholder="Ej: 01-Olimpico"/></div>
+      <div class="form-group"><label>Subestación (Carpeta)</label>
+        <select id="np_client">
+          <option value="">Seleccione una subestación...</option>
+          <option value="S/E (01) Olímpico">S/E (01) Olímpico</option><option value="S/E (02) Luluncoto">S/E (02) Luluncoto</option>
+          <option value="S/E (03) Barrio Nuevo">S/E (03) Barrio Nuevo</option><option value="S/E (04) Chimbacalle">S/E (04) Chimbacalle</option>
+          <option value="S/E (05) Chilibulo">S/E (05) Chilibulo</option><option value="S/E (06) Escuela Sucre">S/E (06) Escuela Sucre</option>
+          <option value="S/E (07) San Roque">S/E (07) San Roque</option><option value="S/E (08) La Marín">S/E (08) La Marín</option>
+          <option value="S/E (09) Miraflores">S/E (09) Miraflores</option><option value="S/E (10) Diez Vieja">S/E (10) Diez Vieja</option>
+          <option value="S/E (11) Belisario Quevedo">S/E (11) Belisario Quevedo</option><option value="S/E (12) La Floresta">S/E (12) La Floresta</option>
+          <option value="S/E (13) Granda Centeno">S/E (13) Granda Centeno</option><option value="S/E (14) Gualo">S/E (14) Gualo</option>
+          <option value="S/E (15) El Bosque">S/E (15) El Bosque</option><option value="S/E (16) Rio Coca">S/E (16) Rio Coca</option>
+          <option value="S/E (17) Andalucía">S/E (17) Andalucía</option><option value="S/E (18) Cristiania">S/E (18) Cristiania</option>
+          <option value="S/E (19) Cotocollao">S/E (19) Cotocollao</option><option value="S/E (20) Sur">S/E (20) Sur</option>
+          <option value="S/E (21) Eplicachima">S/E (21) Eplicachima</option><option value="S/E (22) San Antonio">S/E (22) San Antonio</option>
+          <option value="S/E (23) Conocoto">S/E (23) Conocoto</option><option value="S/E (24) Carolina">S/E (24) Carolina</option>
+          <option value="S/E (25) San Pablo">S/E (25) San Pablo</option><option value="S/E (26) Alangasi">S/E (26) Alangasi</option>
+          <option value="S/E (27) San Rafael">S/E (27) San Rafael</option><option value="S/E (28) Iñaquito">S/E (28) Iñaquito</option>
+          <option value="S/E (29) Nueva Cumbayá">S/E (29) Nueva Cumbayá</option><option value="S/E (30) Plataforma Financiera">S/E (30) Plataforma Financiera</option>
+          <option value="S/E (31) Tababela">S/E (31) Tababela</option><option value="S/E (32) Diez Nueva">S/E (32) Diez Nueva</option>
+          <option value="S/E (33) Nuevo Aeropuerto">S/E (33) Nuevo Aeropuerto</option><option value="S/E (36) Tumbaco">S/E (36) Tumbaco</option>
+          <option value="S/E (37) Santa Rosa">S/E (37) Santa Rosa</option><option value="S/E (38) Norte">S/E (38) Norte</option>
+          <option value="S/E (39) Vicentina">S/E (39) Vicentina</option><option value="S/E (41) Selva Alegre">S/E (41) Selva Alegre</option>
+          <option value="S/E (42) Móvil Papallacta">S/E (42) Móvil Papallacta</option><option value="S/E (46) El Inga Bajo">S/E (46) El Inga Bajo</option>
+          <option value="S/E (48) Mirador Alto">S/E (48) Mirador Alto</option><option value="S/E (49) Los Bancos">S/E (49) Los Bancos</option>
+          <option value="S/E (51) Bicentenario">S/E (51) Bicentenario</option><option value="S/E (53) Pérez Guerrero">S/E (53) Pérez Guerrero</option>
+          <option value="S/E (55) Sangolquí">S/E (55) Sangolquí</option><option value="S/E (57) Pomasqui">S/E (57) Pomasqui</option>
+          <option value="S/E (58) El Quinche">S/E (58) El Quinche</option><option value="S/E (59) Eugenio Espejo">S/E (59) Eugenio Espejo</option>
+          <option value="S/E (63) Batán Alto">S/E (63) Batán Alto</option><option value="S/E (68) Labrador">S/E (68) Labrador</option>
+          <option value="S/E (70) Shelter T-GOOD">S/E (70) Shelter T-GOOD</option><option value="S/E (73) El Obraje">S/E (73) El Obraje</option>
+          <option value="S/E (80) Cumbayá">S/E (80) Cumbayá</option><option value="S/E (81) Estación Terrena">S/E (81) Estación Terrena</option>
+          <option value="S/E (82) Gualberto Hernández">S/E (82) Gualberto Hernández</option><option value="S/E (84) Guangopolo Hidráulica">S/E (84) Guangopolo Hidráulica</option>
+          <option value="S/E (86) Nayón">S/E (86) Nayón</option><option value="S/E (88) Pasochoa">S/E (88) Pasochoa</option>
+        </select>
+      </div>
       <div class="form-group"><label>Caracteristicas técnicas</label>
         <textarea id="np_desc" placeholder="Descripción breve..."></textarea></div>
       <div class="flex gap-2 mt-4" style="justify-content:flex-end;">
@@ -646,10 +698,14 @@ function closeSidebar() {
 }
 
 function closeSidebarIfMobile() {
-  // Solo cerrar en móvil (pantallas menores a 768px)
   if (window.innerWidth <= 768) {
     closeSidebar();
   }
+}
+
+// Función para abrir el repositorio de documentos
+function openDocumentRepo() {
+  window.open('https://drive.google.com/drive/folders/1ts8G8ghmSddPAFRJLGTAyIxUKEdrR0z6?usp=sharing', '_blank');
 }
 
 const firebaseConfig = {
@@ -886,6 +942,9 @@ function setupUI() {
     document.getElementById('nav-deleted').classList.remove('hidden');
     document.getElementById('navProjectsLabel').textContent = 'Todos los Proyectos';
     document.getElementById('btnNewProject2').classList.add('hidden');
+  } else {
+    document.getElementById('navProjectsLabel').textContent = 'Mis Proyectos';
+    document.getElementById('btnNewProject2').classList.remove('hidden');
   }
 }
 
@@ -1024,9 +1083,15 @@ function openNewProjectModal() {
 async function createProject() {
   const name = document.getElementById('np_name').value.trim();
   const code = document.getElementById('np_code').value.trim();
+  const clientFolder = document.getElementById('np_client').value;
   
   if (!name || !code) {
     alert('Completa el nombre y código del proyecto.');
+    return;
+  }
+  
+  if (!clientFolder) {
+    alert('Por favor, selecciona una subestación (carpeta) para el proyecto.');
     return;
   }
   
@@ -1045,7 +1110,7 @@ async function createProject() {
     code: code,
     startDate: document.getElementById('np_startDate').value,
     description: document.getElementById('np_desc').value.trim(),
-    client: document.getElementById('np_client').value.trim(),
+    client: clientFolder,
     owner: currentUser.id,
     createdAt: new Date().toISOString(),
     steps: initSteps(),
@@ -1183,10 +1248,10 @@ function renderUsersList(snapshot) {
             <th>Email</th>
             <th>Rol</th>
             <th>Acciones</th>
-           </tr>
+          </tr>
         </thead>
         <tbody>${rows || '<tr><td colspan="4" class="empty-state">No hay usuarios registrados</td></tr>'}</tbody>
-       </table>
+      </table>
     </div>
   `;
 }
@@ -1321,12 +1386,95 @@ async function renderAllViews() {
   }
   
   renderDashboard(proyectosActivos);
-  renderProjects(proyectosActivos);
+  renderFolderStructure(proyectosActivos);
   renderDeletedProjects(proyectosEliminados);
   if (currentUser.role === 'supervisor') {
     renderSupervisor(proyectosActivos);
   }
   renderNotifications(proyectosActivos);
+}
+
+// Función para renderizar la estructura de carpetas
+function renderFolderStructure(proyectos) {
+  const container = document.getElementById('folderStructureContainer');
+  if (!container) return;
+  
+  // Lista de carpetas (subestaciones) ordenadas
+  const folderNames = [
+    "S/E (01) Olímpico", "S/E (02) Luluncoto", "S/E (03) Barrio Nuevo", "S/E (04) Chimbacalle", 
+    "S/E (05) Chilibulo", "S/E (06) Escuela Sucre", "S/E (07) San Roque", "S/E (08) La Marín", 
+    "S/E (09) Miraflores", "S/E (10) Diez Vieja", "S/E (11) Belisario Quevedo", "S/E (12) La Floresta", 
+    "S/E (13) Granda Centeno", "S/E (14) Gualo", "S/E (15) El Bosque", "S/E (16) Rio Coca", 
+    "S/E (17) Andalucía", "S/E (18) Cristiania", "S/E (19) Cotocollao", "S/E (20) Sur", 
+    "S/E (21) Eplicachima", "S/E (22) San Antonio", "S/E (23) Conocoto", "S/E (24) Carolina", 
+    "S/E (25) San Pablo", "S/E (26) Alangasi", "S/E (27) San Rafael", "S/E (28) Iñaquito", 
+    "S/E (29) Nueva Cumbayá", "S/E (30) Plataforma Financiera", "S/E (31) Tababela", "S/E (32) Diez Nueva", 
+    "S/E (33) Nuevo Aeropuerto", "S/E (36) Tumbaco", "S/E (37) Santa Rosa", "S/E (38) Norte", 
+    "S/E (39) Vicentina", "S/E (41) Selva Alegre", "S/E (42) Móvil Papallacta", "S/E (46) El Inga Bajo", 
+    "S/E (48) Mirador Alto", "S/E (49) Los Bancos", "S/E (51) Bicentenario", "S/E (53) Pérez Guerrero", 
+    "S/E (55) Sangolquí", "S/E (57) Pomasqui", "S/E (58) El Quinche", "S/E (59) Eugenio Espejo", 
+    "S/E (63) Batán Alto", "S/E (68) Labrador", "S/E (70) Shelter T-GOOD", "S/E (73) El Obraje", 
+    "S/E (80) Cumbayá", "S/E (81) Estación Terrena", "S/E (82) Gualberto Hernández", 
+    "S/E (84) Guangopolo Hidráulica", "S/E (86) Nayón", "S/E (88) Pasochoa"
+  ];
+  
+  let foldersHtml = '<div class="folder-structure">';
+  
+  for (const folder of folderNames) {
+    const proyectosEnFolder = proyectos.filter(p => p.client === folder);
+    const folderId = `folder_${folder.replace(/[^a-zA-Z0-9]/g, '_')}`;
+    
+    foldersHtml += `
+      <div class="folder-item">
+        <div class="folder-header" onclick="toggleFolder('${folderId}')">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+          <span class="folder-name">${folder}</span>
+          <span class="folder-count">${proyectosEnFolder.length} proyectos</span>
+          <span class="folder-arrow" id="${folderId}_arrow">▼</span>
+        </div>
+        <div class="folder-content" id="${folderId}">
+          <div class="folder-actions">
+            <button class="btn btn-primary" style="padding:6px 12px;font-size:.8rem;" onclick="openNewProjectInFolder('${folder.replace(/'/g, "\\'")}')">+ Nuevo Proyecto en esta carpeta</button>
+          </div>
+          <div class="projects-inside" id="${folderId}_projects"></div>
+        </div>
+      </div>
+    `;
+  }
+  foldersHtml += '</div>';
+  container.innerHTML = foldersHtml;
+  
+  // Renderizar proyectos dentro de cada carpeta
+  for (const folder of folderNames) {
+    const proyectosEnFolder = proyectos.filter(p => p.client === folder);
+    const containerId = `${folder.replace(/[^a-zA-Z0-9]/g, '_')}_projects`;
+    const projectsContainer = document.getElementById(containerId);
+    if (projectsContainer) {
+      if (proyectosEnFolder.length === 0) {
+        projectsContainer.innerHTML = '<div class="empty-folder">📂 Esta carpeta no contiene proyectos aún. Crea uno usando el botón "+ Nuevo Proyecto en esta carpeta".</div>';
+      } else {
+        const cards = await Promise.all(proyectosEnFolder.map(p => projectCardHTML(p, currentUser.role === 'supervisor')));
+        projectsContainer.innerHTML = cards.join('');
+      }
+    }
+  }
+}
+
+function openNewProjectInFolder(folderName) {
+  openNewProjectModal();
+  document.getElementById('np_client').value = folderName;
+}
+
+function toggleFolder(folderId) {
+  const content = document.getElementById(folderId);
+  const arrow = document.getElementById(`${folderId}_arrow`);
+  if (content.classList.contains('open')) {
+    content.classList.remove('open');
+    if (arrow) arrow.textContent = '▶';
+  } else {
+    content.classList.add('open');
+    if (arrow) arrow.textContent = '▼';
+  }
 }
 
 function renderDashboard(proyectos) {
@@ -1347,7 +1495,7 @@ function renderDashboard(proyectos) {
   
   const recent = [...proyectos].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 6);
   if (recent.length) {
-    Promise.all(recent.map(p => projectCardHTML(p, true))).then(cards => {
+    Promise.all(recent.map(p => projectCardHTML(p, currentUser.role === 'supervisor'))).then(cards => {
       document.getElementById('recentProjects').innerHTML = cards.join('');
     });
   } else {
@@ -1381,7 +1529,7 @@ async function projectCardHTML(p, showDeleteBtn = false) {
   
   return `
     <div class="project-card ${alertCls}" style="position:relative;">
-      ${canDelete ? `<button class="delete-btn" onclick="event.stopPropagation(); confirmDeleteProject('${p.id}', '${p.name.replace(/'/g, "\\'")}')" title="Eliminar">🗑️</button>` : ''}
+      ${canDelete && showDeleteBtn ? `<button class="delete-btn" onclick="event.stopPropagation(); confirmDeleteProject('${p.id}', '${p.name.replace(/'/g, "\\'")}')" title="Eliminar">🗑️</button>` : ''}
       <div onclick='openProject(${JSON.stringify(p).replace(/'/g, "\\'")})'>
         <div class="project-header">
           <div><div class="project-title">${p.name}</div><div class="project-code">${p.code}</div></div>
@@ -1429,23 +1577,6 @@ async function renderDeletedProjects(proyectosEliminados) {
         <div class="icon">🗑️</div>
         <h3>No hay proyectos eliminados</h3>
         <p>Los proyectos que elimines aparecerán aquí y podrán ser restaurados.</p>
-      </div>`;
-  }
-}
-
-function renderProjects(proyectos) {
-  const container = document.getElementById('projectsGrid');
-  if (!container) return;
-  
-  if (proyectos.length) {
-    Promise.all(proyectos.map(p => projectCardHTML(p, true))).then(cards => {
-      container.innerHTML = cards.join('');
-    });
-  } else {
-    container.innerHTML = `<div class="empty-state">
-        <div class="icon">📂</div>
-        <h3>No hay proyectos activos</h3>
-        <p>Crea el primero con "+ Nuevo Proyecto".</p>
       </div>`;
   }
 }
@@ -1559,7 +1690,6 @@ function showPage(page) {
   if (btnNewProject) btnNewProject.classList.toggle('hidden', page !== 'projects' || currentUser?.role === 'supervisor');
   if (btnAddUser) btnAddUser.classList.toggle('hidden', page !== 'users');
   
-  // Cerrar sidebar solo en móvil al cambiar de página
   if (window.innerWidth <= 768) {
     closeSidebar();
   }
@@ -1691,6 +1821,7 @@ function renderInfo() {
   });
 }
 
+// Función mejorada para exportar PDF con ajuste de texto
 async function exportProjectPDF() {
   if (!currentProject) return;
   
@@ -1754,7 +1885,15 @@ async function exportProjectPDF() {
     doc.text(lbl, cx, cy);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(30, 41, 59);
-    doc.text(String(val).substring(0, 38), cx + (lbl.length > 10 ? 42 : 22), cy);
+    // Ajuste de texto para valores largos
+    const valStr = String(val);
+    const maxWidth = 65;
+    if (doc.getTextWidth(valStr) > maxWidth) {
+      const splitText = doc.splitTextToSize(valStr, maxWidth);
+      doc.text(splitText, cx + (lbl.length > 10 ? 42 : 22), cy);
+    } else {
+      doc.text(valStr, cx + (lbl.length > 10 ? 42 : 22), cy);
+    }
     ix++;
   });
   y += 52;
@@ -1805,7 +1944,7 @@ async function exportProjectPDF() {
     }
     const bg = (p.steps.indexOf(step) % 2 === 0) ? [255, 255, 255] : [248, 250, 252];
     doc.setFillColor(...bg);
-    doc.rect(10, y, W - 20, 14, 'F');
+    doc.rect(10, y, W - 20, 18, 'F');
     
     const sc = statusColors[step.status] || [148, 163, 184];
     doc.setFillColor(...sc);
@@ -1824,7 +1963,9 @@ async function exportProjectPDF() {
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(7);
       doc.setTextColor(100, 116, 139);
-      doc.text(step.notes.substring(0, 55), 24, y + 12);
+      // Ajuste de texto para notas largas
+      const splitNotes = doc.splitTextToSize(step.notes, 95);
+      doc.text(splitNotes, 24, y + 12);
     }
     
     doc.setFillColor(...sc);
@@ -1840,8 +1981,8 @@ async function exportProjectPDF() {
     doc.text(step.completedAt ? fmtDate(step.completedAt) : step.startedAt ? fmtDate(step.startedAt) : '—', W - 14, y + 7, { align: 'right' });
     
     doc.setDrawColor(226, 232, 240);
-    doc.line(10, y + 14, W - 10, y + 14);
-    y += 14;
+    doc.line(10, y + 18, W - 10, y + 18);
+    y += 18;
   }
   
   if (!p.deleted && isDaysSinceLastUpdate(p, 3)) {
@@ -1903,11 +2044,9 @@ setInterval(() => {
   }
 }, 60000);
 
-// Ajustar cierre de sidebar al cambiar tamaño de ventana
 window.addEventListener('resize', () => {
   if (window.innerWidth > 768) {
     closeSidebar();
-    // Asegurar que la sidebar esté visible en escritorio
     const sidebar = document.getElementById('sidebar');
     if (sidebar) {
       sidebar.classList.remove('open');
