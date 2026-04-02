@@ -15,7 +15,6 @@
   *{margin:0;padding:0;box-sizing:border-box;}
   body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
   
-  /* LOGIN */
   #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;
     background:linear-gradient(135deg,#1e3a8a 0%,#7c3aed 100%);padding:20px;}
   .login-card{background:#fff;border-radius:20px;padding:32px 24px;width:100%;max-width:430px;
@@ -70,7 +69,6 @@
   .btn-pdf:hover{opacity:.9;transform:translateY(-2px);}
   .btn-full{width:100%;justify-content:center;}
   
-  /* Botón menú móvil */
   .menu-toggle {
     display: none;
     position: fixed;
@@ -93,7 +91,6 @@
     transform: scale(1.05);
   }
   
-  /* LAYOUT */
   #app{display:none;min-height:100vh;position:relative;}
   .sidebar{
     position:fixed;
@@ -162,7 +159,6 @@
   .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
   .section-header h2{font-size:1.1rem;font-weight:700;}
   
-  /* Estilos para la estructura de carpetas */
   .folder-structure {
     background: #fff;
     border-radius: 16px;
@@ -378,7 +374,6 @@
 <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()">☰</button>
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
-<!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-card">
     <h1>🏗️ ProyectoTrack</h1>
@@ -400,6 +395,11 @@
       </div>
       <div id="loginError" class="hidden" style="color:#dc2626;font-size:.8rem;margin-bottom:10px;"></div>
       <button class="btn btn-primary btn-full" onclick="doLogin()">Ingresar →</button>
+      <div style="margin-top: 16px; padding: 12px; background: #f0fdf4; border-radius: 12px; font-size: .75rem; color: #166534;">
+        <strong>📝 Credenciales de prueba:</strong><br>
+        Supervisor: supervisor@test.com / 123456<br>
+        Colaborador: colaborador@test.com / 123456
+      </div>
     </div>
     
     <div id="registerForm" class="hidden">
@@ -428,7 +428,6 @@
   </div>
 </div>
 
-<!-- APP  -->
 <div id="app">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
@@ -468,7 +467,6 @@
       Alertas
       <span id="notifBadge" class="hidden" style="margin-left:auto;background:#dc2626;color:#fff;border-radius:99px;padding:1px 7px;font-size:.68rem;font-weight:700;"></span>
     </div>
-    <!-- NUEVA PESTAÑA REPOSITORIO DOCUMENTOS -->
     <div class="nav-item" onclick="openDocumentRepo(); closeSidebarIfMobile();" id="nav-repo">
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
       Repositorio documentos
@@ -498,7 +496,6 @@
           <h2 id="projectsPageTitle">Mis Proyectos</h2>
           <button class="btn btn-primary" id="btnNewProject2" onclick="openNewProjectModal()">+ Nuevo Proyecto</button>
         </div>
-        <!-- Aquí se renderizará la estructura de carpetas -->
         <div id="folderStructureContainer"></div>
       </div>
       <div id="page-deleted" class="hidden">
@@ -521,7 +518,6 @@
   </main>
 </div>
 
-<!-- MODALS -->
 <div class="modal-overlay hidden" id="newProjectModal">
   <div class="modal" style="max-width:540px;">
     <div class="modal-header">
@@ -681,33 +677,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
 <script>
-
-// Funciones para el menú móvil
-function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebarOverlay');
-  sidebar.classList.toggle('open');
-  overlay.classList.toggle('active');
-}
-
-function closeSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebarOverlay');
-  sidebar.classList.remove('open');
-  overlay.classList.remove('active');
-}
-
-function closeSidebarIfMobile() {
-  if (window.innerWidth <= 768) {
-    closeSidebar();
-  }
-}
-
-// Función para abrir el repositorio de documentos
-function openDocumentRepo() {
-  window.open('https://drive.google.com/drive/folders/1ts8G8ghmSddPAFRJLGTAyIxUKEdrR0z6?usp=sharing', '_blank');
-}
-
 const firebaseConfig = {
   apiKey: "AIzaSyC40UAPgOwuEW1P7ZOvr4NYlvTh9eEdsFw",
   authDomain: "proyectotrack-d3556.firebaseapp.com",
@@ -722,14 +691,9 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 
 const STEP_NAMES = [
-  "Informe Técnico",
-  "Certificado de Pre-existencia",
-  "Quipux – Inicio del Proceso",
-  "Constatación Física",
-  "Solventar Dudas de la Constatación",
-  "Elaboración del Acta",
-  "Número de Reingreso",
-  "Quipux – Finalización"
+  "Informe Técnico", "Certificado de Pre-existencia", "Quipux – Inicio del Proceso",
+  "Constatación Física", "Solventar Dudas de la Constatación", "Elaboración del Acta",
+  "Número de Reingreso", "Quipux – Finalización"
 ];
 
 let currentUser = null;
@@ -737,13 +701,29 @@ let currentProject = null;
 let updateStepIndex = null;
 let editingUserId = null;
 let proyectosFirebase = [];
-let confirmAction = null;
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('active');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('active');
+}
+
+function closeSidebarIfMobile() {
+  if (window.innerWidth <= 768) closeSidebar();
+}
+
+function openDocumentRepo() {
+  window.open('https://drive.google.com/drive/folders/1ts8G8ghmSddPAFRJLGTAyIxUKEdrR0z6?usp=sharing', '_blank');
+}
 
 function switchAuthTab(tab) {
   const loginForm = document.getElementById('loginForm');
   const registerForm = document.getElementById('registerForm');
   const tabs = document.querySelectorAll('.auth-tab');
-  
   if (tab === 'login') {
     loginForm.classList.remove('hidden');
     registerForm.classList.add('hidden');
@@ -769,55 +749,28 @@ async function doRegister() {
     errorEl.classList.remove('hidden');
     return;
   }
-  
   if (password.length < 6) {
     errorEl.textContent = 'La contraseña debe tener al menos 6 caracteres';
     errorEl.classList.remove('hidden');
     return;
   }
-  
-  if (!email.includes('@')) {
-    errorEl.textContent = 'Ingresa un email válido';
-    errorEl.classList.remove('hidden');
-    return;
-  }
-  
   errorEl.classList.add('hidden');
   
   try {
     const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-    const user = userCredential.user;
-    
-    await db.collection("usuarios").doc(user.uid).set({
-      name: name,
-      email: email,
-      role: role,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    await db.collection("usuarios").doc(userCredential.user.uid).set({
+      name: name, email: email, role: role, createdAt: new Date().toISOString()
     });
-    
     alert('¡Registro exitoso! Ahora puedes iniciar sesión.');
-    
     document.getElementById('regName').value = '';
     document.getElementById('regEmail').value = '';
     document.getElementById('regPassword').value = '';
     switchAuthTab('login');
-    
   } catch (error) {
-    console.error("Error en registro:", error);
     let errorMessage = 'Error al registrar: ';
-    switch (error.code) {
-      case 'auth/email-already-in-use':
-        errorMessage += 'Este email ya está registrado.';
-        break;
-      case 'auth/invalid-email':
-        errorMessage += 'Email inválido.';
-        break;
-      case 'auth/weak-password':
-        errorMessage += 'Contraseña muy débil (mínimo 6 caracteres).';
-        break;
-      default:
-        errorMessage += error.message;
-    }
+    if (error.code === 'auth/email-already-in-use') errorMessage += 'Email ya registrado.';
+    else if (error.code === 'auth/weak-password') errorMessage += 'Contraseña muy débil.';
+    else errorMessage += error.message;
     errorEl.textContent = errorMessage;
     errorEl.classList.remove('hidden');
   }
@@ -833,100 +786,72 @@ async function doLogin() {
     errorEl.classList.remove('hidden');
     return;
   }
-  
   errorEl.classList.add('hidden');
   
   try {
     const userCredential = await auth.signInWithEmailAndPassword(email, password);
-    const user = userCredential.user;
-    const userDoc = await db.collection("usuarios").doc(user.uid).get();
+    const userDoc = await db.collection("usuarios").doc(userCredential.user.uid).get();
+    if (!userDoc.exists) throw new Error('Usuario sin datos');
     
-    if (!userDoc.exists) {
-      throw new Error('Usuario no tiene datos configurados');
-    }
-    
-    const userData = userDoc.data();
-    currentUser = {
-      id: user.uid,
-      email: userData.email,
-      role: userData.role,
-      name: userData.name
-    };
-    
-    console.log("Login exitoso:", currentUser);
+    currentUser = { id: userCredential.user.uid, ...userDoc.data() };
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     setupUI();
     cargarProyectosFirebase();
     cargarUsuariosFirebase();
     showPage('dashboard');
-    
   } catch (error) {
-    console.error("Error en login:", error);
-    let errorMessage = 'Error al iniciar sesión: ';
-    switch (error.code) {
-      case 'auth/user-not-found':
-        errorMessage += 'Usuario no encontrado.';
-        break;
-      case 'auth/wrong-password':
-        errorMessage += 'Contraseña incorrecta.';
-        break;
-      case 'auth/invalid-email':
-        errorMessage += 'Email inválido.';
-        break;
-      default:
-        errorMessage += error.message;
-    }
-    errorEl.textContent = errorMessage;
+    errorEl.textContent = 'Error: ' + (error.message || 'Credenciales incorrectas');
     errorEl.classList.remove('hidden');
   }
 }
 
+async function crearUsuariosPrueba() {
+  try {
+    // Intentar crear usuario supervisor
+    try {
+      const supervisorCred = await auth.createUserWithEmailAndPassword('supervisor@test.com', '123456');
+      await db.collection("usuarios").doc(supervisorCred.user.uid).set({
+        name: 'Supervisor Test', email: 'supervisor@test.com', role: 'supervisor', createdAt: new Date().toISOString()
+      });
+      console.log('Usuario supervisor creado');
+    } catch(e) { if(e.code !== 'auth/email-already-in-use') console.log(e); }
+    
+    // Intentar crear usuario colaborador
+    try {
+      const colaboradorCred = await auth.createUserWithEmailAndPassword('colaborador@test.com', '123456');
+      await db.collection("usuarios").doc(colaboradorCred.user.uid).set({
+        name: 'Colaborador Test', email: 'colaborador@test.com', role: 'collaborator', createdAt: new Date().toISOString()
+      });
+      console.log('Usuario colaborador creado');
+    } catch(e) { if(e.code !== 'auth/email-already-in-use') console.log(e); }
+  } catch(e) { console.log('Error creando usuarios:', e); }
+}
+
 auth.onAuthStateChanged(async (user) => {
   if (user) {
-    try {
-      const userDoc = await db.collection("usuarios").doc(user.uid).get();
-      if (userDoc.exists) {
-        const userData = userDoc.data();
-        currentUser = {
-          id: user.uid,
-          email: userData.email,
-          role: userData.role,
-          name: userData.name
-        };
-        
-        console.log("Sesión restaurada:", currentUser);
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-        setupUI();
-        cargarProyectosFirebase();
-        cargarUsuariosFirebase();
-        showPage('dashboard');
-      }
-    } catch (error) {
-      console.error("Error al restaurar sesión:", error);
+    const userDoc = await db.collection("usuarios").doc(user.uid).get();
+    if (userDoc.exists) {
+      currentUser = { id: user.uid, ...userDoc.data() };
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      setupUI();
+      cargarProyectosFirebase();
+      cargarUsuariosFirebase();
+      showPage('dashboard');
     }
   } else {
     document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('app').style.display = 'none';
+    crearUsuariosPrueba();
   }
 });
 
 function doLogout() {
   auth.signOut().then(() => {
     currentUser = null;
-    proyectosFirebase = [];
     document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('app').style.display = 'none';
-    document.getElementById('loginUser').value = '';
-    document.getElementById('loginPass').value = '';
-    document.getElementById('regName').value = '';
-    document.getElementById('regEmail').value = '';
-    document.getElementById('regPassword').value = '';
-    
-    switchAuthTab('login');
-  }).catch(error => {
-    console.error("Error al cerrar sesión:", error);
   });
 }
 
@@ -950,19 +875,12 @@ function setupUI() {
 
 function initSteps() {
   return STEP_NAMES.map((name, i) => ({
-    id: i,
-    name: name,
-    status: "pending",
-    notes: "",
-    startedAt: null,
-    completedAt: null,
-    updatedAt: null
+    id: i, name: name, status: "pending", notes: "", startedAt: null, completedAt: null, updatedAt: null
   }));
 }
 
 function getProgress(p) {
-  const completedSteps = p.steps.filter(s => s.status === 'done').length;
-  return Math.round((completedSteps / STEP_NAMES.length) * 100);
+  return Math.round((p.steps.filter(s => s.status === 'done').length / STEP_NAMES.length) * 100);
 }
 
 function getStatusBadge(p) {
@@ -1004,68 +922,37 @@ async function getUserName(uid) {
   if (!uid) return '—';
   try {
     const userDoc = await db.collection("usuarios").doc(uid).get();
-    if (userDoc.exists) {
-      return userDoc.data().name;
-    }
-  } catch (error) {
-    console.error("Error al obtener usuario:", error);
-  }
-  return uid.substring(0, 8);
+    return userDoc.exists ? userDoc.data().name : uid.substring(0, 8);
+  } catch { return uid.substring(0, 8); }
 }
 
 async function softDeleteProject(projectId) {
-  if (currentUser.role !== 'supervisor') {
-    alert('Solo los supervisores pueden eliminar proyectos.');
-    return;
-  }
-  
+  if (currentUser.role !== 'supervisor') return alert('Solo supervisores pueden eliminar proyectos.');
   try {
-    await db.collection("proyectos").doc(projectId).update({
-      deleted: true,
-      deletedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      deletedBy: currentUser.id
-    });
-    console.log("Proyecto marcado como eliminado:", projectId);
-    alert('Proyecto eliminado. La información permanece en la base de datos.');
+    await db.collection("proyectos").doc(projectId).update({ deleted: true, deletedAt: new Date().toISOString(), deletedBy: currentUser.id });
+    alert('Proyecto eliminado');
     closeModal('confirmModal');
-  } catch (error) {
-    console.error("Error al marcar proyecto como eliminado:", error);
-    alert("Error al eliminar proyecto: " + error.message);
-  }
+  } catch (error) { alert("Error: " + error.message); }
 }
 
 async function restoreProject(projectId) {
-  if (currentUser.role !== 'supervisor') {
-    alert('Solo los supervisores pueden restaurar proyectos.');
-    return;
-  }
-  
+  if (currentUser.role !== 'supervisor') return alert('Solo supervisores pueden restaurar proyectos.');
   try {
-    await db.collection("proyectos").doc(projectId).update({
-      deleted: false,
-      restoredAt: firebase.firestore.FieldValue.serverTimestamp(),
-      restoredBy: currentUser.id
-    });
-    console.log("Proyecto restaurado:", projectId);
-    alert('Proyecto restaurado correctamente');
-  } catch (error) {
-    console.error("Error al restaurar proyecto:", error);
-    alert("Error al restaurar proyecto: " + error.message);
-  }
+    await db.collection("proyectos").doc(projectId).update({ deleted: false, restoredAt: new Date().toISOString() });
+    alert('Proyecto restaurado');
+  } catch (error) { alert("Error: " + error.message); }
 }
 
 function confirmDeleteProject(projectId, projectName) {
   if (currentUser.role !== 'supervisor') return;
-  
-  document.getElementById('confirmMsg').textContent = `¿Marcar como eliminado el proyecto "${projectName}"? La información permanecerá en la base de datos y podrá ser restaurada.`;
+  document.getElementById('confirmMsg').textContent = `¿Eliminar "${projectName}"?`;
   document.getElementById('confirmOkBtn').onclick = () => softDeleteProject(projectId);
   document.getElementById('confirmModal').classList.remove('hidden');
 }
 
 function confirmRestoreProject(projectId, projectName) {
   if (currentUser.role !== 'supervisor') return;
-  
-  document.getElementById('confirmMsg').textContent = `¿Restaurar el proyecto "${projectName}"? Volverá a aparecer en la lista de proyectos activos.`;
+  document.getElementById('confirmMsg').textContent = `¿Restaurar "${projectName}"?`;
   document.getElementById('confirmOkBtn').onclick = () => restoreProject(projectId);
   document.getElementById('confirmModal').classList.remove('hidden');
 }
@@ -1080,51 +967,32 @@ function openNewProjectModal() {
   closeSidebarIfMobile();
 }
 
+function openNewProjectInFolder(folderName) {
+  openNewProjectModal();
+  document.getElementById('np_client').value = folderName;
+}
+
 async function createProject() {
   const name = document.getElementById('np_name').value.trim();
   const code = document.getElementById('np_code').value.trim();
   const clientFolder = document.getElementById('np_client').value;
   
-  if (!name || !code) {
-    alert('Completa el nombre y código del proyecto.');
-    return;
-  }
-  
-  if (!clientFolder) {
-    alert('Por favor, selecciona una subestación (carpeta) para el proyecto.');
-    return;
-  }
+  if (!name || !code) return alert('Completa nombre y código.');
+  if (!clientFolder) return alert('Selecciona una subestación.');
   
   const now = new Date();
-  const year = now.getFullYear().toString().slice(-2);
-  const month = (now.getMonth() + 1).toString().padStart(2, '0');
-  const day = now.getDate().toString().padStart(2, '0');
-  const datePrefix = `${year}${month}${day}`;
-  const randomNumber = Math.floor(Math.random() * 100) + 1;
-  const paddedRandomNumber = randomNumber.toString().padStart(3, '0');
-  const id = `${datePrefix}_${paddedRandomNumber}`;
-
+  const id = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}_${Math.floor(Math.random()*1000)}`;
+  
   const proyecto = {
-    id: id,
-    name: name,
-    code: code,
-    startDate: document.getElementById('np_startDate').value,
-    description: document.getElementById('np_desc').value.trim(),
-    client: clientFolder,
-    owner: currentUser.id,
-    createdAt: new Date().toISOString(),
-    steps: initSteps(),
-    deleted: false
+    id, name, code, startDate: document.getElementById('np_startDate').value,
+    description: document.getElementById('np_desc').value.trim(), client: clientFolder,
+    owner: currentUser.id, createdAt: new Date().toISOString(), steps: initSteps(), deleted: false
   };
   
   try {
     await db.collection("proyectos").doc(id).set(proyecto);
-    console.log("Proyecto creado en Firebase con ID:", id);
     closeModal('newProjectModal');
-  } catch (error) {
-    console.error("Error al crear proyecto:", error);
-    alert("Error al crear proyecto: " + error.message);
-  }
+  } catch (error) { alert("Error: " + error.message); }
 }
 
 function openProject(project) {
@@ -1135,28 +1003,17 @@ function openProject(project) {
   document.getElementById('detailBadges').innerHTML = `
     <span class="badge ${st.cls}">${st.label}</span>
     <span class="badge badge-purple">${pct}% completado</span>
-    <span class="badge badge-gray">${currentProject.code}</span>
-    ${currentProject.deleted ? '<span class="badge badge-deleted">Eliminado</span>' : ''}
-  `;
+    <span class="badge badge-gray">${currentProject.code}</span>`;
   switchTab('timeline');
   document.getElementById('projectDetailModal').classList.remove('hidden');
   closeSidebarIfMobile();
 }
 
 async function updateStepInFirebase(projectId, stepIndex, stepData) {
-  try {
-    const projectRef = db.collection("proyectos").doc(projectId);
-    const projectDoc = await projectRef.get();
-    const project = projectDoc.data();
-    
-    project.steps[stepIndex] = { ...project.steps[stepIndex], ...stepData };
-    
-    await projectRef.update({ steps: project.steps });
-    console.log("Paso actualizado en Firebase");
-  } catch (error) {
-    console.error("Error al actualizar paso:", error);
-    throw error;
-  }
+  const projectDoc = await db.collection("proyectos").doc(projectId).get();
+  const project = projectDoc.data();
+  project.steps[stepIndex] = { ...project.steps[stepIndex], ...stepData };
+  await db.collection("proyectos").doc(projectId).update({ steps: project.steps });
 }
 
 function openUpdateStep(idx) {
@@ -1171,25 +1028,16 @@ function openUpdateStep(idx) {
 
 async function saveStepUpdate() {
   if (!currentProject || updateStepIndex === null) return;
-  
   const step = currentProject.steps[updateStepIndex];
-  const newStatus = document.getElementById('us_status').value;
-  
-  step.status = newStatus;
+  step.status = document.getElementById('us_status').value;
   step.notes = document.getElementById('us_notes').value.trim();
   step.updatedAt = new Date().toISOString();
-  
-  if (newStatus === 'in_progress' && !step.startedAt) {
-    step.startedAt = new Date().toISOString();
-  }
-  
-  if (newStatus === 'done') {
+  if (step.status === 'in_progress' && !step.startedAt) step.startedAt = new Date().toISOString();
+  if (step.status === 'done') {
     const dateValue = document.getElementById('us_date').value;
     step.completedAt = dateValue ? new Date(dateValue).toISOString() : new Date().toISOString();
     step.startedAt = step.startedAt || step.completedAt;
-  } else {
-    step.completedAt = null;
-  }
+  } else { step.completedAt = null; }
   
   try {
     await updateStepInFirebase(currentProject.id, updateStepIndex, step);
@@ -1197,68 +1045,29 @@ async function saveStepUpdate() {
     const updatedDoc = await db.collection("proyectos").doc(currentProject.id).get();
     currentProject = updatedDoc.data();
     switchTab('timeline');
-  } catch (error) {
-    alert("Error al guardar: " + error.message);
-  }
+  } catch (error) { alert("Error: " + error.message); }
 }
 
-async function cargarUsuariosFirebase() {
+function cargarUsuariosFirebase() {
   if (currentUser?.role !== 'supervisor') return;
-  
   db.collection("usuarios").onSnapshot((snapshot) => {
-    renderUsersList(snapshot);
+    let rows = '';
+    snapshot.forEach((doc) => {
+      const u = doc.data();
+      rows += `<tr><td><strong>${u.name || '—'}</strong></td><td>${u.email}</td>
+        <td>${u.role === 'supervisor' ? '<span class="badge badge-purple">Supervisor</span>' : '<span class="badge badge-blue">Colaborador</span>'}</td>
+        <td><div class="flex gap-2"><button class="btn btn-ghost" style="padding:5px 10px;" onclick="openEditUser('${doc.id}', '${u.name}', '${u.email}', '${u.role}')">✏️</button>
+        <button class="btn btn-danger" style="padding:5px 10px;" onclick="confirmDeleteUser('${doc.id}')">🗑️</button></div></td></tr>`;
+    });
+    document.getElementById('usersContent').innerHTML = `
+      <div class="alert-banner alert-info">Gestión de usuarios</div>
+      <div style="background:#fff;border-radius:14px;overflow-x:auto;"><table class="users-table"><thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Acciones</th></tr></thead><tbody>${rows || '<tr><td colspan="4">No hay usuarios</td></tr>'}</tbody></table></div>`;
   });
-}
-
-function renderUsersList(snapshot) {
-  const usersContent = document.getElementById('usersContent');
-  if (!usersContent) return;
-  
-  let rows = '';
-  snapshot.forEach((doc) => {
-    const u = doc.data();
-    const roleBadge = u.role === 'supervisor' 
-      ? '<span class="badge badge-purple">🔑 Supervisor</span>' 
-      : '<span class="badge badge-blue">👤 Colaborador</span>';
-    
-    rows += `
-      <tr>
-        <td><strong>${u.name || '—'}</strong></td>
-        <td><code style="background:#f1f5f9;padding:2px 6px;border-radius:6px;font-size:.75rem;">${u.email}</code></td>
-        <td>${roleBadge}</td>
-        <td>
-          <div class="flex gap-2">
-            <button class="btn btn-ghost" style="padding:5px 10px;font-size:.75rem;" onclick="openEditUser('${doc.id}', '${u.name}', '${u.email}', '${u.role}')">✏️</button>
-            <button class="btn btn-danger" style="padding:5px 10px;font-size:.75rem;" onclick="confirmDeleteUser('${doc.id}')">🗑️</button>
-          </div>
-         </td>
-       </tr>
-    `;
-  });
-  
-  usersContent.innerHTML = `
-    <div class="alert-banner alert-info" style="margin-bottom:16px;">
-      Solo el supervisor puede agregar, editar o eliminar colaboradores.
-    </div>
-    <div style="background:#fff;border-radius:14px;overflow-x:auto;box-shadow:0 1px 8px rgba(0,0,0,.06);">
-      <table class="users-table">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Rol</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>${rows || '<tr><td colspan="4" class="empty-state">No hay usuarios registrados</td></tr>'}</tbody>
-      </table>
-    </div>
-  `;
 }
 
 function openAddUserModal() {
   editingUserId = null;
-  document.getElementById('addUserTitle').textContent = 'Nuevo Colaborador';
+  document.getElementById('addUserTitle').textContent = 'Nuevo Usuario';
   document.getElementById('au_name').value = '';
   document.getElementById('au_email').value = '';
   document.getElementById('au_pass').value = '';
@@ -1266,7 +1075,6 @@ function openAddUserModal() {
   document.getElementById('addUserError').classList.add('hidden');
   document.getElementById('saveUserBtn').textContent = 'Crear Usuario';
   document.getElementById('addUserModal').classList.remove('hidden');
-  closeSidebarIfMobile();
 }
 
 function openEditUser(uid, name, email, role) {
@@ -1276,10 +1084,7 @@ function openEditUser(uid, name, email, role) {
   document.getElementById('au_email').value = email;
   document.getElementById('au_pass').value = '';
   document.getElementById('au_role').value = role;
-  document.getElementById('addUserError').classList.add('hidden');
-  document.getElementById('saveUserBtn').textContent = 'Guardar Cambios';
   document.getElementById('addUserModal').classList.remove('hidden');
-  closeSidebarIfMobile();
 }
 
 async function saveUser() {
@@ -1287,182 +1092,100 @@ async function saveUser() {
   const email = document.getElementById('au_email').value.trim();
   const password = document.getElementById('au_pass').value;
   const role = document.getElementById('au_role').value;
-  const errEl = document.getElementById('addUserError');
   
-  errEl.classList.add('hidden');
-  
-  if (!name || !email) {
-    errEl.textContent = 'Nombre y email son obligatorios.';
-    errEl.classList.remove('hidden');
-    return;
-  }
+  if (!name || !email) return alert('Nombre y email requeridos');
   
   try {
     if (editingUserId) {
-      const userRef = db.collection("usuarios").doc(editingUserId);
-      await userRef.update({
-        name: name,
-        role: role
-      });
-      
-      if (password && password.length >= 6) {
-        alert("La contraseña no se puede cambiar desde aquí. El usuario debe cambiarla desde su perfil.");
-      }
-      
-      alert("Usuario actualizado correctamente");
+      await db.collection("usuarios").doc(editingUserId).update({ name, role });
+      alert('Usuario actualizado');
     } else {
-      if (!password || password.length < 6) {
-        errEl.textContent = 'La contraseña debe tener al menos 6 caracteres.';
-        errEl.classList.remove('hidden');
-        return;
-      }
-      
-      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-      const user = userCredential.user;
-      
-      await db.collection("usuarios").doc(user.uid).set({
-        name: name,
-        email: email,
-        role: role,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      
-      alert("Usuario creado correctamente");
+      if (!password || password.length < 6) return alert('Contraseña mínimo 6 caracteres');
+      const userCred = await auth.createUserWithEmailAndPassword(email, password);
+      await db.collection("usuarios").doc(userCred.user.uid).set({ name, email, role, createdAt: new Date().toISOString() });
+      alert('Usuario creado');
     }
-    
     closeModal('addUserModal');
-    
-  } catch (error) {
-    console.error("Error al guardar usuario:", error);
-    let errorMsg = "Error: ";
-    if (error.code === 'auth/email-already-in-use') {
-      errorMsg += "Este email ya está registrado.";
-    } else {
-      errorMsg += error.message;
-    }
-    errEl.textContent = errorMsg;
-    errEl.classList.remove('hidden');
-  }
+  } catch (error) { alert("Error: " + error.message); }
 }
 
 function confirmDeleteUser(uid) {
-  document.getElementById('confirmMsg').textContent = `¿Eliminar este usuario? Se eliminarán sus datos de Firestore.`;
-  document.getElementById('confirmOkBtn').onclick = () => deleteUser(uid);
+  document.getElementById('confirmMsg').textContent = '¿Eliminar este usuario?';
+  document.getElementById('confirmOkBtn').onclick = async () => {
+    await db.collection("usuarios").doc(uid).delete();
+    closeModal('confirmModal');
+  };
   document.getElementById('confirmModal').classList.remove('hidden');
 }
 
-async function deleteUser(uid) {
-  try {
-    await db.collection("usuarios").doc(uid).delete();
-    alert("Usuario eliminado correctamente");
-    closeModal('confirmModal');
-  } catch (error) {
-    console.error("Error al eliminar usuario:", error);
-    alert("Error al eliminar usuario: " + error.message);
-  }
-}
-
 function cargarProyectosFirebase() {
-  db.collection("proyectos").onSnapshot(async (snapshot) => {
-    const proyectos = [];
-    for (const doc of snapshot.docs) {
-      const proyecto = doc.data();
-      proyectos.push(proyecto);
-    }
-    proyectosFirebase = proyectos;
+  db.collection("proyectos").onSnapshot(async () => {
+    const snapshot = await db.collection("proyectos").get();
+    proyectosFirebase = [];
+    snapshot.forEach(doc => proyectosFirebase.push(doc.data()));
     await renderAllViews();
   });
 }
 
 async function renderAllViews() {
   if (!currentUser) return;
-  
   let proyectosActivos = proyectosFirebase.filter(p => !p.deleted);
-  let proyectosEliminados = proyectosFirebase.filter(p => p.deleted === true);
-  
-  if (currentUser.role !== 'supervisor') {
-    proyectosActivos = proyectosActivos.filter(p => p.owner === currentUser.id);
-    proyectosEliminados = proyectosEliminados.filter(p => p.owner === currentUser.id);
-  }
+  if (currentUser.role !== 'supervisor') proyectosActivos = proyectosActivos.filter(p => p.owner === currentUser.id);
   
   renderDashboard(proyectosActivos);
   renderFolderStructure(proyectosActivos);
-  renderDeletedProjects(proyectosEliminados);
-  if (currentUser.role === 'supervisor') {
-    renderSupervisor(proyectosActivos);
-  }
+  renderDeletedProjects(proyectosFirebase.filter(p => p.deleted));
+  if (currentUser.role === 'supervisor') renderSupervisor(proyectosActivos);
   renderNotifications(proyectosActivos);
 }
 
-// Función para renderizar la estructura de carpetas
 function renderFolderStructure(proyectos) {
-  const container = document.getElementById('folderStructureContainer');
-  if (!container) return;
-  
-  // Lista de carpetas (subestaciones) ordenadas
   const folderNames = [
-    "S/E (01) Olímpico", "S/E (02) Luluncoto", "S/E (03) Barrio Nuevo", "S/E (04) Chimbacalle", 
-    "S/E (05) Chilibulo", "S/E (06) Escuela Sucre", "S/E (07) San Roque", "S/E (08) La Marín", 
-    "S/E (09) Miraflores", "S/E (10) Diez Vieja", "S/E (11) Belisario Quevedo", "S/E (12) La Floresta", 
-    "S/E (13) Granda Centeno", "S/E (14) Gualo", "S/E (15) El Bosque", "S/E (16) Rio Coca", 
-    "S/E (17) Andalucía", "S/E (18) Cristiania", "S/E (19) Cotocollao", "S/E (20) Sur", 
-    "S/E (21) Eplicachima", "S/E (22) San Antonio", "S/E (23) Conocoto", "S/E (24) Carolina", 
-    "S/E (25) San Pablo", "S/E (26) Alangasi", "S/E (27) San Rafael", "S/E (28) Iñaquito", 
-    "S/E (29) Nueva Cumbayá", "S/E (30) Plataforma Financiera", "S/E (31) Tababela", "S/E (32) Diez Nueva", 
-    "S/E (33) Nuevo Aeropuerto", "S/E (36) Tumbaco", "S/E (37) Santa Rosa", "S/E (38) Norte", 
-    "S/E (39) Vicentina", "S/E (41) Selva Alegre", "S/E (42) Móvil Papallacta", "S/E (46) El Inga Bajo", 
-    "S/E (48) Mirador Alto", "S/E (49) Los Bancos", "S/E (51) Bicentenario", "S/E (53) Pérez Guerrero", 
-    "S/E (55) Sangolquí", "S/E (57) Pomasqui", "S/E (58) El Quinche", "S/E (59) Eugenio Espejo", 
-    "S/E (63) Batán Alto", "S/E (68) Labrador", "S/E (70) Shelter T-GOOD", "S/E (73) El Obraje", 
-    "S/E (80) Cumbayá", "S/E (81) Estación Terrena", "S/E (82) Gualberto Hernández", 
+    "S/E (01) Olímpico", "S/E (02) Luluncoto", "S/E (03) Barrio Nuevo", "S/E (04) Chimbacalle",
+    "S/E (05) Chilibulo", "S/E (06) Escuela Sucre", "S/E (07) San Roque", "S/E (08) La Marín",
+    "S/E (09) Miraflores", "S/E (10) Diez Vieja", "S/E (11) Belisario Quevedo", "S/E (12) La Floresta",
+    "S/E (13) Granda Centeno", "S/E (14) Gualo", "S/E (15) El Bosque", "S/E (16) Rio Coca",
+    "S/E (17) Andalucía", "S/E (18) Cristiania", "S/E (19) Cotocollao", "S/E (20) Sur",
+    "S/E (21) Eplicachima", "S/E (22) San Antonio", "S/E (23) Conocoto", "S/E (24) Carolina",
+    "S/E (25) San Pablo", "S/E (26) Alangasi", "S/E (27) San Rafael", "S/E (28) Iñaquito",
+    "S/E (29) Nueva Cumbayá", "S/E (30) Plataforma Financiera", "S/E (31) Tababela", "S/E (32) Diez Nueva",
+    "S/E (33) Nuevo Aeropuerto", "S/E (36) Tumbaco", "S/E (37) Santa Rosa", "S/E (38) Norte",
+    "S/E (39) Vicentina", "S/E (41) Selva Alegre", "S/E (42) Móvil Papallacta", "S/E (46) El Inga Bajo",
+    "S/E (48) Mirador Alto", "S/E (49) Los Bancos", "S/E (51) Bicentenario", "S/E (53) Pérez Guerrero",
+    "S/E (55) Sangolquí", "S/E (57) Pomasqui", "S/E (58) El Quinche", "S/E (59) Eugenio Espejo",
+    "S/E (63) Batán Alto", "S/E (68) Labrador", "S/E (70) Shelter T-GOOD", "S/E (73) El Obraje",
+    "S/E (80) Cumbayá", "S/E (81) Estación Terrena", "S/E (82) Gualberto Hernández",
     "S/E (84) Guangopolo Hidráulica", "S/E (86) Nayón", "S/E (88) Pasochoa"
   ];
   
-  let foldersHtml = '<div class="folder-structure">';
-  
+  let html = '<div class="folder-structure">';
   for (const folder of folderNames) {
     const proyectosEnFolder = proyectos.filter(p => p.client === folder);
-    const folderId = `folder_${folder.replace(/[^a-zA-Z0-9]/g, '_')}`;
-    
-    foldersHtml += `
-      <div class="folder-item">
-        <div class="folder-header" onclick="toggleFolder('${folderId}')">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
-          <span class="folder-name">${folder}</span>
-          <span class="folder-count">${proyectosEnFolder.length} proyectos</span>
-          <span class="folder-arrow" id="${folderId}_arrow">▼</span>
-        </div>
-        <div class="folder-content" id="${folderId}">
-          <div class="folder-actions">
-            <button class="btn btn-primary" style="padding:6px 12px;font-size:.8rem;" onclick="openNewProjectInFolder('${folder.replace(/'/g, "\\'")}')">+ Nuevo Proyecto en esta carpeta</button>
-          </div>
-          <div class="projects-inside" id="${folderId}_projects"></div>
-        </div>
-      </div>
-    `;
+    const folderId = folder.replace(/[^a-zA-Z0-9]/g, '_');
+    html += `<div class="folder-item"><div class="folder-header" onclick="toggleFolder('${folderId}')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+      <span class="folder-name">${folder}</span><span class="folder-count">${proyectosEnFolder.length}</span>
+      <span class="folder-arrow" id="${folderId}_arrow">▼</span></div>
+      <div class="folder-content" id="${folderId}">
+        <div class="folder-actions"><button class="btn btn-primary" style="padding:6px 12px;" onclick="openNewProjectInFolder('${folder}')">+ Nuevo Proyecto</button></div>
+        <div class="projects-inside" id="${folderId}_projects"></div>
+      </div></div>`;
   }
-  foldersHtml += '</div>';
-  container.innerHTML = foldersHtml;
+  html += '</div>';
+  document.getElementById('folderStructureContainer').innerHTML = html;
   
-  // Renderizar proyectos dentro de cada carpeta
   for (const folder of folderNames) {
     const proyectosEnFolder = proyectos.filter(p => p.client === folder);
-    const containerId = `${folder.replace(/[^a-zA-Z0-9]/g, '_')}_projects`;
-    const projectsContainer = document.getElementById(containerId);
-    if (projectsContainer) {
+    const container = document.getElementById(`${folder.replace(/[^a-zA-Z0-9]/g, '_')}_projects`);
+    if (container) {
       if (proyectosEnFolder.length === 0) {
-        projectsContainer.innerHTML = '<div class="empty-folder">📂 Esta carpeta no contiene proyectos aún. Crea uno usando el botón "+ Nuevo Proyecto en esta carpeta".</div>';
+        container.innerHTML = '<div class="empty-folder">📂 Sin proyectos. Crea uno nuevo.</div>';
       } else {
-        const cards = await Promise.all(proyectosEnFolder.map(p => projectCardHTML(p, currentUser.role === 'supervisor')));
-        projectsContainer.innerHTML = cards.join('');
+        const cards = await Promise.all(proyectosEnFolder.map(p => projectCardHTML(p)));
+        container.innerHTML = cards.join('');
       }
     }
   }
-}
-
-function openNewProjectInFolder(folderName) {
-  openNewProjectModal();
-  document.getElementById('np_client').value = folderName;
 }
 
 function toggleFolder(folderId) {
@@ -1477,582 +1200,185 @@ function toggleFolder(folderId) {
   }
 }
 
+async function projectCardHTML(p) {
+  const pct = getProgress(p);
+  const status = getStatusBadge(p);
+  const ownerName = await getUserName(p.owner);
+  const canDelete = currentUser.role === 'supervisor' && !p.deleted;
+  return `<div class="project-card ${isDaysSinceLastUpdate(p,3) ? 'alert-card' : ''}" style="position:relative;">
+    ${canDelete ? `<button class="delete-btn" onclick="event.stopPropagation(); confirmDeleteProject('${p.id}', '${p.name.replace(/'/g, "\\'")}')">🗑️</button>` : ''}
+    <div onclick='openProject(${JSON.stringify(p).replace(/'/g, "\\'")})'>
+      <div class="project-header"><div><div class="project-title">${p.name}</div><div class="project-code">${p.code}</div></div>
+      <span class="badge ${status.cls}">${status.label}</span></div>
+      <div class="progress-wrap"><div class="progress-label"><span>Progreso</span><span>${pct}%</span></div>
+      <div class="progress-bar"><div class="progress-fill ${fillColor(pct)}" style="width:${pct}%"></div></div></div>
+      <div class="project-meta"><span>👤 ${ownerName}</span><span>📅 ${fmtDate(p.createdAt)}</span></div>
+    </div>
+  </div>`;
+}
+
 function renderDashboard(proyectos) {
   const total = proyectos.length;
   const done = proyectos.filter(p => getProgress(p) === 100).length;
-  const inPrg = proyectos.filter(p => getProgress(p) > 0 && getProgress(p) < 100).length;
   const alerts = proyectos.filter(p => isDaysSinceLastUpdate(p, 3)).length;
-  
   document.getElementById('statsGrid').innerHTML = `
-    <div class="stat-card"><div class="stat-icon" style="background:#dbeafe">📁</div><div><h3>${total}</h3><p>Total Proyectos</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#dbeafe">📁</div><div><h3>${total}</h3><p>Total</p></div></div>
     <div class="stat-card"><div class="stat-icon" style="background:#dcfce7">✅</div><div><h3>${done}</h3><p>Completados</p></div></div>
-    <div class="stat-card"><div class="stat-icon" style="background:#ede9fe">🔄</div><div><h3>${inPrg}</h3><p>En Progreso</p></div></div>
-    <div class="stat-card"><div class="stat-icon" style="background:#fee2e2">🔔</div><div><h3>${alerts}</h3><p>Con Alertas</p></div></div>`;
+    <div class="stat-card"><div class="stat-icon" style="background:#fee2e2">🔔</div><div><h3>${alerts}</h3><p>Alertas</p></div></div>`;
+  document.getElementById('alertsSection').innerHTML = alerts ? `<div class="alert-banner alert-danger">🚨 ${alerts} proyecto(s) sin avance >3 días</div>` : '';
   
-  document.getElementById('alertsSection').innerHTML = alerts
-    ? `<div class="alert-banner alert-danger">🚨 <strong>${alerts} proyecto(s)</strong> llevan más de 3 días sin reportar avances.</div>`
-    : '';
-  
-  const recent = [...proyectos].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 6);
-  if (recent.length) {
-    Promise.all(recent.map(p => projectCardHTML(p, currentUser.role === 'supervisor'))).then(cards => {
-      document.getElementById('recentProjects').innerHTML = cards.join('');
-    });
+  const recent = [...proyectos].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,6);
+  if(recent.length){
+    Promise.all(recent.map(p=>projectCardHTML(p))).then(cards=>document.getElementById('recentProjects').innerHTML=cards.join(''));
   } else {
-    document.getElementById('recentProjects').innerHTML = '<div class="empty-state"><div class="icon">📭</div><h3>Sin proyectos activos</h3></div>';
+    document.getElementById('recentProjects').innerHTML='<div class="empty-state">Sin proyectos</div>';
   }
-  
   updateNotifBadge(proyectos);
 }
 
-async function projectCardHTML(p, showDeleteBtn = false) {
-  const pct = getProgress(p);
-  const status = getStatusBadge(p);
-  const alertCls = (!p.deleted && isDaysSinceLastUpdate(p, 3)) ? 'alert-card' : '';
-  const days = daysSinceUpdate(p);
-  const curStep = p.steps.find(s => s.status === 'in_progress') || p.steps.find(s => s.status === 'pending');
-  const ownerName = await getUserName(p.owner);
-  const canDelete = currentUser.role === 'supervisor' && !p.deleted;
-  const isDeleted = p.deleted === true;
-  
-  if (isDeleted) {
-    return `
-      <div class="project-card deleted-card" style="position:relative; opacity:0.7;">
-        <div class="project-header">
-          <div><div class="project-title">${p.name}</div><div class="project-code">${p.code}</div></div>
-          <span class="badge badge-deleted">Eliminado</span>
-        </div>
-        <div class="project-meta"><span>👤 ${ownerName}</span><span>📅 ${fmtDate(p.createdAt)}</span></div>
-        <div class="text-muted" style="font-size:.68rem; margin-top:8px;">Este proyecto fue eliminado el ${fmtDate(p.deletedAt)}</div>
-      </div>`;
-  }
-  
-  return `
-    <div class="project-card ${alertCls}" style="position:relative;">
-      ${canDelete && showDeleteBtn ? `<button class="delete-btn" onclick="event.stopPropagation(); confirmDeleteProject('${p.id}', '${p.name.replace(/'/g, "\\'")}')" title="Eliminar">🗑️</button>` : ''}
-      <div onclick='openProject(${JSON.stringify(p).replace(/'/g, "\\'")})'>
-        <div class="project-header">
-          <div><div class="project-title">${p.name}</div><div class="project-code">${p.code}</div></div>
-          <span class="badge ${status.cls}">${status.label}</span>
-        </div>
-        ${isDaysSinceLastUpdate(p, 3) ? `<div style="font-size:.72rem;color:#dc2626;margin-bottom:7px;font-weight:600;">⚠️ ${days} días sin avance</div>` : ''}
-        <div class="progress-wrap">
-          <div class="progress-label"><span>Progreso</span><span>${pct}%</span></div>
-          <div class="progress-bar"><div class="progress-fill ${fillColor(pct)}" style="width:${pct}%"></div></div>
-        </div>
-        <div style="font-size:.75rem;color:var(--muted);margin-top:5px;">📌 ${curStep ? curStep.name : '✅ Finalizado'}</div>
-        <div class="project-meta"><span>👤 ${ownerName}</span><span>📅 ${fmtDate(p.createdAt)}</span></div>
-      </div>
-    </div>`;
-}
-
 async function renderDeletedProjects(proyectosEliminados) {
-  const container = document.getElementById('deletedProjectsGrid');
-  if (!container) return;
-  
-  if (proyectosEliminados.length) {
-    let cards = '';
-    for (const p of proyectosEliminados) {
-      const ownerName = await getUserName(p.owner);
-      const canRestore = currentUser.role === 'supervisor';
-      cards += `
-        <div class="project-card deleted-card" style="position:relative; background:#f8fafc;">
-          ${canRestore ? `<button class="restore-btn" onclick="event.stopPropagation(); confirmRestoreProject('${p.id}', '${p.name.replace(/'/g, "\\'")}')" title="Restaurar">↺</button>` : ''}
-          <div onclick='openProject(${JSON.stringify(p).replace(/'/g, "\\'")})'>
-            <div class="project-header">
-              <div><div class="project-title">${p.name}</div><div class="project-code">${p.code}</div></div>
-              <span class="badge badge-deleted">Eliminado</span>
-            </div>
-            <div class="progress-wrap">
-              <div class="progress-label"><span>Progreso al eliminar</span><span>${getProgress(p)}%</span></div>
-              <div class="progress-bar"><div class="progress-fill ${fillColor(getProgress(p))}" style="width:${getProgress(p)}%"></div></div>
-            </div>
-            <div class="project-meta"><span>${ownerName}</span><span>Eliminado: ${fmtDate(p.deletedAt)}</span></div>
-          </div>
-        </div>`;
+  if(proyectosEliminados.length && currentUser.role==='supervisor'){
+    let cards='';
+    for(const p of proyectosEliminados){
+      cards+=`<div class="project-card deleted-card"><button class="restore-btn" onclick="confirmRestoreProject('${p.id}','${p.name}')">↺</button>
+      <div><div class="project-title">${p.name}</div><div class="project-code">${p.code}</div>
+      <div class="project-meta">Eliminado: ${fmtDate(p.deletedAt)}</div></div></div>`;
     }
-    container.innerHTML = cards;
+    document.getElementById('deletedProjectsGrid').innerHTML=cards;
   } else {
-    container.innerHTML = `<div class="empty-state">
-        <div class="icon">🗑️</div>
-        <h3>No hay proyectos eliminados</h3>
-        <p>Los proyectos que elimines aparecerán aquí y podrán ser restaurados.</p>
-      </div>`;
+    document.getElementById('deletedProjectsGrid').innerHTML='<div class="empty-state">No hay proyectos eliminados</div>';
   }
 }
 
 async function renderSupervisor(proyectos) {
-  if (currentUser?.role !== 'supervisor') return;
-  
-  const snapshot = await db.collection("usuarios").get();
-  const collaborators = [];
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    if (data.role === 'collaborator') {
-      collaborators.push({ id: doc.id, ...data });
+  if(currentUser?.role!=='supervisor') return;
+  const snapshot=await db.collection("usuarios").get();
+  let html='';
+  for(const doc of snapshot.docs){
+    const u=doc.data();
+    if(u.role==='collaborator'){
+      const ups=proyectos.filter(p=>p.owner===doc.id);
+      html+=`<div style="margin-bottom:24px;"><h3>${u.name}</h3><div class="projects-grid" id="collab-${doc.id}"></div></div>`;
     }
-  });
-  
-  let html = '';
-  for (const collab of collaborators) {
-    const ups = proyectos.filter(p => p.owner === collab.id);
-    const al = ups.filter(p => isDaysSinceLastUpdate(p, 3)).length;
-    
-    html += `<div class="collab-section">
-      <div class="collab-title">
-        <div class="avatar avatar-purple">${collab.name ? collab.name[0] : 'U'}</div>
-        <div>
-          <div class="font-bold">${collab.name || collab.email}</div>
-          <div class="text-sm text-muted">
-            ${ups.length} proyectos activos
-            ${al ? ` · <span style="color:#dc2626">⚠️ ${al} con alerta</span>` : ''}
-          </div>
-        </div>
-      </div>
-      <div class="projects-grid" id="collab-projects-${collab.id}"></div>
-    </div>`;
   }
-  
-  const supervisorContent = document.getElementById('supervisorContent');
-  if (supervisorContent) {
-    supervisorContent.innerHTML = html || '<div class="empty-state"><div class="icon">👥</div><h3>Sin colaboradores</h3></div>';
-    
-    for (const collab of collaborators) {
-      const ups = proyectos.filter(p => p.owner === collab.id);
-      if (ups.length) {
-        const container = document.getElementById(`collab-projects-${collab.id}`);
-        if (container) {
-          const cards = await Promise.all(ups.map(p => projectCardHTML(p, true)));
-          container.innerHTML = cards.join('');
-        }
+  document.getElementById('supervisorContent').innerHTML=html||'<div>Sin colaboradores</div>';
+  for(const doc of snapshot.docs){
+    const u=doc.data();
+    if(u.role==='collaborator'){
+      const ups=proyectos.filter(p=>p.owner===doc.id);
+      const container=document.getElementById(`collab-${doc.id}`);
+      if(container && ups.length){
+        const cards=await Promise.all(ups.map(p=>projectCardHTML(p)));
+        container.innerHTML=cards.join('');
+      } else if(container){
+        container.innerHTML='<div class="empty-state">Sin proyectos</div>';
       }
     }
   }
 }
 
 function renderNotifications(proyectos) {
-  const notifs = proyectos.filter(p => getProgress(p) < 100).map(p => {
-    const d = daysSinceUpdate(p);
-    const pct = getProgress(p);
-    if (d >= 5) return { color: 'red', icon: '🚨', title: `URGENTE: ${p.name}`, body: `${p.code} — sin avances hace ${d} días.`, time: `${d} días sin actualización` };
-    if (d >= 3) return { color: 'yellow', icon: '⚠️', title: `Alerta: ${p.name}`, body: `${p.code} — lleva ${d} días sin avances.`, time: `${d} días` };
-    return { color: 'blue', icon: '📊', title: `En progreso: ${p.name}`, body: `Avance: ${pct}%. Paso activo: ${p.steps.find(s => s.status === 'in_progress')?.name || '—'}`, time: `Hace ${d} día(s)` };
+  const notifs=proyectos.filter(p=>getProgress(p)<100).map(p=>{
+    const d=daysSinceUpdate(p);
+    if(d>=5)return {color:'red',icon:'🚨',title:`URGENTE: ${p.name}`,body:`${d} días sin avances`};
+    if(d>=3)return {color:'yellow',icon:'⚠️',title:`Alerta: ${p.name}`,body:`${d} días sin avances`};
+    return {color:'blue',icon:'📊',title:`En progreso: ${p.name}`,body:`${getProgress(p)}% completado`};
   });
-  
-  const el = document.getElementById('notifList');
-  if (el) {
-    el.innerHTML = notifs.length
-      ? notifs.map(n => `<div class="notif-item ${n.color}"><div class="notif-title">${n.icon} ${n.title}</div><div class="notif-body">${n.body}</div><div class="notif-time">${n.time}</div></div>`).join('')
-      : '<div class="empty-state"><div class="icon">🎉</div><h3>Sin alertas</h3><p>Todo al día.</p></div>';
-  }
+  document.getElementById('notifList').innerHTML=notifs.length?notifs.map(n=>`<div class="notif-item">${n.icon} ${n.title}<br><small>${n.body}</small></div>`).join(''):'<div>Sin alertas</div>';
 }
 
 function updateNotifBadge(proyectos) {
-  const c = proyectos.filter(p => isDaysSinceLastUpdate(p, 3)).length;
-  const b = document.getElementById('notifBadge');
-  if (b) {
-    if (c > 0) {
-      b.textContent = c;
-      b.classList.remove('hidden');
-    } else {
-      b.classList.add('hidden');
-    }
-  }
+  const c=proyectos.filter(p=>isDaysSinceLastUpdate(p,3)).length;
+  const b=document.getElementById('notifBadge');
+  if(b)c>0?(b.textContent=c,b.classList.remove('hidden')):b.classList.add('hidden');
 }
 
 function showPage(page) {
-  const pages = ['dashboard', 'projects', 'supervisor', 'users', 'notifications', 'deleted'];
-  pages.forEach(p => {
-    const pageEl = document.getElementById('page-' + p);
-    const navEl = document.getElementById('nav-' + p);
-    if (pageEl) pageEl.classList.add('hidden');
-    if (navEl) navEl.classList.remove('active');
+  ['dashboard','projects','supervisor','users','notifications','deleted'].forEach(p=>{
+    document.getElementById('page-'+p)?.classList.add('hidden');
+    document.getElementById('nav-'+p)?.classList.remove('active');
   });
-  
-  const activePage = document.getElementById('page-' + page);
-  const activeNav = document.getElementById('nav-' + page);
-  if (activePage) activePage.classList.remove('hidden');
-  if (activeNav) activeNav.classList.add('active');
-  
-  const titles = {
-    dashboard: 'Dashboard',
-    projects: currentUser?.role === 'supervisor' ? 'Todos los Proyectos' : 'Mis Proyectos',
-    supervisor: 'Vista Supervisor',
-    users: 'Gestión de Usuarios',
-    notifications: 'Alertas y Notificaciones',
-    deleted: 'Proyectos Eliminados'
-  };
-  document.getElementById('pageTitle').textContent = titles[page] || '';
-  
-  const btnNewProject = document.getElementById('btnNewProject');
-  const btnAddUser = document.getElementById('btnAddUser');
-  
-  if (btnNewProject) btnNewProject.classList.toggle('hidden', page !== 'projects' || currentUser?.role === 'supervisor');
-  if (btnAddUser) btnAddUser.classList.toggle('hidden', page !== 'users');
-  
-  if (window.innerWidth <= 768) {
-    closeSidebar();
-  }
+  document.getElementById('page-'+page)?.classList.remove('hidden');
+  document.getElementById('nav-'+page)?.classList.add('active');
+  const titles={dashboard:'Dashboard',projects:currentUser?.role==='supervisor'?'Todos los Proyectos':'Mis Proyectos',supervisor:'Supervisor',users:'Usuarios',notifications:'Alertas',deleted:'Eliminados'};
+  document.getElementById('pageTitle').textContent=titles[page]||'';
+  if(window.innerWidth<=768) closeSidebar();
 }
 
 function switchTab(tab) {
-  const tabs = ['timeline', 'steps', 'gantt', 'info'];
-  tabs.forEach((t, i) => {
-    const tabEl = document.getElementById('tab-' + t);
-    const tabBtn = document.querySelectorAll('.tab')[i];
-    if (tabEl) tabEl.classList.add('hidden');
-    if (tabBtn) tabBtn.classList.remove('active');
+  ['timeline','steps','gantt','info'].forEach(t=>{
+    document.getElementById('tab-'+t)?.classList.add('hidden');
   });
-  
-  const activeTab = document.getElementById('tab-' + tab);
-  const activeBtn = document.querySelectorAll('.tab')[tabs.indexOf(tab)];
-  if (activeTab) activeTab.classList.remove('hidden');
-  if (activeBtn) activeBtn.classList.add('active');
-  
-  if (tab === 'timeline') renderTimeline();
-  if (tab === 'steps') renderStepsTab();
-  if (tab === 'gantt') renderGantt();
-  if (tab === 'info') renderInfo();
+  document.getElementById('tab-'+tab)?.classList.remove('hidden');
+  if(tab==='timeline') renderTimeline();
+  if(tab==='steps') renderStepsTab();
+  if(tab==='gantt') renderGantt();
+  if(tab==='info') renderInfo();
 }
 
-function renderTimeline() {
-  if (!currentProject) return;
-  
-  const p = currentProject;
-  const canEdit = currentUser.role === 'collaborator' && p.owner === currentUser.id && !p.deleted;
-  const pct = getProgress(p);
-  const days = daysSinceUpdate(p);
-  
-  let html = '';
-  if (p.deleted) {
-    html += `<div class="alert-banner alert-warning">🗑️ Este proyecto está eliminado. Solo se puede visualizar, no editar.</div>`;
-  } else if (isDaysSinceLastUpdate(p, 3)) {
-    html += `<div class="alert-banner alert-danger">🚨 ${days} días sin avances. Alertas enviadas.</div>`;
-  }
-  
-  html += `<div class="progress-wrap" style="margin-bottom:16px;">
-    <div class="progress-label"><span>Progreso total</span><span>${pct}%</span></div>
-    <div class="progress-bar" style="height:8px;"><div class="progress-fill ${fillColor(pct)}" style="width:${pct}%"></div></div>
-  </div><div class="timeline">`;
-  
-  p.steps.forEach((step, i) => {
-    const dc = step.status === 'done' ? 'dot-done' : step.status === 'in_progress' ? 'dot-active' : 'dot-pending';
-    const cc = step.status === 'done' ? 'done' : step.status === 'in_progress' ? 'active' : '';
-    const ic = step.status === 'done' ? '✓' : step.status === 'in_progress' ? '●' : '';
-    html += `<div class="timeline-item">
-      <div class="timeline-dot ${dc}">${ic}</div>
-      <div class="timeline-content ${cc}">
-        <div class="timeline-step-header">
-          <span class="timeline-step-title">${i + 1}. ${step.name}</span>
-          <span class="timeline-step-date">${step.completedAt ? '✅ ' + fmtDate(step.completedAt) : step.startedAt ? '🔄 ' + fmtDate(step.startedAt) : '⏳ Pendiente'}</span>
-        </div>
-        ${step.notes ? `<div class="timeline-step-notes">📝 ${step.notes}</div>` : ''}
-        ${canEdit && pct < 100 ? `<div class="timeline-actions"><button class="btn btn-primary" style="padding:6px 12px;font-size:.75rem;" onclick="openUpdateStep(${i})">✏️ Actualizar</button></div>` : ''}
-      </div>
-    </div>`;
+function renderTimeline(){
+  if(!currentProject) return;
+  let html='<div class="timeline">';
+  currentProject.steps.forEach((step,i)=>{
+    html+=`<div class="timeline-item"><div class="timeline-dot ${step.status==='done'?'dot-done':step.status==='in_progress'?'dot-active':'dot-pending'}"></div>
+    <div class="timeline-content"><div class="timeline-step-header"><b>${i+1}. ${step.name}</b>
+    <span>${step.completedAt?fmtDate(step.completedAt):step.startedAt?fmtDate(step.startedAt):'Pendiente'}</span></div>
+    ${step.notes?`<div>📝 ${step.notes}</div>`:''}
+    ${currentUser.role==='collaborator'&&currentProject.owner===currentUser.id&&!currentProject.deleted?`<button class="btn btn-primary" style="margin-top:8px;" onclick="openUpdateStep(${i})">Actualizar</button>`:''}</div></div>`;
   });
-  
-  html += '</div>';
-  document.getElementById('tab-timeline').innerHTML = html;
+  document.getElementById('tab-timeline').innerHTML=html+'</div>';
 }
 
-function renderStepsTab() {
-  if (!currentProject) return;
-  
-  const p = currentProject;
-  const canEdit = currentUser.role === 'collaborator' && p.owner === currentUser.id && !p.deleted;
-  let html = '<div class="steps-list">';
-  
-  p.steps.forEach((step, i) => {
-    const lbl = step.status === 'done' ? '✅ Completado' : step.status === 'in_progress' ? '🔄 En Progreso' : '⏳ Pendiente';
-    html += `<div class="step-row ${step.status}">
-      <div class="step-number ${step.status}">${step.status === 'done' ? '✓' : i + 1}</div>
-      <div class="step-info">
-        <div class="step-name">${step.name}</div>
-        <div class="step-date">${lbl}${step.completedAt ? ' · ' + fmtDate(step.completedAt) : ''}</div>
-        ${step.notes ? `<div class="step-note">📝 ${step.notes}</div>` : ''}
-      </div>
-      ${canEdit ? `<button class="btn btn-ghost" style="padding:6px 12px;font-size:.75rem;" onclick="openUpdateStep(${i})">✏️</button>` : ''}
-    </div>`;
+function renderStepsTab(){
+  let html='';
+  currentProject.steps.forEach((step,i)=>{
+    html+=`<div class="step-row"><div class="step-number">${i+1}</div><div><b>${step.name}</b><br><small>${step.status}</small>${step.notes?`<br>📝 ${step.notes}`:''}</div></div>`;
   });
-  
-  html += '</div>';
-  document.getElementById('tab-steps').innerHTML = html;
+  document.getElementById('tab-steps').innerHTML=html;
 }
 
-function renderGantt() {
-  if (!currentProject) return;
-  
-  const p = currentProject;
-  let html = '<div class="gantt-wrap"><div class="gantt"><div class="gantt-header">';
-  STEP_NAMES.forEach((_, i) => html += `<div class="gantt-step-label">${i + 1}</div>`);
-  html += `</div><div class="gantt-row"><div class="gantt-name" title="${p.name}">${p.name}</div>`;
-  p.steps.forEach(s => html += `<div class="gantt-cell ${s.status}" title="${s.name}"></div>`);
-  html += `</div></div></div>
-  <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;font-size:.72rem;">
-    <span><span style="display:inline-block;width:12px;height:12px;background:#bbf7d0;border-radius:3px;margin-right:4px;vertical-align:middle;"></span>Completado</span>
-    <span><span style="display:inline-block;width:12px;height:12px;background:#bfdbfe;border-radius:3px;margin-right:4px;vertical-align:middle;"></span>En Progreso</span>
-    <span><span style="display:inline-block;width:12px;height:12px;background:#e2e8f0;border-radius:3px;margin-right:4px;vertical-align:middle;"></span>Pendiente</span>
-  </div>
-  <div style="margin-top:10px;font-size:.7rem;color:var(--muted);">
-    <strong>Pasos:</strong> ${STEP_NAMES.map((n, i) => `<strong>${i + 1}</strong>. ${n}`).join(' | ')}
-  </div>`;
-  document.getElementById('tab-gantt').innerHTML = html;
+function renderGantt(){
+  let html='<div class="gantt-wrap"><div class="gantt">';
+  html+=`<div class="gantt-row"><div class="gantt-name">${currentProject.name}</div>`;
+  currentProject.steps.forEach(s=>html+=`<div class="gantt-cell ${s.status}"></div>`);
+  html+=`</div></div></div>`;
+  document.getElementById('tab-gantt').innerHTML=html;
 }
 
-function renderInfo() {
-  if (!currentProject) return;
-  
-  const p = currentProject;
-  const pct = getProgress(p);
-  getUserName(p.owner).then(ownerName => {
-    document.getElementById('tab-info').innerHTML = `
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-        <div><div class="text-muted" style="font-size:.7rem;margin-bottom:3px;">NOMBRE</div><div class="font-bold">${p.name}</div></div>
-        <div><div class="text-muted" style="font-size:.7rem;margin-bottom:3px;">CÓDIGO OT</div><div class="font-bold">${p.code}</div></div>
-        <div><div class="text-muted" style="font-size:.7rem;margin-bottom:3px;">RESPONSABLE</div><div>${ownerName}</div></div>
-        <div><div class="text-muted" style="font-size:.7rem;margin-bottom:3px;">SUBESTACIÓN</div><div>${p.client || '—'}</div></div>
-        <div><div class="text-muted" style="font-size:.7rem;margin-bottom:3px;">FECHA INICIO</div><div>${fmtDate(p.startDate || p.createdAt)}</div></div>
-        <div><div class="text-muted" style="font-size:.7rem;margin-bottom:3px;">PROGRESO</div><div>${p.steps.filter(s => s.status === 'done').length}/${STEP_NAMES.length} pasos (${pct}%)</div></div>
-        ${p.deleted ? `<div><div class="text-muted" style="font-size:.7rem;margin-bottom:3px;">FECHA ELIMINACIÓN</div><div>${fmtDate(p.deletedAt)}</div></div>` : ''}
-      </div>
-      ${p.description ? `<div class="divider"></div><div class="text-muted" style="font-size:.7rem;margin-bottom:3px;">DESCRIPCIÓN</div><div>${p.description}</div>` : ''}
-    `;
+function renderInfo(){
+  getUserName(currentProject.owner).then(owner=>{
+    document.getElementById('tab-info').innerHTML=`
+      <div><strong>Nombre:</strong> ${currentProject.name}</div>
+      <div><strong>Código:</strong> ${currentProject.code}</div>
+      <div><strong>Subestación:</strong> ${currentProject.client||'—'}</div>
+      <div><strong>Responsable:</strong> ${owner}</div>
+      <div><strong>Inicio:</strong> ${fmtDate(currentProject.startDate||currentProject.createdAt)}</div>
+      <div><strong>Descripción:</strong> ${currentProject.description||'—'}</div>`;
   });
 }
 
-// Función mejorada para exportar PDF con ajuste de texto
-async function exportProjectPDF() {
-  if (!currentProject) return;
-  
-  const { jsPDF } = window.jspdf;
-  const p = currentProject;
-  const pct = getProgress(p);
-  const ownerName = await getUserName(p.owner);
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  const W = doc.internal.pageSize.getWidth();
-  const H = doc.internal.pageSize.getHeight();
-  let y = 0;
-  
-  doc.setFillColor(37, 99, 235);
-  doc.rect(0, 0, W, 38, 'F');
-  doc.setFillColor(124, 58, 237);
-  doc.rect(0, 34, W, 4, 'F');
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(18);
-  doc.setTextColor(255, 255, 255);
-  doc.text('INFORME DE PROYECTO', 14, 15);
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
-  doc.text('ProyectoTrack – Sistema de Control de Avance', 14, 22);
-  doc.text(`Generado: ${new Date().toLocaleDateString('es-EC', { day: '2-digit', month: 'long', year: 'numeric' })}`, 14, 29);
-  
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(22);
-  doc.text(`${pct}%`, W - 28, 19, { align: 'right' });
-  doc.setFontSize(9);
-  doc.setFont('helvetica', 'normal');
-  doc.text('completado', W - 14, 26, { align: 'right' });
-  y = 48;
-  
-  doc.setFillColor(241, 245, 249);
-  doc.roundedRect(10, y, W - 20, 42, 3, 3, 'F');
-  doc.setTextColor(30, 41, 59);
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(14);
-  doc.text(p.name, 16, y + 10);
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  doc.setTextColor(100, 116, 139);
-  
-  const infoLines = [
-    [`Código OT:`, p.code || '—'],
-    [`Subestación:`, p.client || '—'],
-    [`Responsable:`, ownerName],
-    [`Fecha de inicio:`, fmtDate(p.startDate || p.createdAt)],
-    [`Estado:`, p.deleted ? 'ELIMINADO (archivado)' : 'ACTIVO'],
-    [`Caracteristicas técnicas:`, p.description || '—'],
-  ];
-  
-  let ix = 0;
-  infoLines.forEach(([lbl, val]) => {
-    const col = ix % 2;
-    const row = Math.floor(ix / 2);
-    const cx = col === 0 ? 16 : W / 2 + 6;
-    const cy = y + 20 + row * 9;
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(71, 85, 105);
-    doc.text(lbl, cx, cy);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(30, 41, 59);
-    // Ajuste de texto para valores largos
-    const valStr = String(val);
-    const maxWidth = 65;
-    if (doc.getTextWidth(valStr) > maxWidth) {
-      const splitText = doc.splitTextToSize(valStr, maxWidth);
-      doc.text(splitText, cx + (lbl.length > 10 ? 42 : 22), cy);
-    } else {
-      doc.text(valStr, cx + (lbl.length > 10 ? 42 : 22), cy);
-    }
-    ix++;
-  });
-  y += 52;
-  
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(11);
-  doc.setTextColor(30, 41, 59);
-  doc.text('Progreso General', 14, y);
-  y += 5;
-  doc.setFillColor(226, 232, 240);
-  doc.roundedRect(14, y, W - 28, 7, 2, 2, 'F');
-  const fillW = Math.max(4, (W - 28) * pct / 100);
-  if (pct === 100) doc.setFillColor(22, 163, 74);
-  else if (pct >= 60) doc.setFillColor(37, 99, 235);
-  else if (pct >= 30) doc.setFillColor(217, 119, 6);
-  else doc.setFillColor(220, 38, 38);
-  doc.roundedRect(14, y, fillW, 7, 2, 2, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(7);
-  doc.setFont('helvetica', 'bold');
-  if (pct > 8) doc.text(`${pct}%`, 14 + fillW / 2, y + 5, { align: 'center' });
-  y += 16;
-  
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(11);
-  doc.setTextColor(30, 41, 59);
-  doc.text('Detalle de Pasos del Proceso', 14, y);
-  y += 6;
-  
-  doc.setFillColor(37, 99, 235);
-  doc.rect(10, y, W - 20, 8, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(8);
-  doc.text('#', 14, y + 5.5);
-  doc.text('Paso', 22, y + 5.5);
-  doc.text('Estado', W - 70, y + 5.5);
-  doc.text('Fecha', W - 38, y + 5.5);
-  y += 8;
-  
-  const statusColors = { done: [22, 163, 74], in_progress: [37, 99, 235], pending: [148, 163, 184] };
-  const statusLabels = { done: '✓ Completado', in_progress: '⟳ En Progreso', pending: '○ Pendiente' };
-  
-  for (const step of p.steps) {
-    if (y > H - 30) {
-      doc.addPage();
-      y = 20;
-    }
-    const bg = (p.steps.indexOf(step) % 2 === 0) ? [255, 255, 255] : [248, 250, 252];
-    doc.setFillColor(...bg);
-    doc.rect(10, y, W - 20, 18, 'F');
-    
-    const sc = statusColors[step.status] || [148, 163, 184];
-    doc.setFillColor(...sc);
-    doc.circle(17, y + 7, 4, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7);
-    doc.text(String(p.steps.indexOf(step) + 1), 17, y + 9, { align: 'center' });
-    
-    doc.setTextColor(30, 41, 59);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8.5);
-    doc.text(step.name, 24, y + 6.5);
-    
-    if (step.notes) {
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(7);
-      doc.setTextColor(100, 116, 139);
-      // Ajuste de texto para notas largas
-      const splitNotes = doc.splitTextToSize(step.notes, 95);
-      doc.text(splitNotes, 24, y + 12);
-    }
-    
-    doc.setFillColor(...sc);
-    doc.roundedRect(W - 76, y + 2.5, 28, 6, 1.5, 1.5, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(6.5);
-    doc.text(statusLabels[step.status] || '—', W - 62, y + 6.5, { align: 'center' });
-    
-    doc.setTextColor(100, 116, 139);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7.5);
-    doc.text(step.completedAt ? fmtDate(step.completedAt) : step.startedAt ? fmtDate(step.startedAt) : '—', W - 14, y + 7, { align: 'right' });
-    
-    doc.setDrawColor(226, 232, 240);
-    doc.line(10, y + 18, W - 10, y + 18);
-    y += 18;
-  }
-  
-  if (!p.deleted && isDaysSinceLastUpdate(p, 3)) {
-    y += 8;
-    if (y > H - 30) {
-      doc.addPage();
-      y = 20;
-    }
-    doc.setFillColor(255, 241, 242);
-    doc.roundedRect(10, y, W - 20, 18, 3, 3, 'F');
-    doc.setDrawColor(252, 165, 165);
-    doc.roundedRect(10, y, W - 20, 18, 3, 3, 'S');
-    doc.setTextColor(190, 18, 60);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9);
-    doc.text('ALERTA: ', 16, y + 8);
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Este proyecto lleva ${daysSinceUpdate(p)} días sin reportar avances.`, 38, y + 8);
-    doc.setFontSize(8);
-    doc.setTextColor(153, 27, 27);
-    doc.text('Se recomienda al colaborador actualizar el estado de los pasos pendientes a la brevedad posible.', 16, y + 15);
-    y += 24;
-  }
-  
-  const totalPages = doc.internal.getNumberOfPages();
-  for (let pg = 1; pg <= totalPages; pg++) {
-    doc.setPage(pg);
-    doc.setFillColor(241, 245, 249);
-    doc.rect(0, H - 12, W, 12, 'F');
-    doc.setTextColor(100, 116, 139);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7.5);
-    doc.text('ProyectoTrack – Sistema de Control de Avance de Proyectos', 14, H - 4);
-    doc.text(`Página ${pg} de ${totalPages}`, W - 14, H - 4, { align: 'right' });
-  }
-  
-  doc.save(`${p.code}_${p.name.replace(/\s+/g, '-')}.pdf`);
+async function exportProjectPDF(){
+  if(!currentProject) return;
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF();
+  doc.setFontSize(16);
+  doc.text(`Informe: ${currentProject.name}`,10,10);
+  doc.setFontSize(12);
+  doc.text(`Código: ${currentProject.code}`,10,20);
+  doc.text(`Progreso: ${getProgress(currentProject)}%`,10,30);
+  doc.save(`${currentProject.code}_reporte.pdf`);
 }
 
-function closeModal(id) {
-  const modal = document.getElementById(id);
-  if (modal) modal.classList.add('hidden');
+function closeModal(id){
+  document.getElementById(id).classList.add('hidden');
 }
 
-document.addEventListener('click', e => {
-  if (e.target.classList && e.target.classList.contains('modal-overlay')) {
-    e.target.classList.add('hidden');
-  }
+document.addEventListener('click',e=>{
+  if(e.target.classList?.contains('modal-overlay')) e.target.classList.add('hidden');
 });
 
-document.getElementById('loginUser')?.addEventListener('keydown', e => e.key === 'Enter' && doLogin());
-document.getElementById('loginPass')?.addEventListener('keydown', e => e.key === 'Enter' && doLogin());
-document.getElementById('regEmail')?.addEventListener('keydown', e => e.key === 'Enter' && doRegister());
-document.getElementById('regPassword')?.addEventListener('keydown', e => e.key === 'Enter' && doRegister());
-
-setInterval(() => {
-  if (currentUser && proyectosFirebase.length) {
-    updateNotifBadge(proyectosFirebase.filter(p => !p.deleted));
-  }
-}, 60000);
-
-window.addEventListener('resize', () => {
-  if (window.innerWidth > 768) {
-    closeSidebar();
-    const sidebar = document.getElementById('sidebar');
-    if (sidebar) {
-      sidebar.classList.remove('open');
-    }
-  }
-});
+document.getElementById('loginUser')?.addEventListener('keydown',e=>e.key==='Enter'&&doLogin());
+document.getElementById('loginPass')?.addEventListener('keydown',e=>e.key==='Enter'&&doLogin());
 </script>
 </body>
 </html>
