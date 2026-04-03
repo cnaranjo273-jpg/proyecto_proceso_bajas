@@ -274,6 +274,15 @@
   .project-card.alert {
     border-left: 4px solid #dc2626;
   }
+  .project-card.deleted {
+    opacity: 0.7;
+    background: #f8fafc;
+    border-color: #cbd5e1;
+  }
+  .project-card.deleted:hover {
+    transform: none;
+    border-color: #cbd5e1;
+  }
   .project-header {
     display: flex;
     justify-content: space-between;
@@ -301,6 +310,7 @@
   .badge-red { background: #fee2e2; color: #b91c1c; }
   .badge-gray { background: #f1f5f9; color: #475569; }
   .badge-purple { background: #ede9fe; color: #6d28d9; }
+  .badge-deleted { background: #e2e8f0; color: #475569; }
   .progress-bar {
     height: 8px;
     background: #e2e8f0;
@@ -324,7 +334,7 @@
     color: #64748b;
     margin-top: 10px;
   }
-  .delete-btn {
+  .delete-btn, .restore-btn {
     position: absolute;
     top: 12px;
     right: 12px;
@@ -339,21 +349,13 @@
     opacity: 0;
     transition: opacity 0.2s;
   }
-  .project-card:hover .delete-btn {
-    opacity: 1;
-  }
   .restore-btn {
-    position: absolute;
-    top: 12px;
-    right: 12px;
     background: #16a34a;
-    color: white;
-    border: none;
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 12px;
+    right: 45px;
+  }
+  .project-card:hover .delete-btn,
+  .project-card:hover .restore-btn {
+    opacity: 1;
   }
   
   /* Modal styles */
@@ -749,7 +751,7 @@
       <button class="btn btn-primary btn-full" onclick="doLogin()">Ingresar</button>
       <div style="margin-top: 20px; padding: 12px; background: #f0fdf4; border-radius: 12px; font-size: 0.7rem; text-align: center;">
         <strong>📝 Usuarios disponibles:</strong><br>
-        rmallitasig@eeq.com.ec | carlos1@test.com | david@test.com | carlos@test.com
+        rmallitasig@eeq.com.ec (Supervisor) | carlos1@test.com (Colaborador) | david@test.com (Colaborador)
       </div>
     </div>
     
@@ -796,7 +798,7 @@
     <div class="nav-item" onclick="showPage('projects')">📁 Proyectos</div>
     <div class="nav-item hidden" id="navSupervisor" onclick="showPage('supervisor')">👥 Vista Supervisor</div>
     <div class="nav-item hidden" id="navUsers" onclick="showPage('users')">👤 Gestión Usuarios</div>
-    <div class="nav-item" onclick="showPage('deleted')">🗑️ Eliminados</div>
+    <div class="nav-item hidden" id="navDeleted" onclick="showPage('deleted')">🗑️ Eliminados</div>
     <div class="nav-item" onclick="openDocumentRepo()">📄 Repositorio Documentos</div>
     <div class="nav-item" onclick="doLogout()" style="margin-top: 20px;">🚪 Cerrar Sesión</div>
   </div>
@@ -804,7 +806,7 @@
   <div class="main">
     <div class="topbar">
       <h1 id="pageTitle">Dashboard</h1>
-      <button class="btn btn-primary" id="btnNewProject" onclick="openNewProjectModal()">+ Nuevo Proyecto</button>
+      <button class="btn btn-primary" id="btnNewProject" onclick="openNewProjectModal()" style="display: none;">+ Nuevo Proyecto</button>
     </div>
     <div class="content">
       <div id="pageDashboard">
@@ -816,7 +818,7 @@
       <div id="pageProjects" class="hidden">
         <div class="section-header">
           <h2>📁 Todos los Proyectos</h2>
-          <button class="btn btn-primary" onclick="openNewProjectModal()">+ Nuevo Proyecto</button>
+          <button class="btn btn-primary" id="projectsNewBtn" onclick="openNewProjectModal()" style="display: none;">+ Nuevo Proyecto</button>
         </div>
         <div id="folderStructure"></div>
       </div>
@@ -1053,7 +1055,8 @@ function getProgress(project) {
   return Math.round((completed / STEP_NAMES.length) * 100);
 }
 
-function getStatusBadge(progress) {
+function getStatusBadge(progress, isDeleted = false) {
+  if (isDeleted) return { label: 'Eliminado', class: 'badge-deleted' };
   if (progress === 100) return { label: 'Completado', class: 'badge-green' };
   if (progress === 0) return { label: 'Sin Iniciar', class: 'badge-gray' };
   return { label: 'En Progreso', class: 'badge-blue' };
@@ -1192,6 +1195,14 @@ function setupUI() {
   if (currentUser.role === 'supervisor') {
     document.getElementById('navSupervisor').classList.remove('hidden');
     document.getElementById('navUsers').classList.remove('hidden');
+    document.getElementById('navDeleted').classList.remove('hidden');
+    // Supervisores NO pueden crear proyectos
+    document.getElementById('btnNewProject').style.display = 'none';
+    document.getElementById('projectsNewBtn').style.display = 'none';
+  } else {
+    // Colaboradores pueden crear proyectos
+    document.getElementById('btnNewProject').style.display = 'block';
+    document.getElementById('projectsNewBtn').style.display = 'block';
   }
 }
 
@@ -1203,13 +1214,17 @@ function loadProjects() {
     snapshot.forEach(doc => allProjects.push(doc.data()));
     
     let activeProjects = allProjects.filter(p => !p.deleted);
+    let deletedProjects = allProjects.filter(p => p.deleted === true);
+    
     if (currentUser.role !== 'supervisor') {
       activeProjects = activeProjects.filter(p => p.owner === currentUser.id);
+      // Los colaboradores NO ven proyectos eliminados
+      deletedProjects = [];
     }
     
     renderDashboard(activeProjects);
     renderFolderStructure(activeProjects);
-    renderDeletedProjects(allProjects.filter(p => p.deleted));
+    renderDeletedProjects(deletedProjects);
     if (currentUser.role === 'supervisor') renderSupervisorView(activeProjects);
   });
 }
@@ -1237,24 +1252,27 @@ async function renderDashboard(projects) {
   const recent = [...projects].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 6);
   const recentContainer = document.getElementById('recentProjects');
   if (recent.length) {
-    recentContainer.innerHTML = await renderProjectCards(recent);
+    recentContainer.innerHTML = await renderProjectCards(recent, false);
   } else {
     recentContainer.innerHTML = '<div class="empty-folder">📭 No hay proyectos activos</div>';
   }
 }
 
-async function renderProjectCards(projects) {
+async function renderProjectCards(projects, isDeletedView = false) {
   let html = '';
   for (const p of projects) {
     const progress = getProgress(p);
-    const status = getStatusBadge(progress);
+    const status = getStatusBadge(progress, p.deleted);
     const ownerName = await getUserName(p.owner);
-    const alertClass = isDaysWithoutUpdate(p, 3) ? 'alert' : '';
+    const alertClass = (!p.deleted && isDaysWithoutUpdate(p, 3)) ? 'alert' : '';
+    const deletedClass = p.deleted ? 'deleted' : '';
     const canDelete = currentUser.role === 'supervisor' && !p.deleted;
+    const canRestore = currentUser.role === 'supervisor' && p.deleted;
     
     html += `
-      <div class="project-card ${alertClass}" data-project-id="${p.id}">
+      <div class="project-card ${alertClass} ${deletedClass}" data-project-id="${p.id}">
         ${canDelete ? `<button class="delete-btn" onclick="event.stopPropagation(); confirmDeleteProject('${p.id}', '${p.name.replace(/'/g, "\\'")}')">🗑️</button>` : ''}
+        ${canRestore ? `<button class="restore-btn" onclick="event.stopPropagation(); confirmRestoreProject('${p.id}', '${p.name.replace(/'/g, "\\'")}')">↺</button>` : ''}
         <div onclick='openProject(${JSON.stringify(p).replace(/'/g, "\\'")})'>
           <div class="project-header">
             <div><div class="project-title">${p.name}</div><div class="project-code">${p.code}</div></div>
@@ -1301,9 +1319,7 @@ async function renderFolderStructure(projects) {
           <span class="folder-arrow">▼</span>
         </div>
         <div class="folder-content" id="${folderId}">
-          <div style="margin-bottom: 16px;">
-            <button class="btn btn-primary btn-sm" onclick="openNewProjectInFolder('${folder}')">+ Nuevo Proyecto en esta carpeta</button>
-          </div>
+          ${currentUser.role !== 'supervisor' ? `<div style="margin-bottom: 16px;"><button class="btn btn-primary btn-sm" onclick="openNewProjectInFolder('${folder}')">+ Nuevo Proyecto en esta carpeta</button></div>` : ''}
           <div id="${folderId}_projects"></div>
         </div>
       </div>
@@ -1319,7 +1335,7 @@ async function renderFolderStructure(projects) {
       if (folderProjects.length === 0) {
         container.innerHTML = '<div class="empty-folder">📂 No hay proyectos en esta carpeta</div>';
       } else {
-        container.innerHTML = await renderProjectCards(folderProjects);
+        container.innerHTML = await renderProjectCards(folderProjects, false);
       }
     }
   }
@@ -1339,8 +1355,8 @@ function toggleFolder(folderId) {
 
 async function renderDeletedProjects(projects) {
   const container = document.getElementById('deletedProjects');
-  if (projects.length) {
-    container.innerHTML = await renderProjectCards(projects);
+  if (projects.length && currentUser.role === 'supervisor') {
+    container.innerHTML = await renderProjectCards(projects, true);
   } else {
     container.innerHTML = '<div class="empty-folder">🗑️ No hay proyectos eliminados</div>';
   }
@@ -1372,7 +1388,7 @@ async function renderSupervisorView(projects) {
       const userProjects = projects.filter(p => p.owner === doc.id);
       const container = document.getElementById(`supervisor_${doc.id}`);
       if (container) {
-        container.innerHTML = userProjects.length ? await renderProjectCards(userProjects) : '<div class="empty-folder">Sin proyectos asignados</div>';
+        container.innerHTML = userProjects.length ? await renderProjectCards(userProjects, false) : '<div class="empty-folder">Sin proyectos asignados</div>';
       }
     }
   }
@@ -1380,6 +1396,11 @@ async function renderSupervisorView(projects) {
 
 // ============ CRUD PROYECTOS ============
 function openNewProjectModal() {
+  // Solo colaboradores pueden crear proyectos
+  if (currentUser.role === 'supervisor') {
+    alert('⚠️ Los supervisores no pueden crear proyectos. Solo los colaboradores pueden crear proyectos.');
+    return;
+  }
   document.getElementById('projectName').value = '';
   document.getElementById('projectCode').value = '';
   document.getElementById('projectStartDate').value = new Date().toISOString().split('T')[0];
@@ -1389,6 +1410,10 @@ function openNewProjectModal() {
 }
 
 function openNewProjectInFolder(folderName) {
+  if (currentUser.role === 'supervisor') {
+    alert('⚠️ Los supervisores no pueden crear proyectos.');
+    return;
+  }
   openNewProjectModal();
   document.getElementById('projectClient').value = folderName;
 }
@@ -1440,8 +1465,27 @@ async function softDeleteProject(projectId, projectName) {
   }
 }
 
+async function restoreProject(projectId, projectName) {
+  if (currentUser.role !== 'supervisor') {
+    alert('⚠️ Solo los supervisores pueden restaurar proyectos');
+    return;
+  }
+  if (confirm(`¿Restaurar el proyecto "${projectName}"?`)) {
+    try {
+      await db.collection('proyectos').doc(projectId).update({ deleted: false });
+      alert('✅ Proyecto restaurado');
+    } catch (error) {
+      alert('❌ Error: ' + error.message);
+    }
+  }
+}
+
 function confirmDeleteProject(projectId, projectName) {
   softDeleteProject(projectId, projectName);
+}
+
+function confirmRestoreProject(projectId, projectName) {
+  restoreProject(projectId, projectName);
 }
 
 // ============ VISTA DE DETALLE DEL PROYECTO ============
@@ -1449,7 +1493,7 @@ function openProject(project) {
   currentProject = project;
   document.getElementById('detailTitle').textContent = project.name;
   const progress = getProgress(project);
-  const status = getStatusBadge(progress);
+  const status = getStatusBadge(progress, project.deleted);
   document.getElementById('detailBadges').innerHTML = `
     <span class="badge ${status.class}">${status.label}</span>
     <span class="badge badge-purple">${progress}% completado</span>
@@ -1464,6 +1508,9 @@ function openProject(project) {
 function renderProjectTimeline() {
   if (!currentProject) return;
   let html = '<div class="timeline">';
+  // Solo el propietario (colaborador) puede editar, y solo si no está eliminado
+  const canEdit = (currentUser.role === 'collaborator' && currentProject.owner === currentUser.id && !currentProject.deleted);
+  
   currentProject.steps.forEach((step, i) => {
     const dotClass = step.status === 'done' ? 'done' : (step.status === 'in_progress' ? 'active' : '');
     const dateText = step.completedAt ? '✅ ' + formatDate(step.completedAt) : (step.startedAt ? '🔄 ' + formatDate(step.startedAt) : '⏳ Pendiente');
@@ -1476,9 +1523,7 @@ function renderProjectTimeline() {
             <span class="timeline-step-date">${dateText}</span>
           </div>
           ${step.notes ? `<div class="timeline-step-notes">📝 ${step.notes}</div>` : ''}
-          <div class="flex gap-2 mt-2">
-            <button class="btn btn-primary btn-sm" onclick="openUpdateStep(${i})">✏️ Actualizar</button>
-          </div>
+          ${canEdit ? `<div class="flex gap-2 mt-2"><button class="btn btn-primary btn-sm" onclick="openUpdateStep(${i})">✏️ Actualizar</button></div>` : ''}
         </div>
       </div>
     `;
@@ -1490,6 +1535,8 @@ function renderProjectTimeline() {
 function renderProjectSteps() {
   if (!currentProject) return;
   let html = '<div class="steps-list">';
+  const canEdit = (currentUser.role === 'collaborator' && currentProject.owner === currentUser.id && !currentProject.deleted);
+  
   currentProject.steps.forEach((step, i) => {
     const statusText = step.status === 'done' ? '✅ Completado' : (step.status === 'in_progress' ? '🔄 En Progreso' : '⏳ Pendiente');
     html += `
@@ -1500,7 +1547,7 @@ function renderProjectSteps() {
           <div class="step-status">${statusText}</div>
           ${step.notes ? `<div class="step-status" style="margin-top: 4px;">📝 ${step.notes}</div>` : ''}
         </div>
-        <button class="btn btn-primary btn-sm" onclick="openUpdateStep(${i})">✏️</button>
+        ${canEdit ? `<button class="btn btn-primary btn-sm" onclick="openUpdateStep(${i})">✏️</button>` : ''}
       </div>
     `;
   });
@@ -1521,6 +1568,8 @@ async function renderProjectInfo() {
       <div><strong>📊 Progreso:</strong><br>${getProgress(currentProject)}%</div>
     </div>
     ${currentProject.description ? `<div class="mt-4"><strong>📝 Descripción:</strong><br>${currentProject.description}</div>` : ''}
+    ${currentProject.deleted ? `<div class="mt-4 alert-banner alert-warning">⚠️ Este proyecto está eliminado. Solo un supervisor puede restaurarlo.</div>` : ''}
+    ${currentUser.role === 'supervisor' ? `<div class="mt-4 alert-banner alert-info">🔍 Modo Supervisor: Solo puedes visualizar este proyecto. No puedes editarlo.</div>` : ''}
   `;
 }
 
@@ -1582,7 +1631,7 @@ function switchProjectTab(tab, btnElement) {
   if (btnElement) btnElement.classList.add('active');
 }
 
-// ============ EXPORTAR PDF ============
+// ============ EXPORTAR PDF CON OBSERVACIONES COMPLETAS ============
 async function exportProjectPDF() {
   if (!currentProject) return;
   
@@ -1621,8 +1670,9 @@ async function exportProjectPDF() {
   doc.text(`Fecha inicio: ${formatDate(p.startDate || p.createdAt)}`, W / 2 + 10, y);
   y += 7;
   if (p.description) {
-    doc.text(`Descripción: ${p.description.substring(0, 80)}${p.description.length > 80 ? '...' : ''}`, 20, y);
-    y += 7;
+    const descLines = doc.splitTextToSize(`Descripción: ${p.description}`, W - 40);
+    doc.text(descLines, 20, y);
+    y += descLines.length * 5;
   }
   
   // Progreso
@@ -1638,39 +1688,105 @@ async function exportProjectPDF() {
   doc.rect(20, y, (W - 40) * progress / 100, 6, 'F');
   y += 15;
   
-  // Tabla de pasos
+  // Tabla de pasos con observaciones completas
   doc.setFontSize(11);
   doc.setTextColor(30, 41, 59);
-  doc.text('Detalle de Pasos', 20, y);
-  y += 8;
-  
-  // Headers
-  doc.setFillColor(241, 245, 249);
-  doc.rect(20, y, W - 40, 8, 'F');
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(8);
-  doc.setTextColor(30, 41, 59);
-  doc.text('#', 25, y + 5.5);
-  doc.text('Paso', 35, y + 5.5);
-  doc.text('Estado', W - 55, y + 5.5);
-  doc.text('Fecha', W - 25, y + 5.5, { align: 'right' });
+  doc.text('Detalle de Pasos del Proceso', 20, y);
   y += 8;
   
   for (const step of p.steps) {
-    if (y > 260) {
+    if (y > 270) {
+      doc.addPage();
+      y = 20;
+      doc.setFontSize(11);
+      doc.text('Detalle de Pasos del Proceso (continuación)', 20, y);
+      y += 8;
+    }
+    
+    const statusText = step.status === 'done' ? '✓ Completado' : (step.status === 'in_progress' ? '⟳ En Progreso' : '○ Pendiente');
+    const statusColor = step.status === 'done' ? [22, 163, 74] : (step.status === 'in_progress' ? [37, 99, 235] : [148, 163, 184]);
+    const dateText = step.completedAt ? formatDate(step.completedAt) : (step.startedAt ? formatDate(step.startedAt) : '—');
+    
+    // Fondo de la fila
+    const bgColor = (p.steps.indexOf(step) % 2 === 0) ? [255, 255, 255] : [248, 250, 252];
+    doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
+    const rowHeight = step.notes ? 22 : 14;
+    doc.rect(15, y, W - 30, rowHeight, 'F');
+    
+    // Número y nombre del paso
+    doc.setFillColor(statusColor[0], statusColor[1], statusColor[2]);
+    doc.circle(22, y + 5, 3.5, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.text(String(p.steps.indexOf(step) + 1), 22, y + 7, { align: 'center' });
+    
+    doc.setTextColor(30, 41, 59);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.text(step.name.length > 35 ? step.name.substring(0, 32) + '...' : step.name, 30, y + 6);
+    
+    // Estado y fecha
+    doc.setFillColor(statusColor[0], statusColor[1], statusColor[2]);
+    doc.roundedRect(W - 65, y + 1.5, 28, 6, 2, 2, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(6.5);
+    doc.text(statusText, W - 51, y + 5.5, { align: 'center' });
+    
+    doc.setTextColor(100, 116, 139);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.text(dateText, W - 20, y + 5.5, { align: 'right' });
+    
+    // Observaciones completas (ajustadas automáticamente)
+    if (step.notes) {
+      doc.setTextColor(71, 85, 105);
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(7.5);
+      const notesLines = doc.splitTextToSize(`📝 ${step.notes}`, W - 50);
+      doc.text(notesLines, 28, y + 12);
+    }
+    
+    doc.setDrawColor(226, 232, 240);
+    doc.line(15, y + rowHeight, W - 15, y + rowHeight);
+    y += rowHeight;
+  }
+  
+  // Alerta si hay días sin actualización
+  if (!p.deleted && isDaysWithoutUpdate(p, 3)) {
+    if (y > 270) {
       doc.addPage();
       y = 20;
     }
-    const statusText = step.status === 'done' ? 'Completado' : (step.status === 'in_progress' ? 'En Progreso' : 'Pendiente');
-    doc.setFont('helvetica', 'normal');
+    y += 5;
+    doc.setFillColor(254, 242, 242);
+    doc.roundedRect(15, y, W - 30, 15, 3, 3, 'F');
+    doc.setDrawColor(252, 165, 165);
+    doc.roundedRect(15, y, W - 30, 15, 3, 3, 'S');
+    doc.setTextColor(190, 18, 60);
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
-    doc.setTextColor(71, 85, 105);
-    doc.text(String(p.steps.indexOf(step) + 1), 25, y + 4);
-    doc.text(step.name.length > 30 ? step.name.substring(0, 27) + '...' : step.name, 35, y + 4);
-    doc.text(statusText, W - 55, y + 4);
-    const dateText = step.completedAt ? formatDate(step.completedAt) : (step.startedAt ? formatDate(step.startedAt) : '—');
-    doc.text(dateText, W - 27, y + 4, { align: 'right' });
-    y += 7;
+    doc.text('⚠️ ALERTA:', 20, y + 7);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Este proyecto lleva más de 3 días sin reportar avances.`, 45, y + 7);
+    doc.setFontSize(7);
+    doc.setTextColor(153, 27, 27);
+    doc.text('Se recomienda actualizar el estado de los pasos pendientes.', 20, y + 12);
+    y += 20;
+  }
+  
+  // Footer
+  const totalPages = doc.internal.getNumberOfPages();
+  for (let pg = 1; pg <= totalPages; pg++) {
+    doc.setPage(pg);
+    doc.setFillColor(241, 245, 249);
+    doc.rect(0, doc.internal.pageSize.getHeight() - 12, W, 12, 'F');
+    doc.setTextColor(100, 116, 139);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.text('ProyectoTrack – Sistema de Control de Avance de Proyectos', 20, doc.internal.pageSize.getHeight() - 5);
+    doc.text(`Página ${pg} de ${totalPages}`, W - 25, doc.internal.pageSize.getHeight() - 5, { align: 'right' });
   }
   
   doc.save(`${p.code}_${p.name.replace(/\s+/g, '-')}.pdf`);
@@ -1682,9 +1798,18 @@ function loadUsers() {
     let html = '<table class="users-table"><thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Acciones</th></tr></thead><tbody>';
     snapshot.forEach(doc => {
       const u = doc.data();
-      html += `<tr><td><strong>${u.name || '—'}</strong></td><td>${u.email}</td><td>${u.role === 'supervisor' ? '🔑 Supervisor' : '👤 Colaborador'}</td>
-        <td><button class="btn btn-ghost btn-sm" onclick="editUser('${doc.id}', '${u.name}')">✏️ Editar</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteUser('${doc.id}')">🗑️ Eliminar</button></td></tr>`;
+      // No mostrar al usuario actual en la lista para evitar auto-eliminación
+      if (doc.id !== currentUser.id) {
+        html += `<tr>
+          <td><strong>${u.name || '—'}</strong></td>
+          <td>${u.email}</td>
+          <td>${u.role === 'supervisor' ? '🔑 Supervisor' : '👤 Colaborador'}</td>
+          <td>
+            <button class="btn btn-ghost btn-sm" onclick="editUser('${doc.id}', '${u.name}')">✏️ Editar</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteUser('${doc.id}')">🗑️ Eliminar</button>
+          </td>
+        </tr>`;
+      }
     });
     html += '</tbody></table>';
     document.getElementById('usersContent').innerHTML = html;
@@ -1762,7 +1887,7 @@ function showPage(page) {
   if (page === 'projects') document.querySelectorAll('.nav-item')[1].classList.add('active');
   if (page === 'supervisor') document.getElementById('navSupervisor')?.classList.add('active');
   if (page === 'users') document.getElementById('navUsers')?.classList.add('active');
-  if (page === 'deleted') document.querySelectorAll('.nav-item')[4]?.classList.add('active');
+  if (page === 'deleted') document.getElementById('navDeleted')?.classList.add('active');
   
   if (window.innerWidth <= 768) toggleSidebar();
 }
