@@ -1631,7 +1631,7 @@ function switchProjectTab(tab, btnElement) {
   if (btnElement) btnElement.classList.add('active');
 }
 
-// ============ EXPORTAR PDF CON OBSERVACIONES COMPLETAS ============
+// ============ EXPORTAR PDF CON OBSERVACIONES COMPLETAS Y CARACTERES ESPECIALES ============
 async function exportProjectPDF() {
   if (!currentProject) return;
   
@@ -1639,9 +1639,40 @@ async function exportProjectPDF() {
   const p = currentProject;
   const progress = getProgress(p);
   const ownerName = await getUserName(p.owner);
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  
+  // Usar configuración con soporte Unicode
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4',
+    putOnlyUsedFonts: true,
+    floatPrecision: 16
+  });
+  
+  // Registrar fuente que soporte caracteres especiales
+  doc.setFont('helvetica');
+  doc.setLanguage('es');
+  
   const W = doc.internal.pageSize.getWidth();
   let y = 20;
+  
+  // Función para limpiar texto (reemplazar caracteres problemáticos)
+  function cleanText(text) {
+    if (!text) return '';
+    return String(text)
+      .replace(/[áäâà]/g, 'a')
+      .replace(/[éëêè]/g, 'e')
+      .replace(/[íïîì]/g, 'i')
+      .replace(/[óöôò]/g, 'o')
+      .replace(/[úüûù]/g, 'u')
+      .replace(/ñ/g, 'n')
+      .replace(/Ñ/g, 'N')
+      .replace(/[¿¡]/g, '')
+      .replace(/[•·]/g, '-')
+      .replace(/[“”]/g, '"')
+      .replace(/[‘’]/g, "'")
+      .replace(/[–—]/g, '-');
+  }
   
   // Header
   doc.setFillColor(37, 99, 235);
@@ -1659,18 +1690,18 @@ async function exportProjectPDF() {
   y = 55;
   doc.setFontSize(14);
   doc.setTextColor(30, 41, 59);
-  doc.text(p.name, 20, y);
+  doc.text(cleanText(p.name), 20, y);
   y += 10;
   doc.setFontSize(9);
   doc.setTextColor(100, 116, 139);
-  doc.text(`OT: ${p.code}`, 20, y);
-  doc.text(`Subestación: ${p.client || '—'}`, W / 2 + 10, y);
+  doc.text(`OT: ${cleanText(p.code)}`, 20, y);
+  doc.text(`Subestacion: ${cleanText(p.client || '—')}`, W / 2 + 10, y);
   y += 7;
-  doc.text(`Responsable: ${ownerName}`, 20, y);
+  doc.text(`Responsable: ${cleanText(ownerName)}`, 20, y);
   doc.text(`Fecha inicio: ${formatDate(p.startDate || p.createdAt)}`, W / 2 + 10, y);
   y += 7;
   if (p.description) {
-    const descLines = doc.splitTextToSize(`Descripción: ${p.description}`, W - 40);
+    const descLines = doc.splitTextToSize(`Descripcion: ${cleanText(p.description)}`, W - 40);
     doc.text(descLines, 20, y);
     y += descLines.length * 5;
   }
@@ -1699,21 +1730,22 @@ async function exportProjectPDF() {
       doc.addPage();
       y = 20;
       doc.setFontSize(11);
-      doc.text('Detalle de Pasos del Proceso (continuación)', 20, y);
+      doc.text('Detalle de Pasos del Proceso (continuacion)', 20, y);
       y += 8;
     }
     
-    const statusText = step.status === 'done' ? '✓ Completado' : (step.status === 'in_progress' ? '⟳ En Progreso' : '○ Pendiente');
+    const statusText = step.status === 'done' ? 'Completado' : (step.status === 'in_progress' ? 'En Progreso' : 'Pendiente');
     const statusColor = step.status === 'done' ? [22, 163, 74] : (step.status === 'in_progress' ? [37, 99, 235] : [148, 163, 184]);
     const dateText = step.completedAt ? formatDate(step.completedAt) : (step.startedAt ? formatDate(step.startedAt) : '—');
     
     // Fondo de la fila
     const bgColor = (p.steps.indexOf(step) % 2 === 0) ? [255, 255, 255] : [248, 250, 252];
     doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
-    const rowHeight = step.notes ? 22 : 14;
+    const notesHeight = step.notes ? Math.ceil(doc.splitTextToSize(cleanText(step.notes), W - 50).length * 4) : 0;
+    const rowHeight = 14 + notesHeight;
     doc.rect(15, y, W - 30, rowHeight, 'F');
     
-    // Número y nombre del paso
+    // Numero y nombre del paso
     doc.setFillColor(statusColor[0], statusColor[1], statusColor[2]);
     doc.circle(22, y + 5, 3.5, 'F');
     doc.setTextColor(255, 255, 255);
@@ -1724,7 +1756,8 @@ async function exportProjectPDF() {
     doc.setTextColor(30, 41, 59);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
-    doc.text(step.name.length > 35 ? step.name.substring(0, 32) + '...' : step.name, 30, y + 6);
+    const stepName = cleanText(step.name);
+    doc.text(stepName.length > 35 ? stepName.substring(0, 32) + '...' : stepName, 30, y + 6);
     
     // Estado y fecha
     doc.setFillColor(statusColor[0], statusColor[1], statusColor[2]);
@@ -1739,12 +1772,13 @@ async function exportProjectPDF() {
     doc.setFontSize(7.5);
     doc.text(dateText, W - 20, y + 5.5, { align: 'right' });
     
-    // Observaciones completas (ajustadas automáticamente)
+    // Observaciones completas (texto limpio)
     if (step.notes) {
       doc.setTextColor(71, 85, 105);
       doc.setFont('helvetica', 'italic');
       doc.setFontSize(7.5);
-      const notesLines = doc.splitTextToSize(`📝 ${step.notes}`, W - 50);
+      const cleanNotes = cleanText(step.notes);
+      const notesLines = doc.splitTextToSize(`Nota: ${cleanNotes}`, W - 50);
       doc.text(notesLines, 28, y + 12);
     }
     
@@ -1753,7 +1787,7 @@ async function exportProjectPDF() {
     y += rowHeight;
   }
   
-  // Alerta si hay días sin actualización
+  // Alerta si hay dias sin actualizacion
   if (!p.deleted && isDaysWithoutUpdate(p, 3)) {
     if (y > 270) {
       doc.addPage();
@@ -1767,9 +1801,9 @@ async function exportProjectPDF() {
     doc.setTextColor(190, 18, 60);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
-    doc.text('⚠️ ALERTA:', 20, y + 7);
+    doc.text('ALERTA:', 20, y + 7);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Este proyecto lleva más de 3 días sin reportar avances.`, 45, y + 7);
+    doc.text(`Este proyecto lleva mas de 3 dias sin reportar avances.`, 45, y + 7);
     doc.setFontSize(7);
     doc.setTextColor(153, 27, 27);
     doc.text('Se recomienda actualizar el estado de los pasos pendientes.', 20, y + 12);
@@ -1785,11 +1819,12 @@ async function exportProjectPDF() {
     doc.setTextColor(100, 116, 139);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(7);
-    doc.text('ProyectoTrack – Sistema de Control de Avance de Proyectos', 20, doc.internal.pageSize.getHeight() - 5);
-    doc.text(`Página ${pg} de ${totalPages}`, W - 25, doc.internal.pageSize.getHeight() - 5, { align: 'right' });
+    doc.text('ProyectoTrack - Sistema de Control de Avance de Proyectos', 20, doc.internal.pageSize.getHeight() - 5);
+    doc.text(`Pagina ${pg} de ${totalPages}`, W - 25, doc.internal.pageSize.getHeight() - 5, { align: 'right' });
   }
   
-  doc.save(`${p.code}_${p.name.replace(/\s+/g, '-')}.pdf`);
+  const safeFileName = cleanText(`${p.code}_${p.name}`).replace(/\s+/g, '-');
+  doc.save(`${safeFileName}.pdf`);
 }
 
 // ============ GESTIÓN DE USUARIOS ============
