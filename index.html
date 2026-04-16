@@ -215,22 +215,22 @@
       <div><div id="sidebarName" style="font-weight: 600;">Usuario</div><small id="sidebarRole" style="opacity: 0.7;">rol</small></div>
     </div>
     <div class="nav-item active" onclick="showPage('dashboard')">
-      <span></span> Dashboard
+      <span>📊</span> Dashboard
       <span id="syncIndicator" class="refresh-indicator synced" style="margin-left: auto;"></span>
     </div>
-    <div class="nav-item" onclick="showPage('projects')">Proyectos</div>
-    <div class="nav-item hidden" id="navSupervisor" onclick="showPage('supervisor')">Vista Supervisor</div>
-    <div class="nav-item hidden" id="navUsers" onclick="showPage('users')">Gestión Usuarios</div>
-    <div class="nav-item hidden" id="navDeleted" onclick="showPage('deleted')">Eliminados</div>
-    <div class="nav-item" onclick="openDocumentRepo()">Repositorio documental</div>
-    <div class="nav-item" onclick="doLogout()" style="margin-top: 20px;">Cerrar Sesión</div>
+    <div class="nav-item" onclick="showPage('projects')">📁 Proyectos</div>
+    <div class="nav-item hidden" id="navSupervisor" onclick="showPage('supervisor')">👥 Vista Supervisor</div>
+    <div class="nav-item hidden" id="navUsers" onclick="showPage('users')">⚙️ Gestión Usuarios</div>
+    <div class="nav-item hidden" id="navDeleted" onclick="showPage('deleted')">🗑️ Eliminados</div>
+    <div class="nav-item" onclick="openDocumentRepo()">📂 Repositorio</div>
+    <div class="nav-item" onclick="doLogout()" style="margin-top: 20px;">🚪 Cerrar Sesión</div>
   </div>
   
   <div class="main">
     <div class="topbar">
       <h1 id="pageTitle">Dashboard</h1>
       <div class="flex gap-2">
-        <button class="btn btn-ghost btn-sm" onclick="manualRefresh()" id="refreshBtn">Refrescar</button>
+        <button class="btn btn-ghost btn-sm" onclick="manualRefresh()" id="refreshBtn">🔄 Refrescar</button>
         <button class="btn btn-primary" id="btnNewProject" onclick="openNewProjectModal()" style="display: none;">+ Nuevo Proyecto</button>
       </div>
     </div>
@@ -253,7 +253,7 @@
         <div id="supervisorContent"></div>
       </div>
       <div id="pageUsers" class="hidden">
-        <div class="section-header"><h2>Gestión de Usuarios</h2><button class="btn btn-primary" onclick="openAddUserModal()">Nuevo Usuario</button></div>
+        <div class="section-header"><h2>Gestión de Usuarios</h2><button class="btn btn-primary" onclick="openAddUserModal()">➕ Nuevo Usuario</button></div>
         <div id="usersContent"></div>
       </div>
       <div id="pageDeleted" class="hidden">
@@ -263,13 +263,15 @@
     </div>
   </div>
 </div>
+
+<!-- MODALES -->
 <div id="newProjectModal" class="modal-overlay hidden">
   <div class="modal">
     <div class="modal-header"><h2>Nuevo Proyecto</h2><button class="close-btn" onclick="closeModal('newProjectModal')">✕</button></div>
     <div class="modal-body">
       <div class="form-group"><label>Nombre del Proyecto *</label><input type="text" id="projectName" placeholder="Ej: Transformador T1"></div>
       <div class="form-row">
-        <div class="form-group"><label>OT *</label><input type="text" id="projectCode" placeholder="Ej: 20206"></div>
+        <div class="form-group"><label>Código OT *</label><input type="text" id="projectCode" placeholder="Ej: 20206"></div>
         <div class="form-group"><label>Fecha Inicio</label><input type="date" id="projectStartDate"></div>
       </div>
       <div class="form-group"><label>Subestación</label><select id="projectClient"></select></div>
@@ -287,7 +289,7 @@
     <div class="modal-header">
       <div><h2 id="detailTitle">Proyecto</h2><div id="detailBadges" class="flex gap-2 mt-2"></div></div>
       <div class="flex gap-2">
-        <button class="btn btn-primary btn-sm" onclick="exportProjectPDF()">Exportar PDF</button>
+        <button class="btn btn-primary btn-sm" onclick="exportProjectPDF()">📄 Exportar PDF</button>
         <button class="close-btn" onclick="closeModal('projectDetailModal')">✕</button>
       </div>
     </div>
@@ -308,7 +310,7 @@
   <div class="modal" style="max-width: 480px;">
     <div class="modal-header"><h2 id="updateStepTitle">Actualizar Paso</h2><button class="close-btn" onclick="closeModal('updateStepModal')">✕</button></div>
     <div class="modal-body">
-      <div class="form-group"><label>Estado</label><select id="stepStatus"><option value="pending">Pendiente</option><option value="in_progress">En Progreso</option><option value="done">Completado</option></select></div>
+      <div class="form-group"><label>Estado</label><select id="stepStatus"><option value="pending">⏳ Pendiente</option><option value="in_progress">🔄 En Progreso</option><option value="done">✅ Completado</option></select></div>
       <div class="form-group"><label>Notas / Observaciones</label><textarea id="stepNotes" rows="3"></textarea></div>
       <div class="form-group"><label>Fecha de completado</label><input type="date" id="stepDate"></div>
       <div class="flex justify-end gap-2 mt-4">
@@ -336,6 +338,9 @@
 </div>
 
 <script>
+// ============================================================
+// CONFIGURACIÓN DE FIREBASE
+// ============================================================
 const firebaseConfig = {
   apiKey: "AIzaSyC40UAPgOwuEW1P7ZOvr4NYlvTh9eEdsFw",
   authDomain: "proyectotrack-d3556.firebaseapp.com",
@@ -349,6 +354,9 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
+// ============================================================
+// VARIABLES GLOBALES
+// ============================================================
 let currentUser = null;
 let currentProject = null;
 let currentStepIndex = null;
@@ -381,6 +389,7 @@ const SUBESTACIONES = [
   "S/E (84) Guangopolo Hidráulica", "S/E (86) Nayón", "S/E (88) Pasochoa"
 ];
 
+// Inicializar select de subestaciones
 document.addEventListener('DOMContentLoaded', () => {
   const select = document.getElementById('projectClient');
   if (select) {
@@ -389,6 +398,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// ============================================================
+// FUNCIONES AUXILIARES
+// ============================================================
 function formatDate(dateStr) {
   if (!dateStr) return '—';
   return new Date(dateStr).toLocaleDateString('es-EC', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -430,6 +442,9 @@ function getUserName(uid) {
   return user ? user.name : uid?.substring(0, 8) || '—';
 }
 
+// ============================================================
+// CARGA DE DATOS OPTIMIZADA
+// ============================================================
 async function loadAllData(forceReload = false) {
   if (dataLoaded && !forceReload) { renderAll(); return; }
   if (isSyncing) return;
@@ -488,10 +503,10 @@ async function renderDashboard(projects) {
   const alerts = projects.filter(p => isDaysWithoutUpdate(p, 3)).length;
   
   document.getElementById('statsGrid').innerHTML = `
-    <div class="stat-card"><div class="stat-icon" style="background:#dbeafe"></div><div><h3>${total}</h3><p>Total Proyectos</p></div></div>
-    <div class="stat-card"><div class="stat-icon" style="background:#dcfce7"></div><div><h3>${completed}</h3><p>Completados</p></div></div>
-    <div class="stat-card"><div class="stat-icon" style="background:#ede9fe"></div><div><h3>${inProgress}</h3><p>En Progreso</p></div></div>
-    <div class="stat-card"><div class="stat-icon" style="background:#fee2e2"></div><div><h3>${alerts}</h3><p>Con Alertas</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#dbeafe">📋</div><div><h3>${total}</h3><p>Total Proyectos</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#dcfce7">✅</div><div><h3>${completed}</h3><p>Completados</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#ede9fe">🔄</div><div><h3>${inProgress}</h3><p>En Progreso</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#fee2e2">⚠️</div><div><h3>${alerts}</h3><p>Con Alertas</p></div></div>
   `;
   
   document.getElementById('alertsContainer').innerHTML = alerts > 0 
@@ -515,7 +530,7 @@ async function renderProjectCards(projects, isDeletedView = false) {
     
     html += `
       <div class="project-card ${alertClass} ${p.deleted ? 'deleted' : ''}" data-project-id="${p.id}">
-        ${canDelete ? `<button class="delete-btn" onclick="event.stopPropagation(); softDeleteProject('${p.id}')"></button>` : ''}
+        ${canDelete ? `<button class="delete-btn" onclick="event.stopPropagation(); softDeleteProject('${p.id}')">🗑️</button>` : ''}
         ${canRestore ? `<button class="restore-btn" onclick="event.stopPropagation(); restoreProject('${p.id}')">↺</button>` : ''}
         <div onclick='openProject("${p.id}")'>
           <div class="project-header">
@@ -523,7 +538,7 @@ async function renderProjectCards(projects, isDeletedView = false) {
             <span class="badge ${status.class}">${status.label}</span>
           </div>
           <div class="progress-bar"><div class="progress-fill fill-${progress === 100 ? 'green' : progress >= 60 ? 'blue' : progress >= 30 ? 'yellow' : 'red'}" style="width:${progress}%"></div></div>
-          <div class="project-meta"><span>${ownerName}</span><span>${formatDate(p.createdAt)}</span></div>
+          <div class="project-meta"><span>👤 ${ownerName}</span><span>${formatDate(p.createdAt)}</span></div>
         </div>
       </div>
     `;
@@ -539,7 +554,7 @@ async function renderFolderStructure(projects) {
     html += `
       <div class="folder-item">
         <div class="folder-header" onclick="toggleFolder('${folderId}')">
-          <span class="folder-icon"></span><span class="folder-name">${folder}</span>
+          <span class="folder-icon">📁</span><span class="folder-name">${folder}</span>
           <span class="folder-count">${folderProjects.length}</span><span class="folder-arrow">▼</span>
         </div>
         <div class="folder-content" id="${folderId}">
@@ -595,6 +610,9 @@ async function renderSupervisorView(projects) {
   }
 }
 
+// ============================================================
+// GESTIÓN DE USUARIOS
+// ============================================================
 function loadUsers() {
   const container = document.getElementById('usersContent');
   if (!container) return;
@@ -606,7 +624,7 @@ function loadUsers() {
     if (u.id !== currentUser?.id) {
       html += `<tr><td><strong>${u.name || '—'}</strong></td><td>${u.email}</td>
         <td><span class="badge ${u.role === 'supervisor' ? 'badge-purple' : 'badge-blue'}">${u.role === 'supervisor' ? 'Supervisor' : 'Colaborador'}</span></td>
-        <td><div class="flex gap-2"><button class="btn btn-ghost btn-sm" onclick="editUser('${u.id}', '${u.name}')"></button><button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">🗑️</button></div></td></tr>`;
+        <td><div class="flex gap-2"><button class="btn btn-ghost btn-sm" onclick="editUser('${u.id}', '${u.name}')">✏️</button><button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">🗑️</button></div></td></tr>`;
     }
   });
   html += '</tbody></table>';
@@ -634,7 +652,7 @@ async function saveUser() {
     const userData = { name, email, role, createdAt: new Date().toISOString() };
     await db.collection('usuarios').doc(userCred.user.uid).set(userData);
     usersCache.set(userCred.user.uid, { id: userCred.user.uid, ...userData });
-    alert('Usuario creado');
+    alert('✅ Usuario creado');
     closeModal('addUserModal');
     loadUsers();
   } catch (error) {
@@ -664,6 +682,9 @@ function deleteUser(uid) {
   }
 }
 
+// ============================================================
+// OPERACIONES CRUD DE PROYECTOS
+// ============================================================
 async function createProject() {
   const name = document.getElementById('projectName').value.trim();
   const code = document.getElementById('projectCode').value.trim();
@@ -727,6 +748,9 @@ async function saveStepUpdate() {
   renderAll();
 }
 
+// ============================================================
+// AUTENTICACIÓN
+// ============================================================
 async function doLogin() {
   const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
@@ -768,7 +792,7 @@ async function doRegister() {
     const userData = { name, email, role, createdAt: new Date().toISOString() };
     await db.collection('usuarios').doc(userCred.user.uid).set(userData);
     usersCache.set(userCred.user.uid, { id: userCred.user.uid, ...userData });
-    alert('Registro exitoso. Ahora puedes iniciar sesión.');
+    alert('✅ Registro exitoso. Ahora puedes iniciar sesión.');
     switchAuthTab('login');
   } catch (error) {
     errorEl.textContent = 'Error: ' + (error.code === 'auth/email-already-in-use' ? 'Este email ya está registrado' : error.message);
@@ -786,6 +810,9 @@ function doLogout() {
   document.getElementById('app').style.display = 'none';
 }
 
+// ============================================================
+// FUNCIONES DE UI
+// ============================================================
 function setupUI() {
   document.getElementById('sidebarAvatar').textContent = currentUser.name?.charAt(0) || 'U';
   document.getElementById('sidebarName').textContent = currentUser.name;
@@ -864,9 +891,9 @@ function renderProjectSteps() {
   const canEdit = (currentUser?.role === 'collaborator' && currentProject.owner === currentUser?.id && !currentProject.deleted);
   currentProject.steps.forEach((step, i) => {
     html += `<div class="step-row"><div class="step-number">${i+1}</div><div class="step-info"><div class="step-name">${step.name}</div>
-      <div class="step-status">${step.status === 'done' ? 'Completado' : (step.status === 'in_progress' ? 'En Progreso' : 'Pendiente')}</div>
+      <div class="step-status">${step.status === 'done' ? '✅ Completado' : (step.status === 'in_progress' ? '🔄 En Progreso' : '⏳ Pendiente')}</div>
       ${step.notes ? `<div class="step-status">${step.notes}</div>` : ''}</div>
-      ${canEdit ? `<button class="btn btn-primary btn-sm" onclick="openUpdateStep(${i})"></button>` : ''}</div>`;
+      ${canEdit ? `<button class="btn btn-primary btn-sm" onclick="openUpdateStep(${i})">✏️</button>` : ''}</div>`;
   });
   html += '</div>';
   document.getElementById('projectSteps').innerHTML = html;
@@ -885,6 +912,9 @@ function renderProjectInfo() {
   `;
 }
 
+// ============================================================
+// EXPORTAR PDF (VERSIÓN MEJORADA - PROFESIONAL)
+// ============================================================
 async function exportProjectPDF() {
   if (!currentProject) return;
   
@@ -903,6 +933,7 @@ async function exportProjectPDF() {
     return String(text).replace(/[áäâà]/g, 'a').replace(/[éëêè]/g, 'e').replace(/[íïîì]/g, 'i').replace(/[óöôò]/g, 'o').replace(/[úüûù]/g, 'u').replace(/ñ/g, 'n').replace(/Ñ/g, 'N').replace(/[¿¡]/g, '').replace(/[•·]/g, '-').replace(/[“”]/g, '"').replace(/[‘’]/g, "'").replace(/[–—]/g, '-');
   }
 
+  // Cabecera
   doc.setFillColor(37, 99, 235);
   doc.rect(0, 0, W, 35, 'F');
   doc.setFont('helvetica', 'bold');
@@ -922,6 +953,7 @@ async function exportProjectPDF() {
   doc.text(`${progress}%`, W - 35, 16, { align: 'center' });
   y = 50;
 
+  // Datos generales
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(14);
   doc.setTextColor(30, 41, 59);
@@ -951,6 +983,7 @@ async function exportProjectPDF() {
   });
   y += generalData.length * 8 + 15;
 
+  // Descripción
   if (p.description) {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(14);
@@ -967,6 +1000,7 @@ async function exportProjectPDF() {
     y += descLines.length * 6 + 15;
   }
 
+  // Progreso general
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(14);
   doc.setTextColor(30, 41, 59);
@@ -984,6 +1018,7 @@ async function exportProjectPDF() {
   doc.text(`${progress}%`, W / 2, y + 5.5, { align: 'center' });
   y += 20;
 
+  // Detalle de pasos
   if (y > H - 60) { doc.addPage(); y = 20; }
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(14);
@@ -1044,13 +1079,14 @@ async function exportProjectPDF() {
       doc.setFont('helvetica', 'italic');
       doc.setFontSize(8);
       doc.setTextColor(71, 85, 105);
-      const notesLines = doc.splitTextToSize(`${cleanText(step.notes)}`, W - 60);
+      const notesLines = doc.splitTextToSize(`📝 ${cleanText(step.notes)}`, W - 60);
       doc.text(notesLines, 38, y);
       y += notesLines.length * 5 + 5;
     }
     y += 2;
   });
 
+  // Alertas
   if (!p.deleted && isDaysWithoutUpdate(p, 3)) {
     if (y > H - 30) { doc.addPage(); y = 20; }
     y += 5;
@@ -1061,7 +1097,7 @@ async function exportProjectPDF() {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
     doc.setTextColor(190, 18, 60);
-    doc.text('ALERTA', 30, y + 8);
+    doc.text('⚠️ ALERTA', 30, y + 8);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
     doc.setTextColor(153, 27, 27);
@@ -1069,6 +1105,7 @@ async function exportProjectPDF() {
     y += 25;
   }
 
+  // Pie de página
   const totalPages = doc.internal.getNumberOfPages();
   for (let pg = 1; pg <= totalPages; pg++) {
     doc.setPage(pg);
@@ -1086,6 +1123,9 @@ async function exportProjectPDF() {
   doc.save(`Informe_${safeFileName}.pdf`);
 }
 
+// ============================================================
+// INICIALIZACIÓN Y EXPORTACIÓN
+// ============================================================
 document.addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) e.target.classList.add('hidden'); });
 document.getElementById('loginEmail')?.addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
 document.getElementById('loginPassword')?.addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
