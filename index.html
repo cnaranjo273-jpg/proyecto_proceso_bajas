@@ -19,7 +19,6 @@
     background: #f1f5f9;
   }
   
-  /* Login */
   #loginScreen {
     min-height: 100vh;
     display: flex;
@@ -119,7 +118,6 @@
     margin-bottom: 16px;
   }
   
-  /* App layout */
   #app { display: none; }
   .sidebar {
     position: fixed;
@@ -358,7 +356,6 @@
     opacity: 1;
   }
   
-  /* Modal styles */
   .modal-overlay {
     position: fixed;
     top: 0;
@@ -431,7 +428,6 @@
     border-color: #2563eb;
   }
   
-  /* Tabs */
   .tabs {
     display: flex;
     gap: 8px;
@@ -456,7 +452,6 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   }
   
-  /* Timeline */
   .timeline {
     position: relative;
     padding-left: 35px;
@@ -519,7 +514,6 @@
     border-radius: 8px;
   }
   
-  /* Steps list */
   .steps-list {
     display: flex;
     flex-direction: column;
@@ -561,7 +555,6 @@
     margin-top: 4px;
   }
   
-  /* Folder structure */
   .folder-structure {
     background: white;
     border-radius: 20px;
@@ -623,7 +616,6 @@
     border-radius: 14px;
   }
   
-  /* Tables */
   .users-table {
     width: 100%;
     border-collapse: collapse;
@@ -644,7 +636,6 @@
     border-bottom: 1px solid #e2e8f0;
   }
   
-  /* Alerts */
   .alert-banner {
     padding: 14px 18px;
     border-radius: 14px;
@@ -656,8 +647,6 @@
   .alert-danger { background: #fef2f2; border-left: 4px solid #dc2626; color: #991b1b; }
   .alert-warning { background: #fffbeb; border-left: 4px solid #d97706; color: #92400e; }
   .alert-info { background: #eff6ff; border-left: 4px solid #2563eb; color: #1e40af; }
-  
-  /* Utility */
   .flex { display: flex; }
   .gap-2 { gap: 8px; }
   .gap-3 { gap: 12px; }
@@ -670,8 +659,7 @@
   .text-muted { color: #64748b; font-size: 0.75rem; }
   .text-sm { font-size: 0.8rem; }
   .font-bold { font-weight: 700; }
-  
-  /* Mobile */
+ 
   .menu-toggle {
     display: none;
     position: fixed;
@@ -727,10 +715,9 @@
 
 <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
 
-<!-- Login -->
 <div id="loginScreen">
   <div class="login-card">
-    <h1>🏗️ ProyectoTrack</h1>
+    <h1>ProyectoTrack</h1>
     <p style="color: #64748b; margin-bottom: 24px;">Control de Avance de Proyectos</p>
     
     <div class="auth-tabs">
@@ -750,8 +737,6 @@
       <div id="loginError" class="error-message hidden"></div>
       <button class="btn btn-primary btn-full" onclick="doLogin()">Ingresar</button>
       <div style="margin-top: 20px; padding: 12px; background: #f0fdf4; border-radius: 12px; font-size: 0.7rem; text-align: center;">
-        <strong>📝 Usuarios disponibles:</strong><br>
-        rmallitasig@eeq.com.ec (Supervisor) | carlos1@test.com (Colaborador) | david@test.com (Colaborador)
       </div>
     </div>
     
@@ -771,8 +756,8 @@
       <div class="form-group">
         <label>Rol</label>
         <select id="regRole">
-          <option value="collaborator">👤 Colaborador</option>
-          <option value="supervisor">🔑 Supervisor</option>
+          <option value="collaborator">Colaborador</option>
+          <option value="supervisor">Supervisor</option>
         </select>
       </div>
       <div id="registerError" class="error-message hidden"></div>
@@ -780,12 +765,10 @@
     </div>
   </div>
 </div>
-
-<!-- App -->
 <div id="app">
   <div class="sidebar" id="sidebar">
     <div class="sidebar-logo">
-      <h2>🏗️ ProyectoTrack</h2>
+      <h2>ProyectoTrack</h2>
     </div>
     <div class="sidebar-user">
       <div class="avatar" id="sidebarAvatar">U</div>
@@ -794,13 +777,13 @@
         <small id="sidebarRole" style="opacity: 0.7;">rol</small>
       </div>
     </div>
-    <div class="nav-item active" onclick="showPage('dashboard')">📊 Dashboard</div>
-    <div class="nav-item" onclick="showPage('projects')">📁 Proyectos</div>
-    <div class="nav-item hidden" id="navSupervisor" onclick="showPage('supervisor')">👥 Vista Supervisor</div>
-    <div class="nav-item hidden" id="navUsers" onclick="showPage('users')">👤 Gestión Usuarios</div>
-    <div class="nav-item hidden" id="navDeleted" onclick="showPage('deleted')">🗑️ Eliminados</div>
-    <div class="nav-item" onclick="openDocumentRepo()">📄 Repositorio Documentos</div>
-    <div class="nav-item" onclick="doLogout()" style="margin-top: 20px;">🚪 Cerrar Sesión</div>
+    <div class="nav-item active" onclick="showPage('dashboard')">Dashboard</div>
+    <div class="nav-item" onclick="showPage('projects')">Proyectos</div>
+    <div class="nav-item hidden" id="navSupervisor" onclick="showPage('supervisor')">Vista Supervisor</div>
+    <div class="nav-item hidden" id="navUsers" onclick="showPage('users')">Gestión Usuarios</div>
+    <div class="nav-item hidden" id="navDeleted" onclick="showPage('deleted')">Eliminados</div>
+    <div class="nav-item" onclick="openDocumentRepo()">Repositorio Documentos</div>
+    <div class="nav-item" onclick="doLogout()" style="margin-top: 20px;">Cerrar Sesión</div>
   </div>
   
   <div class="main">
@@ -812,37 +795,35 @@
       <div id="pageDashboard">
         <div class="stats-grid" id="statsGrid"></div>
         <div id="alertsContainer"></div>
-        <div class="section-header"><h2>📋 Proyectos Recientes</h2></div>
+        <div class="section-header"><h2>Proyectos Recientes</h2></div>
         <div class="projects-grid" id="recentProjects"></div>
       </div>
       <div id="pageProjects" class="hidden">
         <div class="section-header">
-          <h2>📁 Todos los Proyectos</h2>
-          <button class="btn btn-primary" id="projectsNewBtn" onclick="openNewProjectModal()" style="display: none;">+ Nuevo Proyecto</button>
+          <h2>Todos los Proyectos</h2>
+          <button class="btn btn-primary" id="projectsNewBtn" onclick="openNewProjectModal()" style="display: none;">Nuevo Proyecto</button>
         </div>
         <div id="folderStructure"></div>
       </div>
       <div id="pageSupervisor" class="hidden">
-        <div class="section-header"><h2>👥 Proyectos por Colaborador</h2></div>
+        <div class="section-header"><h2>Proyectos por Colaborador</h2></div>
         <div id="supervisorContent"></div>
       </div>
       <div id="pageUsers" class="hidden">
-        <div class="section-header"><h2>👤 Gestión de Usuarios</h2><button class="btn btn-primary" onclick="openAddUserModal()">+ Nuevo Usuario</button></div>
+        <div class="section-header"><h2>Gestión de Usuarios</h2><button class="btn btn-primary" onclick="openAddUserModal()">Nuevo Usuario</button></div>
         <div id="usersContent"></div>
       </div>
       <div id="pageDeleted" class="hidden">
-        <div class="section-header"><h2>🗑️ Proyectos Eliminados</h2></div>
+        <div class="section-header"><h2>Proyectos Eliminados</h2></div>
         <div class="projects-grid" id="deletedProjects"></div>
       </div>
     </div>
   </div>
 </div>
-
-<!-- Modales -->
 <div id="newProjectModal" class="modal-overlay hidden">
   <div class="modal">
     <div class="modal-header">
-      <h2>➕ Nuevo Proyecto</h2>
+      <h2>Nuevo Proyecto</h2>
       <button class="close-btn" onclick="closeModal('newProjectModal')">✕</button>
     </div>
     <div class="modal-body">
@@ -935,7 +916,6 @@
     </div>
   </div>
 </div>
-
 <div id="projectDetailModal" class="modal-overlay hidden">
   <div class="modal">
     <div class="modal-header">
@@ -944,15 +924,15 @@
         <div id="detailBadges" class="flex gap-2 mt-2"></div>
       </div>
       <div class="flex gap-2">
-        <button class="btn btn-primary btn-sm" onclick="exportProjectPDF()" style="padding: 8px 16px;">📄 Exportar PDF</button>
+        <button class="btn btn-primary btn-sm" onclick="exportProjectPDF()" style="padding: 8px 16px;">Exportar PDF</button>
         <button class="close-btn" onclick="closeModal('projectDetailModal')">✕</button>
       </div>
     </div>
     <div class="modal-body">
       <div class="tabs">
-        <button class="tab active" onclick="switchProjectTab('timeline', this)">📅 Línea de Tiempo</button>
-        <button class="tab" onclick="switchProjectTab('steps', this)">✅ Lista de Pasos</button>
-        <button class="tab" onclick="switchProjectTab('info', this)">ℹ️ Información</button>
+        <button class="tab active" onclick="switchProjectTab('timeline', this)">Línea de Tiempo</button>
+        <button class="tab" onclick="switchProjectTab('steps', this)">Lista de Pasos</button>
+        <button class="tab" onclick="switchProjectTab('info', this)">Información</button>
       </div>
       <div id="projectTimeline"></div>
       <div id="projectSteps" class="hidden"></div>
@@ -991,18 +971,17 @@
     </div>
   </div>
 </div>
-
 <div id="addUserModal" class="modal-overlay hidden">
   <div class="modal" style="max-width: 450px;">
     <div class="modal-header">
-      <h2 id="addUserTitle">➕ Nuevo Usuario</h2>
+      <h2 id="addUserTitle">Nuevo Usuario</h2>
       <button class="close-btn" onclick="closeModal('addUserModal')">✕</button>
     </div>
     <div class="modal-body">
       <div class="form-group"><label>Nombre Completo</label><input type="text" id="userName" placeholder="Ej: Juan Pérez"></div>
       <div class="form-group"><label>Email</label><input type="email" id="userEmail" placeholder="correo@ejemplo.com"></div>
       <div class="form-group"><label>Contraseña</label><input type="password" id="userPassword" placeholder="Mínimo 6 caracteres"></div>
-      <div class="form-group"><label>Rol</label><select id="userRole"><option value="collaborator">👤 Colaborador</option><option value="supervisor">🔑 Supervisor</option></select></div>
+      <div class="form-group"><label>Rol</label><select id="userRole"><option value="collaborator">Colaborador</option><option value="supervisor">Supervisor</option></select></div>
       <div class="flex justify-end gap-2 mt-4">
         <button class="btn btn-ghost" onclick="closeModal('addUserModal')">Cancelar</button>
         <button class="btn btn-primary" onclick="saveUser()">Guardar</button>
@@ -1012,7 +991,6 @@
 </div>
 
 <script>
-// Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyC40UAPgOwuEW1P7ZOvr4NYlvTh9eEdsFw",
   authDomain: "proyectotrack-d3556.firebaseapp.com",
@@ -1025,13 +1003,10 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
-
-// Variables globales
 let currentUser = null;
 let currentProject = null;
 let currentStepIndex = null;
 let allProjects = [];
-
 const STEP_NAMES = [
   "Informe Técnico",
   "Certificado de Pre-existencia",
@@ -1043,7 +1018,6 @@ const STEP_NAMES = [
   "Quipux – Finalización"
 ];
 
-// ============ FUNCIONES DE UTILIDAD ============
 function formatDate(dateStr) {
   if (!dateStr) return '—';
   return new Date(dateStr).toLocaleDateString('es-EC', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -1084,7 +1058,6 @@ async function getUserName(uid) {
   }
 }
 
-// ============ AUTENTICACIÓN ============
 function switchAuthTab(tab) {
   const loginForm = document.getElementById('loginForm');
   const registerForm = document.getElementById('registerForm');
@@ -1126,7 +1099,7 @@ async function doRegister() {
     await db.collection('usuarios').doc(userCredential.user.uid).set({
       name, email, role, createdAt: new Date().toISOString()
     });
-    alert('✅ Registro exitoso. Ahora puedes iniciar sesión.');
+    alert('Registro exitoso. Ahora puedes iniciar sesión.');
     switchAuthTab('login');
     document.getElementById('regName').value = '';
     document.getElementById('regEmail').value = '';
@@ -1196,17 +1169,14 @@ function setupUI() {
     document.getElementById('navSupervisor').classList.remove('hidden');
     document.getElementById('navUsers').classList.remove('hidden');
     document.getElementById('navDeleted').classList.remove('hidden');
-    // Supervisores NO pueden crear proyectos
     document.getElementById('btnNewProject').style.display = 'none';
     document.getElementById('projectsNewBtn').style.display = 'none';
   } else {
-    // Colaboradores pueden crear proyectos
     document.getElementById('btnNewProject').style.display = 'block';
     document.getElementById('projectsNewBtn').style.display = 'block';
   }
 }
 
-// ============ GESTIÓN DE PROYECTOS ============
 function loadProjects() {
   db.collection('proyectos').onSnapshot(async () => {
     const snapshot = await db.collection('proyectos').get();
@@ -1218,7 +1188,6 @@ function loadProjects() {
     
     if (currentUser.role !== 'supervisor') {
       activeProjects = activeProjects.filter(p => p.owner === currentUser.id);
-      // Los colaboradores NO ven proyectos eliminados
       deletedProjects = [];
     }
     
@@ -1236,15 +1205,15 @@ async function renderDashboard(projects) {
   const alerts = projects.filter(p => isDaysWithoutUpdate(p, 3)).length;
   
   document.getElementById('statsGrid').innerHTML = `
-    <div class="stat-card"><div class="stat-icon" style="background:#dbeafe">📁</div><div><h3>${total}</h3><p>Total Proyectos</p></div></div>
-    <div class="stat-card"><div class="stat-icon" style="background:#dcfce7">✅</div><div><h3>${completed}</h3><p>Completados</p></div></div>
-    <div class="stat-card"><div class="stat-icon" style="background:#ede9fe">🔄</div><div><h3>${inProgress}</h3><p>En Progreso</p></div></div>
-    <div class="stat-card"><div class="stat-icon" style="background:#fee2e2">⚠️</div><div><h3>${alerts}</h3><p>Con Alertas</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#dbeafe"></div><div><h3>${total}</h3><p>Total Proyectos</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#dcfce7"></div><div><h3>${completed}</h3><p>Completados</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#ede9fe"></div><div><h3>${inProgress}</h3><p>En Progreso</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#fee2e2"></div><div><h3>${alerts}</h3><p>Con Alertas</p></div></div>
   `;
   
   const alertsContainer = document.getElementById('alertsContainer');
   if (alerts > 0) {
-    alertsContainer.innerHTML = `<div class="alert-banner alert-danger">🚨 <strong>${alerts} proyecto(s)</strong> llevan más de 3 días sin reportar avances.</div>`;
+    alertsContainer.innerHTML = `<div class="alert-banner alert-danger"><strong>${alerts} proyecto(s)</strong> llevan más de 3 días sin reportar avances.</div>`;
   } else {
     alertsContainer.innerHTML = '';
   }
@@ -1271,7 +1240,7 @@ async function renderProjectCards(projects, isDeletedView = false) {
     
     html += `
       <div class="project-card ${alertClass} ${deletedClass}" data-project-id="${p.id}">
-        ${canDelete ? `<button class="delete-btn" onclick="event.stopPropagation(); confirmDeleteProject('${p.id}', '${p.name.replace(/'/g, "\\'")}')">🗑️</button>` : ''}
+        ${canDelete ? `<button class="delete-btn" onclick="event.stopPropagation(); confirmDeleteProject('${p.id}', '${p.name.replace(/'/g, "\\'")}')"></button>` : ''}
         ${canRestore ? `<button class="restore-btn" onclick="event.stopPropagation(); confirmRestoreProject('${p.id}', '${p.name.replace(/'/g, "\\'")}')">↺</button>` : ''}
         <div onclick='openProject(${JSON.stringify(p).replace(/'/g, "\\'")})'>
           <div class="project-header">
@@ -1279,7 +1248,7 @@ async function renderProjectCards(projects, isDeletedView = false) {
             <span class="badge ${status.class}">${status.label}</span>
           </div>
           <div class="progress-bar"><div class="progress-fill fill-${progress === 100 ? 'green' : progress >= 60 ? 'blue' : progress >= 30 ? 'yellow' : 'red'}" style="width:${progress}%"></div></div>
-          <div class="project-meta"><span>👤 ${ownerName}</span><span>📅 ${formatDate(p.createdAt)}</span></div>
+          <div class="project-meta"><span>👤 ${ownerName}</span><span>${formatDate(p.createdAt)}</span></div>
         </div>
       </div>
     `;
@@ -1313,7 +1282,7 @@ async function renderFolderStructure(projects) {
     html += `
       <div class="folder-item">
         <div class="folder-header" onclick="toggleFolder('${folderId}')">
-          <span class="folder-icon">📁</span>
+          <span class="folder-icon"></span>
           <span class="folder-name">${folder}</span>
           <span class="folder-count">${folderProjects.length} proyectos</span>
           <span class="folder-arrow">▼</span>
@@ -1333,7 +1302,7 @@ async function renderFolderStructure(projects) {
     const container = document.getElementById(`${folder.replace(/[^a-zA-Z0-9]/g, '_')}_projects`);
     if (container) {
       if (folderProjects.length === 0) {
-        container.innerHTML = '<div class="empty-folder">📂 No hay proyectos en esta carpeta</div>';
+        container.innerHTML = '<div class="empty-folder">No hay proyectos en esta carpeta</div>';
       } else {
         container.innerHTML = await renderProjectCards(folderProjects, false);
       }
@@ -1358,7 +1327,7 @@ async function renderDeletedProjects(projects) {
   if (projects.length && currentUser.role === 'supervisor') {
     container.innerHTML = await renderProjectCards(projects, true);
   } else {
-    container.innerHTML = '<div class="empty-folder">🗑️ No hay proyectos eliminados</div>';
+    container.innerHTML = '<div class="empty-folder">No hay proyectos eliminados</div>';
   }
 }
 
@@ -1394,11 +1363,9 @@ async function renderSupervisorView(projects) {
   }
 }
 
-// ============ CRUD PROYECTOS ============
 function openNewProjectModal() {
-  // Solo colaboradores pueden crear proyectos
   if (currentUser.role === 'supervisor') {
-    alert('⚠️ Los supervisores no pueden crear proyectos. Solo los colaboradores pueden crear proyectos.');
+    alert('Los supervisores no pueden crear proyectos. Solo los colaboradores pueden crear proyectos.');
     return;
   }
   document.getElementById('projectName').value = '';
@@ -1411,7 +1378,7 @@ function openNewProjectModal() {
 
 function openNewProjectInFolder(folderName) {
   if (currentUser.role === 'supervisor') {
-    alert('⚠️ Los supervisores no pueden crear proyectos.');
+    alert('Los supervisores no pueden crear proyectos.');
     return;
   }
   openNewProjectModal();
@@ -1426,11 +1393,11 @@ async function createProject() {
   const description = document.getElementById('projectDesc').value.trim();
   
   if (!name || !code) {
-    alert('⚠️ Complete el nombre y código del proyecto');
+    alert('Complete el nombre y código del proyecto');
     return;
   }
   if (!client) {
-    alert('⚠️ Seleccione una subestación');
+    alert('Seleccione una subestación');
     return;
   }
   
@@ -1444,38 +1411,38 @@ async function createProject() {
   try {
     await db.collection('proyectos').doc(projectId).set(project);
     closeModal('newProjectModal');
-    alert('✅ Proyecto creado exitosamente');
+    alert('Proyecto creado exitosamente');
   } catch (error) {
-    alert('❌ Error al crear: ' + error.message);
+    alert('Error al crear: ' + error.message);
   }
 }
 
 async function softDeleteProject(projectId, projectName) {
   if (currentUser.role !== 'supervisor') {
-    alert('⚠️ Solo los supervisores pueden eliminar proyectos');
+    alert('Solo los supervisores pueden eliminar proyectos');
     return;
   }
   if (confirm(`¿Eliminar el proyecto "${projectName}"?`)) {
     try {
       await db.collection('proyectos').doc(projectId).update({ deleted: true, deletedAt: new Date().toISOString() });
-      alert('✅ Proyecto eliminado');
+      alert('Proyecto eliminado');
     } catch (error) {
-      alert('❌ Error: ' + error.message);
+      alert('Error: ' + error.message);
     }
   }
 }
 
 async function restoreProject(projectId, projectName) {
   if (currentUser.role !== 'supervisor') {
-    alert('⚠️ Solo los supervisores pueden restaurar proyectos');
+    alert('Solo los supervisores pueden restaurar proyectos');
     return;
   }
   if (confirm(`¿Restaurar el proyecto "${projectName}"?`)) {
     try {
       await db.collection('proyectos').doc(projectId).update({ deleted: false });
-      alert('✅ Proyecto restaurado');
+      alert('Proyecto restaurado');
     } catch (error) {
-      alert('❌ Error: ' + error.message);
+      alert('Error: ' + error.message);
     }
   }
 }
@@ -1488,7 +1455,6 @@ function confirmRestoreProject(projectId, projectName) {
   restoreProject(projectId, projectName);
 }
 
-// ============ VISTA DE DETALLE DEL PROYECTO ============
 function openProject(project) {
   currentProject = project;
   document.getElementById('detailTitle').textContent = project.name;
@@ -1513,7 +1479,7 @@ function renderProjectTimeline() {
   
   currentProject.steps.forEach((step, i) => {
     const dotClass = step.status === 'done' ? 'done' : (step.status === 'in_progress' ? 'active' : '');
-    const dateText = step.completedAt ? '✅ ' + formatDate(step.completedAt) : (step.startedAt ? '🔄 ' + formatDate(step.startedAt) : '⏳ Pendiente');
+    const dateText = step.completedAt ? '' + formatDate(step.completedAt) : (step.startedAt ? '' + formatDate(step.startedAt) : 'Pendiente');
     html += `
       <div class="timeline-item">
         <div class="timeline-dot ${dotClass}"></div>
@@ -1522,8 +1488,8 @@ function renderProjectTimeline() {
             <span class="timeline-step-title">${i+1}. ${step.name}</span>
             <span class="timeline-step-date">${dateText}</span>
           </div>
-          ${step.notes ? `<div class="timeline-step-notes">📝 ${step.notes}</div>` : ''}
-          ${canEdit ? `<div class="flex gap-2 mt-2"><button class="btn btn-primary btn-sm" onclick="openUpdateStep(${i})">✏️ Actualizar</button></div>` : ''}
+          ${step.notes ? `<div class="timeline-step-notes">${step.notes}</div>` : ''}
+          ${canEdit ? `<div class="flex gap-2 mt-2"><button class="btn btn-primary btn-sm" onclick="openUpdateStep(${i})">Actualizar</button></div>` : ''}
         </div>
       </div>
     `;
@@ -1538,16 +1504,16 @@ function renderProjectSteps() {
   const canEdit = (currentUser.role === 'collaborator' && currentProject.owner === currentUser.id && !currentProject.deleted);
   
   currentProject.steps.forEach((step, i) => {
-    const statusText = step.status === 'done' ? '✅ Completado' : (step.status === 'in_progress' ? '🔄 En Progreso' : '⏳ Pendiente');
+    const statusText = step.status === 'done' ? 'Completado' : (step.status === 'in_progress' ? 'En Progreso' : 'Pendiente');
     html += `
       <div class="step-row">
         <div class="step-number">${i+1}</div>
         <div class="step-info">
           <div class="step-name">${step.name}</div>
           <div class="step-status">${statusText}</div>
-          ${step.notes ? `<div class="step-status" style="margin-top: 4px;">📝 ${step.notes}</div>` : ''}
+          ${step.notes ? `<div class="step-status" style="margin-top: 4px;">${step.notes}</div>` : ''}
         </div>
-        ${canEdit ? `<button class="btn btn-primary btn-sm" onclick="openUpdateStep(${i})">✏️</button>` : ''}
+        ${canEdit ? `<button class="btn btn-primary btn-sm" onclick="openUpdateStep(${i})"></button>` : ''}
       </div>
     `;
   });
@@ -1560,16 +1526,16 @@ async function renderProjectInfo() {
   const ownerName = await getUserName(currentProject.owner);
   document.getElementById('projectInfo').innerHTML = `
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-      <div><strong>📋 Nombre:</strong><br>${currentProject.name}</div>
-      <div><strong>🔢 OT:</strong><br>${currentProject.code}</div>
-      <div><strong>🏢 Subestación:</strong><br>${currentProject.client || '—'}</div>
-      <div><strong>👤 Responsable:</strong><br>${ownerName}</div>
-      <div><strong>📅 Fecha Inicio:</strong><br>${formatDate(currentProject.startDate || currentProject.createdAt)}</div>
-      <div><strong>📊 Progreso:</strong><br>${getProgress(currentProject)}%</div>
+      <div><strong>Nombre:</strong><br>${currentProject.name}</div>
+      <div><strong>OT:</strong><br>${currentProject.code}</div>
+      <div><strong>Subestación:</strong><br>${currentProject.client || '—'}</div>
+      <div><strong>Responsable:</strong><br>${ownerName}</div>
+      <div><strong>Fecha Inicio:</strong><br>${formatDate(currentProject.startDate || currentProject.createdAt)}</div>
+      <div><strong>Progreso:</strong><br>${getProgress(currentProject)}%</div>
     </div>
-    ${currentProject.description ? `<div class="mt-4"><strong>📝 Descripción:</strong><br>${currentProject.description}</div>` : ''}
-    ${currentProject.deleted ? `<div class="mt-4 alert-banner alert-warning">⚠️ Este proyecto está eliminado. Solo un supervisor puede restaurarlo.</div>` : ''}
-    ${currentUser.role === 'supervisor' ? `<div class="mt-4 alert-banner alert-info">🔍 Modo Supervisor: Solo puedes visualizar este proyecto. No puedes editarlo.</div>` : ''}
+    ${currentProject.description ? `<div class="mt-4"><strong>Descripción:</strong><br>${currentProject.description}</div>` : ''}
+    ${currentProject.deleted ? `<div class="mt-4 alert-banner alert-warning">Este proyecto está eliminado. Solo un supervisor puede restaurarlo.</div>` : ''}
+    ${currentUser.role === 'supervisor' ? `<div class="mt-4 alert-banner alert-info">Modo Supervisor: Solo puedes visualizar este proyecto. No puedes editarlo.</div>` : ''}
   `;
 }
 
@@ -1611,9 +1577,9 @@ async function saveStepUpdate() {
     renderProjectTimeline();
     renderProjectSteps();
     renderProjectInfo();
-    alert('✅ Paso actualizado correctamente');
+    alert('Paso actualizado correctamente');
   } catch (error) {
-    alert('❌ Error: ' + error.message);
+    alert('Error: ' + error.message);
   }
 }
 
@@ -1631,7 +1597,6 @@ function switchProjectTab(tab, btnElement) {
   if (btnElement) btnElement.classList.add('active');
 }
 
-// ============ EXPORTAR PDF CON OBSERVACIONES COMPLETAS Y CARACTERES ESPECIALES ============
 async function exportProjectPDF() {
   if (!currentProject) return;
   
@@ -1640,7 +1605,6 @@ async function exportProjectPDF() {
   const progress = getProgress(p);
   const ownerName = await getUserName(p.owner);
   
-  // Usar configuración con soporte Unicode
   const doc = new jsPDF({
     orientation: 'portrait',
     unit: 'mm',
@@ -1648,15 +1612,13 @@ async function exportProjectPDF() {
     putOnlyUsedFonts: true,
     floatPrecision: 16
   });
-  
-  // Registrar fuente que soporte caracteres especiales
+
   doc.setFont('helvetica');
   doc.setLanguage('es');
   
   const W = doc.internal.pageSize.getWidth();
   let y = 20;
-  
-  // Función para limpiar texto (reemplazar caracteres problemáticos)
+
   function cleanText(text) {
     if (!text) return '';
     return String(text)
@@ -1674,7 +1636,6 @@ async function exportProjectPDF() {
       .replace(/[–—]/g, '-');
   }
   
-  // Header
   doc.setFillColor(37, 99, 235);
   doc.rect(0, 0, W, 40, 'F');
   doc.setFont('helvetica', 'bold');
@@ -1685,8 +1646,6 @@ async function exportProjectPDF() {
   doc.setFont('helvetica', 'normal');
   doc.text(`Generado: ${new Date().toLocaleDateString('es-EC')}`, 20, 28);
   doc.text(`${progress}% completado`, W - 30, 25, { align: 'right' });
-  
-  // Info del proyecto
   y = 55;
   doc.setFontSize(14);
   doc.setTextColor(30, 41, 59);
@@ -1705,8 +1664,6 @@ async function exportProjectPDF() {
     doc.text(descLines, 20, y);
     y += descLines.length * 5;
   }
-  
-  // Progreso
   y += 10;
   doc.setFontSize(11);
   doc.setTextColor(30, 41, 59);
@@ -1718,8 +1675,6 @@ async function exportProjectPDF() {
   doc.setFillColor(fillColor[0], fillColor[1], fillColor[2]);
   doc.rect(20, y, (W - 40) * progress / 100, 6, 'F');
   y += 15;
-  
-  // Tabla de pasos con observaciones completas
   doc.setFontSize(11);
   doc.setTextColor(30, 41, 59);
   doc.text('Detalle de Pasos del Proceso', 20, y);
@@ -1737,42 +1692,32 @@ async function exportProjectPDF() {
     const statusText = step.status === 'done' ? 'Completado' : (step.status === 'in_progress' ? 'En Progreso' : 'Pendiente');
     const statusColor = step.status === 'done' ? [22, 163, 74] : (step.status === 'in_progress' ? [37, 99, 235] : [148, 163, 184]);
     const dateText = step.completedAt ? formatDate(step.completedAt) : (step.startedAt ? formatDate(step.startedAt) : '—');
-    
-    // Fondo de la fila
     const bgColor = (p.steps.indexOf(step) % 2 === 0) ? [255, 255, 255] : [248, 250, 252];
     doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
     const notesHeight = step.notes ? Math.ceil(doc.splitTextToSize(cleanText(step.notes), W - 50).length * 4) : 0;
     const rowHeight = 14 + notesHeight;
     doc.rect(15, y, W - 30, rowHeight, 'F');
-    
-    // Numero y nombre del paso
     doc.setFillColor(statusColor[0], statusColor[1], statusColor[2]);
     doc.circle(22, y + 5, 3.5, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(7);
     doc.text(String(p.steps.indexOf(step) + 1), 22, y + 7, { align: 'center' });
-    
     doc.setTextColor(30, 41, 59);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
     const stepName = cleanText(step.name);
     doc.text(stepName.length > 35 ? stepName.substring(0, 32) + '...' : stepName, 30, y + 6);
-    
-    // Estado y fecha
     doc.setFillColor(statusColor[0], statusColor[1], statusColor[2]);
     doc.roundedRect(W - 65, y + 1.5, 28, 6, 2, 2, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(6.5);
-    doc.text(statusText, W - 51, y + 5.5, { align: 'center' });
-    
+    doc.text(statusText, W - 51, y + 5.5, { align: 'center' });    
     doc.setTextColor(100, 116, 139);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(7.5);
     doc.text(dateText, W - 20, y + 5.5, { align: 'right' });
-    
-    // Observaciones completas (texto limpio)
     if (step.notes) {
       doc.setTextColor(71, 85, 105);
       doc.setFont('helvetica', 'italic');
@@ -1786,8 +1731,7 @@ async function exportProjectPDF() {
     doc.line(15, y + rowHeight, W - 15, y + rowHeight);
     y += rowHeight;
   }
-  
-  // Alerta si hay dias sin actualizacion
+
   if (!p.deleted && isDaysWithoutUpdate(p, 3)) {
     if (y > 270) {
       doc.addPage();
@@ -1809,8 +1753,7 @@ async function exportProjectPDF() {
     doc.text('Se recomienda actualizar el estado de los pasos pendientes.', 20, y + 12);
     y += 20;
   }
-  
-  // Footer
+
   const totalPages = doc.internal.getNumberOfPages();
   for (let pg = 1; pg <= totalPages; pg++) {
     doc.setPage(pg);
@@ -1827,7 +1770,6 @@ async function exportProjectPDF() {
   doc.save(`${safeFileName}.pdf`);
 }
 
-// ============ GESTIÓN DE USUARIOS ============
 function loadUsers() {
   db.collection('usuarios').onSnapshot((snapshot) => {
     let html = '<table class="users-table"><thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Acciones</th></tr></thead><tbody>';
@@ -1838,10 +1780,10 @@ function loadUsers() {
         html += `<tr>
           <td><strong>${u.name || '—'}</strong></td>
           <td>${u.email}</td>
-          <td>${u.role === 'supervisor' ? '🔑 Supervisor' : '👤 Colaborador'}</td>
+          <td>${u.role === 'supervisor' ? 'Supervisor' : 'Colaborador'}</td>
           <td>
-            <button class="btn btn-ghost btn-sm" onclick="editUser('${doc.id}', '${u.name}')">✏️ Editar</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteUser('${doc.id}')">🗑️ Eliminar</button>
+            <button class="btn btn-ghost btn-sm" onclick="editUser('${doc.id}', '${u.name}')">Editar</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteUser('${doc.id}')">Eliminar</button>
           </td>
         </tr>`;
       }
@@ -1866,11 +1808,11 @@ async function saveUser() {
   const role = document.getElementById('userRole').value;
   
   if (!name || !email || !password) {
-    alert('⚠️ Complete todos los campos');
+    alert('Complete todos los campos');
     return;
   }
   if (password.length < 6) {
-    alert('⚠️ La contraseña debe tener al menos 6 caracteres');
+    alert('La contraseña debe tener al menos 6 caracteres');
     return;
   }
   
@@ -1879,10 +1821,10 @@ async function saveUser() {
     await db.collection('usuarios').doc(userCred.user.uid).set({
       name, email, role, createdAt: new Date().toISOString()
     });
-    alert('✅ Usuario creado exitosamente');
+    alert('Usuario creado exitosamente');
     closeModal('addUserModal');
   } catch (error) {
-    alert('❌ Error: ' + error.message);
+    alert('Error: ' + error.message);
   }
 }
 
@@ -1899,7 +1841,6 @@ function deleteUser(uid) {
   }
 }
 
-// ============ NAVEGACIÓN ============
 function showPage(page) {
   document.getElementById('pageDashboard').classList.add('hidden');
   document.getElementById('pageProjects').classList.add('hidden');
@@ -1915,8 +1856,7 @@ function showPage(page) {
   
   const titles = { dashboard: 'Dashboard', projects: 'Proyectos', supervisor: 'Vista Supervisor', users: 'Usuarios', deleted: 'Eliminados' };
   document.getElementById('pageTitle').textContent = titles[page] || page;
-  
-  // Actualizar navegación activa
+
   document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
   if (page === 'dashboard') document.querySelector('.nav-item:first-child').classList.add('active');
   if (page === 'projects') document.querySelectorAll('.nav-item')[1].classList.add('active');
@@ -1939,7 +1879,6 @@ function openDocumentRepo() {
   window.open('https://drive.google.com/drive/folders/1ts8G8ghmSddPAFRJLGTAyIxUKEdrR0z6?usp=sharing', '_blank');
 }
 
-// ============ EVENT LISTENERS ============
 document.addEventListener('click', (e) => {
   if (e.target.classList.contains('modal-overlay')) {
     e.target.classList.add('hidden');
@@ -1953,7 +1892,6 @@ document.getElementById('loginPassword')?.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') doLogin();
 });
 
-// Auth state
 auth.onAuthStateChanged(async (user) => {
   if (user) {
     const userDoc = await db.collection('usuarios').doc(user.uid).get();
