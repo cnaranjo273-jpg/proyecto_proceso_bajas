@@ -9,7 +9,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <style>
-  /* ========== ESTILOS (MANTENIDOS IGUAL) ========== */
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f1f5f9; }
   
@@ -180,7 +179,6 @@
 
 <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
 
-<!-- LOGIN SCREEN (MANTENIDO IGUAL) -->
 <div id="loginScreen">
   <div class="login-card">
     <h1>ProyectoTrack</h1>
@@ -209,7 +207,6 @@
   </div>
 </div>
 
-<!-- APP PRINCIPAL -->
 <div id="app">
   <div class="sidebar" id="sidebar">
     <div class="sidebar-logo"><h2>ProyectoTrack</h2></div>
@@ -218,22 +215,22 @@
       <div><div id="sidebarName" style="font-weight: 600;">Usuario</div><small id="sidebarRole" style="opacity: 0.7;">rol</small></div>
     </div>
     <div class="nav-item active" onclick="showPage('dashboard')">
-      <span>📊</span> Dashboard
+      <span></span> Dashboard
       <span id="syncIndicator" class="refresh-indicator synced" style="margin-left: auto;"></span>
     </div>
-    <div class="nav-item" onclick="showPage('projects')">📁 Proyectos</div>
-    <div class="nav-item hidden" id="navSupervisor" onclick="showPage('supervisor')">👥 Vista Supervisor</div>
-    <div class="nav-item hidden" id="navUsers" onclick="showPage('users')">⚙️ Gestión Usuarios</div>
-    <div class="nav-item hidden" id="navDeleted" onclick="showPage('deleted')">🗑️ Eliminados</div>
-    <div class="nav-item" onclick="openDocumentRepo()">📂 Repositorio</div>
-    <div class="nav-item" onclick="doLogout()" style="margin-top: 20px;">🚪 Cerrar Sesión</div>
+    <div class="nav-item" onclick="showPage('projects')">Proyectos</div>
+    <div class="nav-item hidden" id="navSupervisor" onclick="showPage('supervisor')">Vista Supervisor</div>
+    <div class="nav-item hidden" id="navUsers" onclick="showPage('users')">Gestión Usuarios</div>
+    <div class="nav-item hidden" id="navDeleted" onclick="showPage('deleted')">Eliminados</div>
+    <div class="nav-item" onclick="openDocumentRepo()">Repositorio documental</div>
+    <div class="nav-item" onclick="doLogout()" style="margin-top: 20px;">Cerrar Sesión</div>
   </div>
   
   <div class="main">
     <div class="topbar">
       <h1 id="pageTitle">Dashboard</h1>
       <div class="flex gap-2">
-        <button class="btn btn-ghost btn-sm" onclick="manualRefresh()" id="refreshBtn">🔄 Refrescar</button>
+        <button class="btn btn-ghost btn-sm" onclick="manualRefresh()" id="refreshBtn">Refrescar</button>
         <button class="btn btn-primary" id="btnNewProject" onclick="openNewProjectModal()" style="display: none;">+ Nuevo Proyecto</button>
       </div>
     </div>
@@ -266,18 +263,16 @@
     </div>
   </div>
 </div>
-
-<!-- MODALES (MANTENIDOS IGUAL) -->
 <div id="newProjectModal" class="modal-overlay hidden">
   <div class="modal">
     <div class="modal-header"><h2>Nuevo Proyecto</h2><button class="close-btn" onclick="closeModal('newProjectModal')">✕</button></div>
     <div class="modal-body">
       <div class="form-group"><label>Nombre del Proyecto *</label><input type="text" id="projectName" placeholder="Ej: Transformador T1"></div>
       <div class="form-row">
-        <div class="form-group"><label>Código OT *</label><input type="text" id="projectCode" placeholder="Ej: 20206"></div>
+        <div class="form-group"><label>OT *</label><input type="text" id="projectCode" placeholder="Ej: 20206"></div>
         <div class="form-group"><label>Fecha Inicio</label><input type="date" id="projectStartDate"></div>
       </div>
-      <div class="form-group"><label>Subestación</label><select id="projectClient">${/* Lista de subestaciones */''}</select></div>
+      <div class="form-group"><label>Subestación</label><select id="projectClient"></select></div>
       <div class="form-group"><label>Descripción</label><textarea id="projectDesc" rows="3"></textarea></div>
       <div class="flex justify-end gap-2 mt-4">
         <button class="btn btn-ghost" onclick="closeModal('newProjectModal')">Cancelar</button>
@@ -313,7 +308,7 @@
   <div class="modal" style="max-width: 480px;">
     <div class="modal-header"><h2 id="updateStepTitle">Actualizar Paso</h2><button class="close-btn" onclick="closeModal('updateStepModal')">✕</button></div>
     <div class="modal-body">
-      <div class="form-group"><label>Estado</label><select id="stepStatus"><option value="pending">⏳ Pendiente</option><option value="in_progress">🔄 En Progreso</option><option value="done">✅ Completado</option></select></div>
+      <div class="form-group"><label>Estado</label><select id="stepStatus"><option value="pending">Pendiente</option><option value="in_progress">En Progreso</option><option value="done">Completado</option></select></div>
       <div class="form-group"><label>Notas / Observaciones</label><textarea id="stepNotes" rows="3"></textarea></div>
       <div class="form-group"><label>Fecha de completado</label><input type="date" id="stepDate"></div>
       <div class="flex justify-end gap-2 mt-4">
@@ -328,22 +323,19 @@
   <div class="modal" style="max-width: 450px;">
     <div class="modal-header"><h2>Nuevo Usuario</h2><button class="close-btn" onclick="closeModal('addUserModal')">✕</button></div>
     <div class="modal-body">
-      <div class="form-group"><label>Nombre</label><input type="text" id="userName"></div>
-      <div class="form-group"><label>Email</label><input type="email" id="userEmail"></div>
-      <div class="form-group"><label>Contraseña</label><input type="password" id="userPassword"></div>
+      <div class="form-group"><label>Nombre Completo *</label><input type="text" id="userName" placeholder="Ej: Juan Pérez"></div>
+      <div class="form-group"><label>Email *</label><input type="email" id="userEmail" placeholder="correo@ejemplo.com"></div>
+      <div class="form-group"><label>Contraseña *</label><input type="password" id="userPassword" placeholder="Mínimo 6 caracteres"></div>
       <div class="form-group"><label>Rol</label><select id="userRole"><option value="collaborator">Colaborador</option><option value="supervisor">Supervisor</option></select></div>
       <div class="flex justify-end gap-2 mt-4">
         <button class="btn btn-ghost" onclick="closeModal('addUserModal')">Cancelar</button>
-        <button class="btn btn-primary" onclick="saveUser()">Guardar</button>
+        <button class="btn btn-primary" onclick="saveUser()">Guardar Usuario</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-// ============================================================
-// CONFIGURACIÓN Y VARIABLES GLOBALES OPTIMIZADAS
-// ============================================================
 const firebaseConfig = {
   apiKey: "AIzaSyC40UAPgOwuEW1P7ZOvr4NYlvTh9eEdsFw",
   authDomain: "proyectotrack-d3556.firebaseapp.com",
@@ -357,14 +349,11 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// Caché local optimizada
 let currentUser = null;
 let currentProject = null;
 let currentStepIndex = null;
-
-// Caché de proyectos y usuarios (EVITA MÚLTIPLES CONSULTAS)
-let projectsCache = new Map();      // id -> proyecto
-let usersCache = new Map();         // uid -> { name, email, role }
+let projectsCache = new Map();
+let usersCache = new Map();
 let dataLoaded = false;
 let isSyncing = false;
 
@@ -392,7 +381,6 @@ const SUBESTACIONES = [
   "S/E (84) Guangopolo Hidráulica", "S/E (86) Nayón", "S/E (88) Pasochoa"
 ];
 
-// Inicializar select de subestaciones
 document.addEventListener('DOMContentLoaded', () => {
   const select = document.getElementById('projectClient');
   if (select) {
@@ -401,9 +389,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// ============================================================
-// FUNCIONES AUXILIARES
-// ============================================================
 function formatDate(dateStr) {
   if (!dateStr) return '—';
   return new Date(dateStr).toLocaleDateString('es-EC', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -437,74 +422,7 @@ function isDaysWithoutUpdate(project, days) {
 
 function setSyncIndicator(status) {
   const indicator = document.getElementById('syncIndicator');
-  if (indicator) {
-    indicator.className = 'refresh-indicator ' + status;
-  }
-}
-
-// ============================================================
-// CARGA DE DATOS OPTIMIZADA (UNA SOLA VEZ)
-// ============================================================
-async function loadAllData(forceReload = false) {
-  if (dataLoaded && !forceReload) {
-    console.log('📦 Usando datos en caché');
-    renderAll();
-    return;
-  }
-  
-  if (isSyncing) return;
-  isSyncing = true;
-  setSyncIndicator('syncing');
-  document.getElementById('refreshBtn').disabled = true;
-  
-  try {
-    console.log('🔄 Cargando datos desde Firestore...');
-    
-    // Cargar usuarios (SOLO UNA VEZ)
-    const usersSnapshot = await db.collection('usuarios').get();
-    usersCache.clear();
-    usersSnapshot.forEach(doc => usersCache.set(doc.id, { id: doc.id, ...doc.data() }));
-    
-    // Cargar proyectos (SOLO UNA VEZ)
-    const projectsSnapshot = await db.collection('proyectos').get();
-    projectsCache.clear();
-    projectsSnapshot.forEach(doc => projectsCache.set(doc.id, { id: doc.id, ...doc.data() }));
-    
-    dataLoaded = true;
-    console.log(`✅ Cargados: ${projectsCache.size} proyectos, ${usersCache.size} usuarios`);
-    setSyncIndicator('synced');
-    
-    renderAll();
-  } catch (error) {
-    console.error('❌ Error cargando datos:', error);
-    setSyncIndicator('synced');
-  } finally {
-    isSyncing = false;
-    document.getElementById('refreshBtn').disabled = false;
-  }
-}
-
-function manualRefresh() {
-  loadAllData(true);
-}
-
-// ============================================================
-// OBTENER PROYECTOS FILTRADOS (DESDE CACHÉ)
-// ============================================================
-function getFilteredProjects() {
-  const allProjects = Array.from(projectsCache.values());
-  let projects = allProjects.filter(p => !p.deleted);
-  
-  if (currentUser.role !== 'supervisor') {
-    projects = projects.filter(p => p.owner === currentUser.id);
-  }
-  
-  return projects;
-}
-
-function getDeletedProjects() {
-  const allProjects = Array.from(projectsCache.values());
-  return allProjects.filter(p => p.deleted === true);
+  if (indicator) indicator.className = 'refresh-indicator ' + status;
 }
 
 function getUserName(uid) {
@@ -512,17 +430,55 @@ function getUserName(uid) {
   return user ? user.name : uid?.substring(0, 8) || '—';
 }
 
-// ============================================================
-// RENDERIZADO PRINCIPAL
-// ============================================================
+async function loadAllData(forceReload = false) {
+  if (dataLoaded && !forceReload) { renderAll(); return; }
+  if (isSyncing) return;
+  isSyncing = true;
+  setSyncIndicator('syncing');
+  const btn = document.getElementById('refreshBtn');
+  if (btn) btn.disabled = true;
+  
+  try {
+    const usersSnapshot = await db.collection('usuarios').get();
+    usersCache.clear();
+    usersSnapshot.forEach(doc => usersCache.set(doc.id, { id: doc.id, ...doc.data() }));
+    
+    const projectsSnapshot = await db.collection('proyectos').get();
+    projectsCache.clear();
+    projectsSnapshot.forEach(doc => projectsCache.set(doc.id, { id: doc.id, ...doc.data() }));
+    
+    dataLoaded = true;
+    setSyncIndicator('synced');
+    renderAll();
+  } catch (error) {
+    console.error('Error cargando datos:', error);
+    setSyncIndicator('synced');
+  } finally {
+    isSyncing = false;
+    if (btn) btn.disabled = false;
+  }
+}
+
+function manualRefresh() { loadAllData(true); }
+
+function getFilteredProjects() {
+  const allProjects = Array.from(projectsCache.values());
+  let projects = allProjects.filter(p => !p.deleted);
+  if (currentUser?.role !== 'supervisor') projects = projects.filter(p => p.owner === currentUser?.id);
+  return projects;
+}
+
+function getDeletedProjects() {
+  return Array.from(projectsCache.values()).filter(p => p.deleted === true);
+}
+
 function renderAll() {
   const projects = getFilteredProjects();
   const deletedProjects = getDeletedProjects();
-  
   renderDashboard(projects);
   renderFolderStructure(projects);
   renderDeletedProjects(deletedProjects);
-  if (currentUser.role === 'supervisor') renderSupervisorView(projects);
+  if (currentUser?.role === 'supervisor') renderSupervisorView(projects);
 }
 
 async function renderDashboard(projects) {
@@ -532,20 +488,17 @@ async function renderDashboard(projects) {
   const alerts = projects.filter(p => isDaysWithoutUpdate(p, 3)).length;
   
   document.getElementById('statsGrid').innerHTML = `
-    <div class="stat-card"><div class="stat-icon" style="background:#dbeafe">📋</div><div><h3>${total}</h3><p>Total Proyectos</p></div></div>
-    <div class="stat-card"><div class="stat-icon" style="background:#dcfce7">✅</div><div><h3>${completed}</h3><p>Completados</p></div></div>
-    <div class="stat-card"><div class="stat-icon" style="background:#ede9fe">🔄</div><div><h3>${inProgress}</h3><p>En Progreso</p></div></div>
-    <div class="stat-card"><div class="stat-icon" style="background:#fee2e2">⚠️</div><div><h3>${alerts}</h3><p>Con Alertas</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#dbeafe"></div><div><h3>${total}</h3><p>Total Proyectos</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#dcfce7"></div><div><h3>${completed}</h3><p>Completados</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#ede9fe"></div><div><h3>${inProgress}</h3><p>En Progreso</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#fee2e2"></div><div><h3>${alerts}</h3><p>Con Alertas</p></div></div>
   `;
   
-  const alertsContainer = document.getElementById('alertsContainer');
-  alertsContainer.innerHTML = alerts > 0 
-    ? `<div class="alert-banner alert-danger"><strong>${alerts} proyecto(s)</strong> llevan más de 3 días sin reportar avances.</div>`
-    : '';
+  document.getElementById('alertsContainer').innerHTML = alerts > 0 
+    ? `<div class="alert-banner alert-danger"><strong>${alerts} proyecto(s)</strong> llevan más de 3 días sin reportar avances.</div>` : '';
   
   const recent = [...projects].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 6);
-  const recentContainer = document.getElementById('recentProjects');
-  recentContainer.innerHTML = recent.length 
+  document.getElementById('recentProjects').innerHTML = recent.length 
     ? await renderProjectCards(recent, false)
     : '<div class="empty-folder">📭 No hay proyectos activos</div>';
 }
@@ -557,13 +510,12 @@ async function renderProjectCards(projects, isDeletedView = false) {
     const status = getStatusBadge(progress, p.deleted);
     const ownerName = getUserName(p.owner);
     const alertClass = (!p.deleted && isDaysWithoutUpdate(p, 3)) ? 'alert' : '';
-    const deletedClass = p.deleted ? 'deleted' : '';
-    const canDelete = currentUser.role === 'supervisor' && !p.deleted;
-    const canRestore = currentUser.role === 'supervisor' && p.deleted;
+    const canDelete = currentUser?.role === 'supervisor' && !p.deleted;
+    const canRestore = currentUser?.role === 'supervisor' && p.deleted;
     
     html += `
-      <div class="project-card ${alertClass} ${deletedClass}" data-project-id="${p.id}">
-        ${canDelete ? `<button class="delete-btn" onclick="event.stopPropagation(); softDeleteProject('${p.id}')">🗑️</button>` : ''}
+      <div class="project-card ${alertClass} ${p.deleted ? 'deleted' : ''}" data-project-id="${p.id}">
+        ${canDelete ? `<button class="delete-btn" onclick="event.stopPropagation(); softDeleteProject('${p.id}')"></button>` : ''}
         ${canRestore ? `<button class="restore-btn" onclick="event.stopPropagation(); restoreProject('${p.id}')">↺</button>` : ''}
         <div onclick='openProject("${p.id}")'>
           <div class="project-header">
@@ -571,7 +523,7 @@ async function renderProjectCards(projects, isDeletedView = false) {
             <span class="badge ${status.class}">${status.label}</span>
           </div>
           <div class="progress-bar"><div class="progress-fill fill-${progress === 100 ? 'green' : progress >= 60 ? 'blue' : progress >= 30 ? 'yellow' : 'red'}" style="width:${progress}%"></div></div>
-          <div class="project-meta"><span>👤 ${ownerName}</span><span>${formatDate(p.createdAt)}</span></div>
+          <div class="project-meta"><span>${ownerName}</span><span>${formatDate(p.createdAt)}</span></div>
         </div>
       </div>
     `;
@@ -587,13 +539,11 @@ async function renderFolderStructure(projects) {
     html += `
       <div class="folder-item">
         <div class="folder-header" onclick="toggleFolder('${folderId}')">
-          <span class="folder-icon">📁</span>
-          <span class="folder-name">${folder}</span>
-          <span class="folder-count">${folderProjects.length} proyectos</span>
-          <span class="folder-arrow">▼</span>
+          <span class="folder-icon"></span><span class="folder-name">${folder}</span>
+          <span class="folder-count">${folderProjects.length}</span><span class="folder-arrow">▼</span>
         </div>
         <div class="folder-content" id="${folderId}">
-          ${currentUser.role !== 'supervisor' ? `<div style="margin-bottom:16px;"><button class="btn btn-primary btn-sm" onclick="openNewProjectInFolder('${folder}')">+ Nuevo Proyecto</button></div>` : ''}
+          ${currentUser?.role !== 'supervisor' ? `<div style="margin-bottom:16px;"><button class="btn btn-primary btn-sm" onclick="openNewProjectInFolder('${folder}')">+ Nuevo Proyecto</button></div>` : ''}
           <div id="${folderId}_projects"></div>
         </div>
       </div>
@@ -606,20 +556,14 @@ async function renderFolderStructure(projects) {
     const folderProjects = projects.filter(p => p.client === folder);
     const container = document.getElementById(`${folder.replace(/[^a-zA-Z0-9]/g, '_')}_projects`);
     if (container) {
-      container.innerHTML = folderProjects.length 
-        ? await renderProjectCards(folderProjects, false)
-        : '<div class="empty-folder">No hay proyectos en esta carpeta</div>';
+      container.innerHTML = folderProjects.length ? await renderProjectCards(folderProjects, false) : '<div class="empty-folder">No hay proyectos en esta carpeta</div>';
     }
   }
 }
 
 async function renderDeletedProjects(projects) {
   const container = document.getElementById('deletedProjects');
-  if (container) {
-    container.innerHTML = projects.length 
-      ? await renderProjectCards(projects, true)
-      : '<div class="empty-folder">No hay proyectos eliminados</div>';
-  }
+  if (container) container.innerHTML = projects.length ? await renderProjectCards(projects, true) : '<div class="empty-folder">No hay proyectos eliminados</div>';
 }
 
 async function renderSupervisorView(projects) {
@@ -645,93 +589,120 @@ async function renderSupervisorView(projects) {
       const container = document.getElementById(`supervisor_${uid}`);
       if (container) {
         const userProjects = projects.filter(p => p.owner === uid);
-        container.innerHTML = userProjects.length 
-          ? await renderProjectCards(userProjects, false)
-          : '<div class="empty-folder">Sin proyectos</div>';
+        container.innerHTML = userProjects.length ? await renderProjectCards(userProjects, false) : '<div class="empty-folder">Sin proyectos</div>';
       }
     }
   }
 }
 
-// ============================================================
-// OPERACIONES CRUD (ACTUALIZAN FIRESTORE Y CACHÉ)
-// ============================================================
+function loadUsers() {
+  const container = document.getElementById('usersContent');
+  if (!container) return;
+  const users = Array.from(usersCache.values());
+  if (users.length === 0) { container.innerHTML = '<div class="empty-folder">No hay usuarios registrados</div>'; return; }
+  
+  let html = '<table class="users-table"><thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Acciones</th></tr></thead><tbody>';
+  users.forEach(u => {
+    if (u.id !== currentUser?.id) {
+      html += `<tr><td><strong>${u.name || '—'}</strong></td><td>${u.email}</td>
+        <td><span class="badge ${u.role === 'supervisor' ? 'badge-purple' : 'badge-blue'}">${u.role === 'supervisor' ? 'Supervisor' : 'Colaborador'}</span></td>
+        <td><div class="flex gap-2"><button class="btn btn-ghost btn-sm" onclick="editUser('${u.id}', '${u.name}')"></button><button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">🗑️</button></div></td></tr>`;
+    }
+  });
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+function openAddUserModal() {
+  document.getElementById('userName').value = '';
+  document.getElementById('userEmail').value = '';
+  document.getElementById('userPassword').value = '';
+  document.getElementById('userRole').value = 'collaborator';
+  document.getElementById('addUserModal').classList.remove('hidden');
+}
+
+async function saveUser() {
+  const name = document.getElementById('userName').value.trim();
+  const email = document.getElementById('userEmail').value.trim();
+  const password = document.getElementById('userPassword').value;
+  const role = document.getElementById('userRole').value;
+  if (!name || !email || !password) { alert('Complete todos los campos'); return; }
+  if (password.length < 6) { alert('La contraseña debe tener al menos 6 caracteres'); return; }
+  
+  try {
+    const userCred = await auth.createUserWithEmailAndPassword(email, password);
+    const userData = { name, email, role, createdAt: new Date().toISOString() };
+    await db.collection('usuarios').doc(userCred.user.uid).set(userData);
+    usersCache.set(userCred.user.uid, { id: userCred.user.uid, ...userData });
+    alert('Usuario creado');
+    closeModal('addUserModal');
+    loadUsers();
+  } catch (error) {
+    alert('Error: ' + (error.code === 'auth/email-already-in-use' ? 'Email ya registrado' : error.message));
+  }
+}
+
+function editUser(uid, currentName) {
+  const newName = prompt('Nuevo nombre:', currentName);
+  if (newName && newName.trim() && newName.trim() !== currentName) {
+    db.collection('usuarios').doc(uid).update({ name: newName.trim() }).then(() => {
+      const user = usersCache.get(uid);
+      if (user) { user.name = newName.trim(); usersCache.set(uid, user); }
+      loadUsers();
+      if (currentUser?.id === uid) { currentUser.name = newName.trim(); setupUI(); }
+    }).catch(e => alert('Error: ' + e.message));
+  }
+}
+
+function deleteUser(uid) {
+  if (uid === currentUser?.id) { alert('No puedes eliminar tu propio usuario'); return; }
+  if (confirm('¿Eliminar este usuario permanentemente?')) {
+    db.collection('usuarios').doc(uid).delete().then(() => {
+      usersCache.delete(uid);
+      loadUsers();
+    }).catch(e => alert('Error: ' + e.message));
+  }
+}
+
 async function createProject() {
   const name = document.getElementById('projectName').value.trim();
   const code = document.getElementById('projectCode').value.trim();
   const client = document.getElementById('projectClient').value;
   const startDate = document.getElementById('projectStartDate').value;
   const description = document.getElementById('projectDesc').value.trim();
-  
-  if (!name || !code || !client) {
-    alert('Complete nombre, código y subestación');
-    return;
-  }
+  if (!name || !code || !client) { alert('Complete nombre, código y subestación'); return; }
   
   const projectId = Date.now().toString();
-  const project = {
-    id: projectId, name, code, client, startDate, description,
-    owner: currentUser.id, createdAt: new Date().toISOString(),
-    steps: initSteps(), deleted: false
-  };
-  
-  try {
-    await db.collection('proyectos').doc(projectId).set(project);
-    projectsCache.set(projectId, project);  // Actualizar caché
-    closeModal('newProjectModal');
-    renderAll();
-    alert('✅ Proyecto creado');
-  } catch (error) {
-    alert('Error: ' + error.message);
-  }
+  const project = { id: projectId, name, code, client, startDate, description, owner: currentUser.id, createdAt: new Date().toISOString(), steps: initSteps(), deleted: false };
+  await db.collection('proyectos').doc(projectId).set(project);
+  projectsCache.set(projectId, project);
+  closeModal('newProjectModal');
+  renderAll();
 }
 
 async function softDeleteProject(projectId) {
-  if (currentUser.role !== 'supervisor') return;
-  if (!confirm('¿Eliminar este proyecto?')) return;
-  
-  try {
-    await db.collection('proyectos').doc(projectId).update({ deleted: true, deletedAt: new Date().toISOString() });
-    const project = projectsCache.get(projectId);
-    if (project) {
-      project.deleted = true;
-      projectsCache.set(projectId, project);
-    }
-    renderAll();
-  } catch (error) {
-    alert('Error: ' + error.message);
-  }
+  if (currentUser?.role !== 'supervisor' || !confirm('¿Eliminar este proyecto?')) return;
+  await db.collection('proyectos').doc(projectId).update({ deleted: true, deletedAt: new Date().toISOString() });
+  const p = projectsCache.get(projectId);
+  if (p) { p.deleted = true; projectsCache.set(projectId, p); }
+  renderAll();
 }
 
 async function restoreProject(projectId) {
-  if (currentUser.role !== 'supervisor') return;
-  if (!confirm('¿Restaurar este proyecto?')) return;
-  
-  try {
-    await db.collection('proyectos').doc(projectId).update({ deleted: false });
-    const project = projectsCache.get(projectId);
-    if (project) {
-      project.deleted = false;
-      projectsCache.set(projectId, project);
-    }
-    renderAll();
-  } catch (error) {
-    alert('Error: ' + error.message);
-  }
+  if (currentUser?.role !== 'supervisor' || !confirm('¿Restaurar este proyecto?')) return;
+  await db.collection('proyectos').doc(projectId).update({ deleted: false });
+  const p = projectsCache.get(projectId);
+  if (p) { p.deleted = false; projectsCache.set(projectId, p); }
+  renderAll();
 }
 
 function openProject(projectId) {
   currentProject = projectsCache.get(projectId);
   if (!currentProject) return;
-  
   document.getElementById('detailTitle').textContent = currentProject.name;
   const progress = getProgress(currentProject);
   const status = getStatusBadge(progress, currentProject.deleted);
-  document.getElementById('detailBadges').innerHTML = `
-    <span class="badge ${status.class}">${status.label}</span>
-    <span class="badge badge-purple">${progress}%</span>
-    <span class="badge badge-gray">${currentProject.code}</span>
-  `;
+  document.getElementById('detailBadges').innerHTML = `<span class="badge ${status.class}">${status.label}</span><span class="badge badge-purple">${progress}%</span><span class="badge badge-gray">${currentProject.code}</span>`;
   renderProjectTimeline();
   renderProjectSteps();
   renderProjectInfo();
@@ -740,64 +711,68 @@ function openProject(projectId) {
 
 async function saveStepUpdate() {
   if (!currentProject || currentStepIndex === null) return;
-  
   const step = currentProject.steps[currentStepIndex];
   step.status = document.getElementById('stepStatus').value;
   step.notes = document.getElementById('stepNotes').value.trim();
   step.updatedAt = new Date().toISOString();
-  
   if (step.status === 'in_progress' && !step.startedAt) step.startedAt = new Date().toISOString();
   if (step.status === 'done') step.completedAt = document.getElementById('stepDate').value || new Date().toISOString().split('T')[0];
   else step.completedAt = null;
-  
-  try {
-    await db.collection('proyectos').doc(currentProject.id).update({ steps: currentProject.steps });
-    projectsCache.set(currentProject.id, currentProject);  // Actualizar caché
-    closeModal('updateStepModal');
-    renderProjectTimeline();
-    renderProjectSteps();
-    renderProjectInfo();
-    renderAll();  // Actualizar dashboard
-  } catch (error) {
-    alert('Error: ' + error.message);
-  }
+  await db.collection('proyectos').doc(currentProject.id).update({ steps: currentProject.steps });
+  projectsCache.set(currentProject.id, currentProject);
+  closeModal('updateStepModal');
+  renderProjectTimeline();
+  renderProjectSteps();
+  renderProjectInfo();
+  renderAll();
 }
 
-// ============================================================
-// AUTENTICACIÓN
-// ============================================================
 async function doLogin() {
   const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
-  
-  if (!email || !password) {
-    document.getElementById('loginError').textContent = 'Completa todos los campos';
-    document.getElementById('loginError').classList.remove('hidden');
-    return;
-  }
+  const errorEl = document.getElementById('loginError');
+  if (!email || !password) { errorEl.textContent = 'Completa todos los campos'; errorEl.classList.remove('hidden'); return; }
+  errorEl.classList.add('hidden');
   
   try {
     const userCred = await auth.signInWithEmailAndPassword(email, password);
     const userDoc = await db.collection('usuarios').doc(userCred.user.uid).get();
-    
     if (!userDoc.exists) {
-      await db.collection('usuarios').doc(userCred.user.uid).set({
-        name: email.split('@')[0], email, role: 'collaborator', createdAt: new Date().toISOString()
-      });
+      await db.collection('usuarios').doc(userCred.user.uid).set({ name: email.split('@')[0], email, role: 'collaborator', createdAt: new Date().toISOString() });
     }
-    
     currentUser = { id: userCred.user.uid, ...userDoc.data() };
-    usersCache.set(currentUser.id, currentUser);  // Actualizar caché
-    
+    usersCache.set(currentUser.id, currentUser);
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
-    
     setupUI();
-    await loadAllData(true);  // Carga inicial
+    await loadAllData(true);
     showPage('dashboard');
   } catch (error) {
-    document.getElementById('loginError').textContent = 'Error: ' + error.message;
-    document.getElementById('loginError').classList.remove('hidden');
+    errorEl.textContent = 'Error: ' + error.message;
+    errorEl.classList.remove('hidden');
+  }
+}
+
+async function doRegister() {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const role = document.getElementById('regRole').value;
+  const errorEl = document.getElementById('registerError');
+  if (!name || !email || !password) { errorEl.textContent = 'Todos los campos son obligatorios'; errorEl.classList.remove('hidden'); return; }
+  if (password.length < 6) { errorEl.textContent = 'La contraseña debe tener al menos 6 caracteres'; errorEl.classList.remove('hidden'); return; }
+  errorEl.classList.add('hidden');
+  
+  try {
+    const userCred = await auth.createUserWithEmailAndPassword(email, password);
+    const userData = { name, email, role, createdAt: new Date().toISOString() };
+    await db.collection('usuarios').doc(userCred.user.uid).set(userData);
+    usersCache.set(userCred.user.uid, { id: userCred.user.uid, ...userData });
+    alert('Registro exitoso. Ahora puedes iniciar sesión.');
+    switchAuthTab('login');
+  } catch (error) {
+    errorEl.textContent = 'Error: ' + (error.code === 'auth/email-already-in-use' ? 'Este email ya está registrado' : error.message);
+    errorEl.classList.remove('hidden');
   }
 }
 
@@ -811,35 +786,36 @@ function doLogout() {
   document.getElementById('app').style.display = 'none';
 }
 
-// ============================================================
-// FUNCIONES DE UI (MANTENIDAS)
-// ============================================================
 function setupUI() {
   document.getElementById('sidebarAvatar').textContent = currentUser.name?.charAt(0) || 'U';
   document.getElementById('sidebarName').textContent = currentUser.name;
   document.getElementById('sidebarRole').textContent = currentUser.role === 'supervisor' ? 'Supervisor' : 'Colaborador';
-  
   const isSupervisor = currentUser.role === 'supervisor';
   document.getElementById('navSupervisor').classList.toggle('hidden', !isSupervisor);
   document.getElementById('navUsers').classList.toggle('hidden', !isSupervisor);
   document.getElementById('navDeleted').classList.toggle('hidden', !isSupervisor);
   document.getElementById('btnNewProject').style.display = isSupervisor ? 'none' : 'block';
-  document.getElementById('projectsNewBtn').style.display = isSupervisor ? 'none' : 'block';
+  const pBtn = document.getElementById('projectsNewBtn');
+  if (pBtn) pBtn.style.display = isSupervisor ? 'none' : 'block';
 }
 
 function showPage(page) {
-  ['Dashboard', 'Projects', 'Supervisor', 'Users', 'Deleted'].forEach(p => 
-    document.getElementById(`page${p}`).classList.add('hidden')
-  );
-  document.getElementById(`page${page.charAt(0).toUpperCase() + page.slice(1)}`).classList.remove('hidden');
-  
-  document.getElementById('pageTitle').textContent = 
-    { dashboard: 'Dashboard', projects: 'Proyectos', supervisor: 'Vista Supervisor', users: 'Usuarios', deleted: 'Eliminados' }[page] || page;
-  
+  ['Dashboard', 'Projects', 'Supervisor', 'Users', 'Deleted'].forEach(p => document.getElementById(`page${p}`)?.classList.add('hidden'));
+  document.getElementById(`page${page.charAt(0).toUpperCase() + page.slice(1)}`)?.classList.remove('hidden');
+  const titles = { dashboard: 'Dashboard', projects: 'Proyectos', supervisor: 'Vista Supervisor', users: 'Gestión de Usuarios', deleted: 'Eliminados' };
+  document.getElementById('pageTitle').textContent = titles[page] || page;
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  if (page === 'dashboard') document.querySelector('.nav-item').classList.add('active');
-  
+  const navIndex = { dashboard: 0, projects: 1, supervisor: 2, users: 3, deleted: 4 };
+  const navs = document.querySelectorAll('.nav-item');
+  if (navIndex[page] !== undefined && navs[navIndex[page]]) navs[navIndex[page]].classList.add('active');
+  if (page === 'users') loadUsers();
   if (window.innerWidth <= 768) toggleSidebar();
+}
+
+function switchAuthTab(tab) {
+  document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
+  document.getElementById('registerForm').classList.toggle('hidden', tab === 'login');
+  document.querySelectorAll('.auth-tab').forEach((t, i) => t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register')));
 }
 
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
@@ -847,82 +823,36 @@ function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 function toggleFolder(id) {
   const content = document.getElementById(id);
   const arrow = content?.previousElementSibling?.querySelector('.folder-arrow');
-  if (content) {
-    content.classList.toggle('open');
-    if (arrow) arrow.textContent = content.classList.contains('open') ? '▲' : '▼';
-  }
+  if (content) { content.classList.toggle('open'); if (arrow) arrow.textContent = content.classList.contains('open') ? '▲' : '▼'; }
 }
-function openNewProjectInFolder(folder) {
-  openNewProjectModal();
-  document.getElementById('projectClient').value = folder;
-}
+function openNewProjectInFolder(folder) { openNewProjectModal(); document.getElementById('projectClient').value = folder; }
 function openNewProjectModal() {
-  if (currentUser.role === 'supervisor') { alert('Solo colaboradores pueden crear proyectos'); return; }
+  if (currentUser?.role === 'supervisor') { alert('Solo colaboradores pueden crear proyectos'); return; }
   document.getElementById('projectName').value = '';
   document.getElementById('projectCode').value = '';
   document.getElementById('projectStartDate').value = new Date().toISOString().split('T')[0];
   document.getElementById('projectDesc').value = '';
   document.getElementById('newProjectModal').classList.remove('hidden');
 }
-function openDocumentRepo() {
-  window.open('https://drive.google.com/drive/folders/1ts8G8ghmSddPAFRJLGTAyIxUKEdrR0z6?usp=sharing', '_blank');
-}
-
-// Inicializar
-document.addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) e.target.classList.add('hidden'); });
-document.getElementById('loginEmail')?.addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
-document.getElementById('loginPassword')?.addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
-
-// Exponer funciones globales
-window.switchAuthTab = (tab) => {
-  document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
-  document.getElementById('registerForm').classList.toggle('hidden', tab === 'login');
-  document.querySelectorAll('.auth-tab').forEach((t, i) => t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register')));
-};
-window.doRegister = async () => { /* ... misma lógica ... */ };
-window.openUpdateStep = (i) => { currentStepIndex = i; document.getElementById('updateStepModal').classList.remove('hidden'); };
-window.switchProjectTab = (tab, btn) => {
+function openDocumentRepo() { window.open('https://drive.google.com/drive/folders/1ts8G8ghmSddPAFRJLGTAyIxUKEdrR0z6?usp=sharing', '_blank'); }
+function openUpdateStep(i) { currentStepIndex = i; document.getElementById('updateStepModal').classList.remove('hidden'); }
+function switchProjectTab(tab, btn) {
   ['Timeline', 'Steps', 'Info'].forEach(t => document.getElementById(`project${t}`).classList.add('hidden'));
   document.getElementById(`project${tab.charAt(0).toUpperCase() + tab.slice(1)}`).classList.remove('hidden');
   document.querySelectorAll('#projectDetailModal .tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
-};
-window.softDeleteProject = softDeleteProject;
-window.restoreProject = restoreProject;
-window.openProject = openProject;
-window.saveStepUpdate = saveStepUpdate;
-window.doLogin = doLogin;
-window.doLogout = doLogout;
-window.setupUI = setupUI;
-window.showPage = showPage;
-window.toggleSidebar = toggleSidebar;
-window.closeModal = closeModal;
-window.toggleFolder = toggleFolder;
-window.openNewProjectInFolder = openNewProjectInFolder;
-window.openNewProjectModal = openNewProjectModal;
-window.createProject = createProject;
-window.openDocumentRepo = openDocumentRepo;
-window.manualRefresh = manualRefresh;
+}
 
-// Renderizado de timeline, steps e info (mantenido igual)
 function renderProjectTimeline() {
   if (!currentProject) return;
   let html = '<div class="timeline">';
-  const canEdit = (currentUser.role === 'collaborator' && currentProject.owner === currentUser.id && !currentProject.deleted);
+  const canEdit = (currentUser?.role === 'collaborator' && currentProject.owner === currentUser?.id && !currentProject.deleted);
   currentProject.steps.forEach((step, i) => {
-    html += `
-      <div class="timeline-item">
-        <div class="timeline-dot ${step.status === 'done' ? 'done' : (step.status === 'in_progress' ? 'active' : '')}"></div>
-        <div class="timeline-content">
-          <div class="timeline-step-header">
-            <span class="timeline-step-title">${i+1}. ${step.name}</span>
-            <span class="timeline-step-date">${step.completedAt ? formatDate(step.completedAt) : (step.startedAt ? formatDate(step.startedAt) : 'Pendiente')}</span>
-          </div>
-          ${step.notes ? `<div class="timeline-step-notes">${step.notes}</div>` : ''}
-          ${canEdit ? `<div class="flex gap-2 mt-2"><button class="btn btn-primary btn-sm" onclick="openUpdateStep(${i})">Actualizar</button></div>` : ''}
-        </div>
-      </div>
-    `;
+    html += `<div class="timeline-item"><div class="timeline-dot ${step.status === 'done' ? 'done' : (step.status === 'in_progress' ? 'active' : '')}"></div><div class="timeline-content">
+      <div class="timeline-step-header"><span class="timeline-step-title">${i+1}. ${step.name}</span><span class="timeline-step-date">${step.completedAt ? formatDate(step.completedAt) : (step.startedAt ? formatDate(step.startedAt) : 'Pendiente')}</span></div>
+      ${step.notes ? `<div class="timeline-step-notes">${step.notes}</div>` : ''}
+      ${canEdit ? `<div class="flex gap-2 mt-2"><button class="btn btn-primary btn-sm" onclick="openUpdateStep(${i})">Actualizar</button></div>` : ''}
+    </div></div>`;
   });
   html += '</div>';
   document.getElementById('projectTimeline').innerHTML = html;
@@ -931,19 +861,12 @@ function renderProjectTimeline() {
 function renderProjectSteps() {
   if (!currentProject) return;
   let html = '<div class="steps-list">';
-  const canEdit = (currentUser.role === 'collaborator' && currentProject.owner === currentUser.id && !currentProject.deleted);
+  const canEdit = (currentUser?.role === 'collaborator' && currentProject.owner === currentUser?.id && !currentProject.deleted);
   currentProject.steps.forEach((step, i) => {
-    html += `
-      <div class="step-row">
-        <div class="step-number">${i+1}</div>
-        <div class="step-info">
-          <div class="step-name">${step.name}</div>
-          <div class="step-status">${step.status === 'done' ? '✅ Completado' : (step.status === 'in_progress' ? '🔄 En Progreso' : '⏳ Pendiente')}</div>
-          ${step.notes ? `<div class="step-status">${step.notes}</div>` : ''}
-        </div>
-        ${canEdit ? `<button class="btn btn-primary btn-sm" onclick="openUpdateStep(${i})">✏️</button>` : ''}
-      </div>
-    `;
+    html += `<div class="step-row"><div class="step-number">${i+1}</div><div class="step-info"><div class="step-name">${step.name}</div>
+      <div class="step-status">${step.status === 'done' ? 'Completado' : (step.status === 'in_progress' ? 'En Progreso' : 'Pendiente')}</div>
+      ${step.notes ? `<div class="step-status">${step.notes}</div>` : ''}</div>
+      ${canEdit ? `<button class="btn btn-primary btn-sm" onclick="openUpdateStep(${i})"></button>` : ''}</div>`;
   });
   html += '</div>';
   document.getElementById('projectSteps').innerHTML = html;
@@ -954,18 +877,219 @@ function renderProjectInfo() {
   const ownerName = getUserName(currentProject.owner);
   document.getElementById('projectInfo').innerHTML = `
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-      <div><strong>Nombre:</strong><br>${currentProject.name}</div>
-      <div><strong>OT:</strong><br>${currentProject.code}</div>
-      <div><strong>Subestación:</strong><br>${currentProject.client || '—'}</div>
-      <div><strong>Responsable:</strong><br>${ownerName}</div>
-      <div><strong>Fecha Inicio:</strong><br>${formatDate(currentProject.startDate || currentProject.createdAt)}</div>
-      <div><strong>Progreso:</strong><br>${getProgress(currentProject)}%</div>
+      <div><strong>Nombre:</strong><br>${currentProject.name}</div><div><strong>OT:</strong><br>${currentProject.code}</div>
+      <div><strong>Subestación:</strong><br>${currentProject.client || '—'}</div><div><strong>Responsable:</strong><br>${ownerName}</div>
+      <div><strong>Fecha Inicio:</strong><br>${formatDate(currentProject.startDate || currentProject.createdAt)}</div><div><strong>Progreso:</strong><br>${getProgress(currentProject)}%</div>
     </div>
     ${currentProject.description ? `<div class="mt-4"><strong>Descripción:</strong><br>${currentProject.description}</div>` : ''}
   `;
 }
 
-// Inicializar
+async function exportProjectPDF() {
+  if (!currentProject) return;
+  
+  const { jsPDF } = window.jspdf;
+  const p = currentProject;
+  const progress = getProgress(p);
+  const ownerName = getUserName(p.owner);
+  
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const W = doc.internal.pageSize.getWidth();
+  const H = doc.internal.pageSize.getHeight();
+  let y = 20;
+
+  function cleanText(text) {
+    if (!text) return '';
+    return String(text).replace(/[áäâà]/g, 'a').replace(/[éëêè]/g, 'e').replace(/[íïîì]/g, 'i').replace(/[óöôò]/g, 'o').replace(/[úüûù]/g, 'u').replace(/ñ/g, 'n').replace(/Ñ/g, 'N').replace(/[¿¡]/g, '').replace(/[•·]/g, '-').replace(/[“”]/g, '"').replace(/[‘’]/g, "'").replace(/[–—]/g, '-');
+  }
+
+  doc.setFillColor(37, 99, 235);
+  doc.rect(0, 0, W, 35, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(22);
+  doc.setTextColor(255, 255, 255);
+  doc.text('INFORME DE AVANCE DE PROYECTO', 20, 20);
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Generado: ${new Date().toLocaleDateString('es-EC', { day: '2-digit', month: 'long', year: 'numeric' })}`, 20, 30);
+  
+  const progressColor = progress === 100 ? [22, 163, 74] : (progress >= 60 ? [37, 99, 235] : (progress >= 30 ? [217, 119, 6] : [220, 38, 38]));
+  doc.setFillColor(progressColor[0], progressColor[1], progressColor[2]);
+  doc.roundedRect(W - 55, 8, 40, 12, 3, 3, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'bold');
+  doc.text(`${progress}%`, W - 35, 16, { align: 'center' });
+  y = 50;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(14);
+  doc.setTextColor(30, 41, 59);
+  doc.text('DATOS GENERALES', 20, y);
+  y += 8;
+  doc.setDrawColor(37, 99, 235);
+  doc.line(20, y - 3, W - 20, y - 3);
+  y += 8;
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(71, 85, 105);
+  const generalData = [
+    ['Nombre del Proyecto:', cleanText(p.name)],
+    ['Código OT:', cleanText(p.code)],
+    ['Subestación:', cleanText(p.client || '—')],
+    ['Responsable:', cleanText(ownerName)],
+    ['Fecha de Inicio:', formatDate(p.startDate || p.createdAt)],
+    ['Estado Actual:', getStatusBadge(progress, p.deleted).label],
+    ['Progreso General:', `${progress}%`]
+  ];
+  generalData.forEach((row, i) => {
+    doc.setFont('helvetica', 'bold');
+    doc.text(row[0], 25, y + (i * 8));
+    doc.setFont('helvetica', 'normal');
+    doc.text(row[1], 80, y + (i * 8));
+  });
+  y += generalData.length * 8 + 15;
+
+  if (p.description) {
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.setTextColor(30, 41, 59);
+    doc.text('DESCRIPCIÓN', 20, y);
+    y += 6;
+    doc.line(20, y - 2, W - 20, y - 2);
+    y += 10;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(71, 85, 105);
+    const descLines = doc.splitTextToSize(cleanText(p.description), W - 50);
+    doc.text(descLines, 25, y);
+    y += descLines.length * 6 + 15;
+  }
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(14);
+  doc.setTextColor(30, 41, 59);
+  doc.text('PROGRESO GENERAL', 20, y);
+  y += 6;
+  doc.line(20, y - 2, W - 20, y - 2);
+  y += 12;
+  doc.setFillColor(226, 232, 240);
+  doc.roundedRect(25, y, W - 50, 8, 2, 2, 'F');
+  doc.setFillColor(progressColor[0], progressColor[1], progressColor[2]);
+  doc.roundedRect(25, y, (W - 50) * progress / 100, 8, 2, 2, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(255, 255, 255);
+  doc.text(`${progress}%`, W / 2, y + 5.5, { align: 'center' });
+  y += 20;
+
+  if (y > H - 60) { doc.addPage(); y = 20; }
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(14);
+  doc.setTextColor(30, 41, 59);
+  doc.text('DETALLE DE PASOS DEL PROCESO', 20, y);
+  y += 6;
+  doc.line(20, y - 2, W - 20, y - 2);
+  y += 12;
+  
+  doc.setFillColor(241, 245, 249);
+  doc.rect(20, y - 5, W - 40, 10, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(30, 41, 59);
+  doc.text('PASO', 25, y + 1);
+  doc.text('DESCRIPCIÓN', 45, y + 1);
+  doc.text('ESTADO', W - 55, y + 1);
+  doc.text('FECHA', W - 25, y + 1, { align: 'right' });
+  y += 10;
+  doc.setDrawColor(203, 213, 225);
+  doc.line(20, y - 3, W - 20, y - 3);
+  
+  p.steps.forEach((step, i) => {
+    if (y > H - 30) { doc.addPage(); y = 20; }
+    if (i % 2 === 0) { doc.setFillColor(248, 250, 252); doc.rect(20, y - 5, W - 40, 9, 'F'); }
+    
+    const stepColor = step.status === 'done' ? [22, 163, 74] : (step.status === 'in_progress' ? [37, 99, 235] : [148, 163, 184]);
+    doc.setFillColor(stepColor[0], stepColor[1], stepColor[2]);
+    doc.circle(28, y - 0.5, 4, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.setTextColor(255, 255, 255);
+    doc.text(String(i + 1), 28, y + 1, { align: 'center' });
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(30, 41, 59);
+    const stepName = cleanText(step.name);
+    doc.text(stepName.length > 30 ? stepName.substring(0, 28) + '...' : stepName, 38, y + 1);
+    
+    const statusText = step.status === 'done' ? 'Completado' : (step.status === 'in_progress' ? 'En Progreso' : 'Pendiente');
+    doc.setFillColor(stepColor[0], stepColor[1], stepColor[2]);
+    doc.roundedRect(W - 65, y - 3.5, 30, 7, 2, 2, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.text(statusText, W - 50, y + 0.5, { align: 'center' });
+    
+    doc.setTextColor(100, 116, 139);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    const dateText = step.completedAt ? formatDate(step.completedAt) : (step.startedAt ? formatDate(step.startedAt) : '—');
+    doc.text(dateText, W - 25, y + 1, { align: 'right' });
+    y += 10;
+    
+    if (step.notes) {
+      if (y > H - 20) { doc.addPage(); y = 20; }
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(8);
+      doc.setTextColor(71, 85, 105);
+      const notesLines = doc.splitTextToSize(`${cleanText(step.notes)}`, W - 60);
+      doc.text(notesLines, 38, y);
+      y += notesLines.length * 5 + 5;
+    }
+    y += 2;
+  });
+
+  if (!p.deleted && isDaysWithoutUpdate(p, 3)) {
+    if (y > H - 30) { doc.addPage(); y = 20; }
+    y += 5;
+    doc.setFillColor(254, 242, 242);
+    doc.roundedRect(20, y, W - 40, 18, 3, 3, 'F');
+    doc.setDrawColor(252, 165, 165);
+    doc.roundedRect(20, y, W - 40, 18, 3, 3, 'S');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(190, 18, 60);
+    doc.text('ALERTA', 30, y + 8);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(153, 27, 27);
+    doc.text('Este proyecto lleva más de 3 días sin reportar avances.', 55, y + 8);
+    y += 25;
+  }
+
+  const totalPages = doc.internal.getNumberOfPages();
+  for (let pg = 1; pg <= totalPages; pg++) {
+    doc.setPage(pg);
+    doc.setDrawColor(203, 213, 225);
+    doc.line(20, H - 15, W - 20, H - 15);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(100, 116, 139);
+    doc.text('ProyectoTrack - Sistema de Control de Avance de Proyectos', 20, H - 8);
+    doc.text(`Página ${pg} de ${totalPages}`, W - 35, H - 8, { align: 'right' });
+    doc.text(`OT: ${cleanText(p.code)}`, W / 2, H - 8, { align: 'center' });
+  }
+
+  const safeFileName = cleanText(`${p.code}_${p.name}`).replace(/\s+/g, '_').replace(/[^\w\-]/g, '');
+  doc.save(`Informe_${safeFileName}.pdf`);
+}
+
+document.addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) e.target.classList.add('hidden'); });
+document.getElementById('loginEmail')?.addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('loginPassword')?.addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
+
 auth.onAuthStateChanged(async (user) => {
   if (user) {
     const userDoc = await db.collection('usuarios').doc(user.uid).get();
@@ -980,6 +1104,31 @@ auth.onAuthStateChanged(async (user) => {
     }
   }
 });
+
+window.switchAuthTab = switchAuthTab;
+window.doLogin = doLogin;
+window.doRegister = doRegister;
+window.doLogout = doLogout;
+window.showPage = showPage;
+window.toggleSidebar = toggleSidebar;
+window.closeModal = closeModal;
+window.toggleFolder = toggleFolder;
+window.openNewProjectInFolder = openNewProjectInFolder;
+window.openNewProjectModal = openNewProjectModal;
+window.createProject = createProject;
+window.openDocumentRepo = openDocumentRepo;
+window.manualRefresh = manualRefresh;
+window.openProject = openProject;
+window.openUpdateStep = openUpdateStep;
+window.saveStepUpdate = saveStepUpdate;
+window.switchProjectTab = switchProjectTab;
+window.exportProjectPDF = exportProjectPDF;
+window.softDeleteProject = softDeleteProject;
+window.restoreProject = restoreProject;
+window.openAddUserModal = openAddUserModal;
+window.saveUser = saveUser;
+window.editUser = editUser;
+window.deleteUser = deleteUser;
 </script>
 </body>
 </html>
