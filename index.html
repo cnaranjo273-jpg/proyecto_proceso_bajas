@@ -51,6 +51,9 @@
   .main { margin-left: 270px; min-height: 100vh; }
   .topbar { background: white; padding: 16px 28px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
   .topbar h1 { font-size: 1.3rem; font-weight: 700; color: #1e293b; }
+  .topbar-search { flex: 1; margin: 0 20px; max-width: 400px; }
+  .topbar-search input { width: 100%; padding: 8px 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; }
+  .topbar-search input:focus { outline: none; border-color: #2563eb; }
   .content { padding: 28px; }
   .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 28px; }
   .stat-card { background: white; border-radius: 16px; padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: transform 0.2s; }
@@ -85,6 +88,12 @@
   .delete-btn, .restore-btn { position: absolute; top: 12px; right: 12px; background: #dc2626; color: white; border: none; width: 28px; height: 28px; border-radius: 8px; cursor: pointer; font-size: 12px; opacity: 0; transition: opacity 0.2s; }
   .restore-btn { background: #16a34a; right: 45px; }
   .project-card:hover .delete-btn, .project-card:hover .restore-btn { opacity: 1; }
+  
+  .pagination-container { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 24px; }
+  .pagination-btn { padding: 8px 16px; border: 1px solid #e2e8f0; background: white; border-radius: 8px; cursor: pointer; font-size: 0.85rem; }
+  .pagination-btn:hover:not(:disabled) { background: #2563eb; color: white; border-color: #2563eb; }
+  .pagination-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .pagination-info { color: #64748b; font-size: 0.85rem; }
   
   .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
   .modal { background: white; border-radius: 24px; width: 100%; max-width: 850px; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.3); }
@@ -162,12 +171,17 @@
   .refresh-indicator.synced { background: #16a34a; }
   .refresh-indicator.syncing { background: #d97706; animation: pulse 1s infinite; }
   
+  .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.8); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+  .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #2563eb; border-radius: 50%; animation: spin 1s linear infinite; }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  
   @media (max-width: 768px) {
     .sidebar { left: -270px; transition: left 0.3s; }
     .sidebar.open { left: 0; }
     .main { margin-left: 0; }
     .menu-toggle { display: flex; align-items: center; justify-content: center; }
-    .topbar { padding-left: 70px; }
+    .topbar { padding-left: 70px; flex-wrap: wrap; }
+    .topbar-search { margin: 10px 0 0 0; max-width: 100%; order: 3; width: 100%; }
     .stats-grid { grid-template-columns: 1fr; }
     .projects-grid { grid-template-columns: 1fr; }
     .form-row { grid-template-columns: 1fr; }
@@ -207,6 +221,10 @@
   </div>
 </div>
 
+<div id="loadingOverlay" class="loading-overlay hidden">
+  <div class="spinner"></div>
+</div>
+
 <div id="app">
   <div class="sidebar" id="sidebar">
     <div class="sidebar-logo"><h2>ProyectoTrack</h2></div>
@@ -215,22 +233,25 @@
       <div><div id="sidebarName" style="font-weight: 600;">Usuario</div><small id="sidebarRole" style="opacity: 0.7;">rol</small></div>
     </div>
     <div class="nav-item active" onclick="showPage('dashboard')">
-      <span>📊</span> Dashboard
+      <span></span> Dashboard
       <span id="syncIndicator" class="refresh-indicator synced" style="margin-left: auto;"></span>
     </div>
-    <div class="nav-item" onclick="showPage('projects')">📁 Proyectos</div>
-    <div class="nav-item hidden" id="navSupervisor" onclick="showPage('supervisor')">👥 Vista Supervisor</div>
-    <div class="nav-item hidden" id="navUsers" onclick="showPage('users')">⚙️ Gestión Usuarios</div>
-    <div class="nav-item hidden" id="navDeleted" onclick="showPage('deleted')">🗑️ Eliminados</div>
-    <div class="nav-item" onclick="openDocumentRepo()">📂 Repositorio</div>
-    <div class="nav-item" onclick="doLogout()" style="margin-top: 20px;">🚪 Cerrar Sesión</div>
+    <div class="nav-item" onclick="showPage('projects')">Proyectos</div>
+    <div class="nav-item hidden" id="navSupervisor" onclick="showPage('supervisor')">Vista Supervisor</div>
+    <div class="nav-item hidden" id="navUsers" onclick="showPage('users')">Gestión Usuarios</div>
+    <div class="nav-item hidden" id="navDeleted" onclick="showPage('deleted')">Eliminados</div>
+    <div class="nav-item" onclick="openDocumentRepo()">Repositorio</div>
+    <div class="nav-item" onclick="doLogout()" style="margin-top: 20px;">Cerrar Sesión</div>
   </div>
   
   <div class="main">
     <div class="topbar">
       <h1 id="pageTitle">Dashboard</h1>
+      <div class="topbar-search">
+        <input type="text" id="globalSearchInput" placeholder="Buscar proyectos por nombre, OT o subestación...">
+      </div>
       <div class="flex gap-2">
-        <button class="btn btn-ghost btn-sm" onclick="manualRefresh()" id="refreshBtn">🔄 Refrescar</button>
+        <button class="btn btn-ghost btn-sm" onclick="manualRefresh()" id="refreshBtn">Refrescar</button>
         <button class="btn btn-primary" id="btnNewProject" onclick="openNewProjectModal()" style="display: none;">+ Nuevo Proyecto</button>
       </div>
     </div>
@@ -247,6 +268,7 @@
           <button class="btn btn-primary" id="projectsNewBtn" onclick="openNewProjectModal()" style="display: none;">Nuevo Proyecto</button>
         </div>
         <div id="folderStructure"></div>
+        <div id="projectPagination" class="pagination-container"></div>
       </div>
       <div id="pageSupervisor" class="hidden">
         <div class="section-header"><h2>Proyectos por Colaborador</h2></div>
@@ -289,7 +311,7 @@
     <div class="modal-header">
       <div><h2 id="detailTitle">Proyecto</h2><div id="detailBadges" class="flex gap-2 mt-2"></div></div>
       <div class="flex gap-2">
-        <button class="btn btn-primary btn-sm" onclick="exportProjectPDF()">📄 Exportar PDF</button>
+        <button class="btn btn-primary btn-sm" onclick="exportProjectPDF()"> Exportar PDF</button>
         <button class="close-btn" onclick="closeModal('projectDetailModal')">✕</button>
       </div>
     </div>
@@ -338,9 +360,7 @@
 </div>
 
 <script>
-// ============================================================
-// CONFIGURACIÓN DE FIREBASE
-// ============================================================
+
 const firebaseConfig = {
   apiKey: "AIzaSyC40UAPgOwuEW1P7ZOvr4NYlvTh9eEdsFw",
   authDomain: "proyectotrack-d3556.firebaseapp.com",
@@ -354,9 +374,6 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// ============================================================
-// VARIABLES GLOBALES
-// ============================================================
 let currentUser = null;
 let currentProject = null;
 let currentStepIndex = null;
@@ -364,6 +381,12 @@ let projectsCache = new Map();
 let usersCache = new Map();
 let dataLoaded = false;
 let isSyncing = false;
+let lastVisibleDoc = null;
+let currentPage = 1;
+const ITEMS_PER_PAGE = 20;
+let currentSearchTerm = '';
+let searchDebounceTimeout = null;
+let usePagination = true;
 
 const STEP_NAMES = [
   "Informe Técnico", "Certificado de Pre-existencia", "Quipux – Inicio del Proceso",
@@ -389,18 +412,23 @@ const SUBESTACIONES = [
   "S/E (84) Guangopolo Hidráulica", "S/E (86) Nayón", "S/E (88) Pasochoa"
 ];
 
-// Inicializar select de subestaciones
 document.addEventListener('DOMContentLoaded', () => {
   const select = document.getElementById('projectClient');
   if (select) {
     select.innerHTML = '<option value="">Seleccione una subestación...</option>' +
       SUBESTACIONES.map(s => `<option value="${s}">${s}</option>`).join('');
   }
+  setupSearchListener();
 });
 
-// ============================================================
-// FUNCIONES AUXILIARES
-// ============================================================
+function normalizeText(str) {
+  if (!str) return '';
+  return str.toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim();
+}
+
 function formatDate(dateStr) {
   if (!dateStr) return '—';
   return new Date(dateStr).toLocaleDateString('es-EC', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -442,49 +470,173 @@ function getUserName(uid) {
   return user ? user.name : uid?.substring(0, 8) || '—';
 }
 
-// ============================================================
-// CARGA DE DATOS OPTIMIZADA
-// ============================================================
+function showLoading(show) {
+  document.getElementById('loadingOverlay').classList.toggle('hidden', !show);
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  const map = {'&': '&amp;', '<': '&lt;', '>': '&gt;'};
+  return str.replace(/[&<>]/g, m => map[m]);
+}
+
+function setupSearchListener() {
+  const searchInput = document.getElementById('globalSearchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      clearTimeout(searchDebounceTimeout);
+      searchDebounceTimeout = setTimeout(() => {
+        currentSearchTerm = e.target.value;
+        currentPage = 1;
+        lastVisibleDoc = null;
+        loadAllData(true);
+      }, 400);
+    });
+  }
+}
+
 async function loadAllData(forceReload = false) {
-  if (dataLoaded && !forceReload) { renderAll(); return; }
+  if (!currentUser) return;
   if (isSyncing) return;
+  
   isSyncing = true;
   setSyncIndicator('syncing');
   const btn = document.getElementById('refreshBtn');
   if (btn) btn.disabled = true;
+  showLoading(true);
   
   try {
+    // Cargar usuarios
     const usersSnapshot = await db.collection('usuarios').get();
     usersCache.clear();
     usersSnapshot.forEach(doc => usersCache.set(doc.id, { id: doc.id, ...doc.data() }));
     
-    const projectsSnapshot = await db.collection('proyectos').get();
+    // Cargar proyectos - ADMIN ve TODOS, SUPERVISOR ve TODOS, COLLABORATOR solo los suyos
+    let projectsQuery = db.collection('proyectos');
+    
+    if (currentUser.role === 'collaborator') {
+      projectsQuery = projectsQuery.where('owner', '==', currentUser.id);
+    }
+    // Admin y Supervisor ven todos los proyectos (sin filtro adicional)
+    
+    if (currentSearchTerm && usePagination) {
+      const term = normalizeText(currentSearchTerm);
+      projectsQuery = projectsQuery.orderBy('name_search')
+                   .startAt(term)
+                   .endAt(term + '\uf8ff')
+                   .limit(ITEMS_PER_PAGE);
+    } else if (usePagination) {
+      projectsQuery = projectsQuery.orderBy('createdAt', 'desc').limit(ITEMS_PER_PAGE);
+    }
+    
+    if (lastVisibleDoc && usePagination) {
+      projectsQuery = projectsQuery.startAfter(lastVisibleDoc);
+    }
+    
+    let snapshot;
+    try {
+      snapshot = await projectsQuery.get();
+    } catch (paginationError) {
+      console.warn('Error de paginación, usando carga simple:', paginationError.message);
+      usePagination = false;
+      snapshot = await db.collection('proyectos').get();
+    }
+    
     projectsCache.clear();
-    projectsSnapshot.forEach(doc => projectsCache.set(doc.id, { id: doc.id, ...doc.data() }));
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      projectsCache.set(doc.id, { id: doc.id, ...data });
+    });
+    
+    if (usePagination) {
+      lastVisibleDoc = snapshot.docs[snapshot.docs.length - 1] || null;
+      updatePaginationButtons(snapshot.size);
+    } else {
+      const pagContainer = document.getElementById('projectPagination');
+      if (pagContainer) pagContainer.innerHTML = '';
+    }
     
     dataLoaded = true;
     setSyncIndicator('synced');
     renderAll();
+    
   } catch (error) {
     console.error('Error cargando datos:', error);
     setSyncIndicator('synced');
+    alert('Error al cargar datos: ' + error.message);
   } finally {
     isSyncing = false;
     if (btn) btn.disabled = false;
+    showLoading(false);
   }
 }
 
-function manualRefresh() { loadAllData(true); }
+function updatePaginationButtons(resultCount) {
+  const container = document.getElementById('projectPagination');
+  if (!container) return;
+  
+  const hasMore = resultCount === ITEMS_PER_PAGE;
+  
+  container.innerHTML = `
+    <button class="pagination-btn" onclick="goToPrevPage()" ${currentPage === 1 ? 'disabled' : ''}>
+      ← Anterior
+    </button>
+    <span class="pagination-info">Página ${currentPage}</span>
+    <button class="pagination-btn" onclick="goToNextPage()" ${!hasMore ? 'disabled' : ''}>
+      Siguiente →
+    </button>
+  `;
+}
+
+function goToNextPage() {
+  currentPage++;
+  loadAllData(true);
+}
+
+function goToPrevPage() {
+  if (currentPage > 1) {
+    currentPage--;
+    loadAllData(true);
+  }
+}
+
+function manualRefresh() {
+  currentPage = 1;
+  lastVisibleDoc = null;
+  currentSearchTerm = '';
+  const searchInput = document.getElementById('globalSearchInput');
+  if (searchInput) searchInput.value = '';
+  loadAllData(true);
+}
 
 function getFilteredProjects() {
-  const allProjects = Array.from(projectsCache.values());
-  let projects = allProjects.filter(p => !p.deleted);
-  if (currentUser?.role !== 'supervisor') projects = projects.filter(p => p.owner === currentUser?.id);
+  let projects = Array.from(projectsCache.values()).filter(p => !p.deleted);
+  
+  // Filtro local para búsqueda cuando no hay paginación
+  if (!usePagination && currentSearchTerm) {
+    const term = normalizeText(currentSearchTerm);
+    projects = projects.filter(p => 
+      normalizeText(p.name).includes(term) ||
+      normalizeText(p.code).includes(term) ||
+      normalizeText(p.client || '').includes(term)
+    );
+  }
+  
   return projects;
 }
 
 function getDeletedProjects() {
-  return Array.from(projectsCache.values()).filter(p => p.deleted === true);
+  let deleted = Array.from(projectsCache.values()).filter(p => p.deleted === true);
+  
+  if (currentSearchTerm && !usePagination) {
+    const term = normalizeText(currentSearchTerm);
+    deleted = deleted.filter(p => 
+      normalizeText(p.name).includes(term) ||
+      normalizeText(p.code).includes(term)
+    );
+  }
+  
+  return deleted;
 }
 
 function renderAll() {
@@ -493,7 +645,9 @@ function renderAll() {
   renderDashboard(projects);
   renderFolderStructure(projects);
   renderDeletedProjects(deletedProjects);
-  if (currentUser?.role === 'supervisor') renderSupervisorView(projects);
+  if (currentUser?.role === 'supervisor' || currentUser?.role === 'admin') {
+    renderSupervisorView(projects);
+  }
 }
 
 async function renderDashboard(projects) {
@@ -515,7 +669,7 @@ async function renderDashboard(projects) {
   const recent = [...projects].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 6);
   document.getElementById('recentProjects').innerHTML = recent.length 
     ? await renderProjectCards(recent, false)
-    : '<div class="empty-folder">📭 No hay proyectos activos</div>';
+    : '<div class="empty-folder"> No hay proyectos activos</div>';
 }
 
 async function renderProjectCards(projects, isDeletedView = false) {
@@ -525,20 +679,20 @@ async function renderProjectCards(projects, isDeletedView = false) {
     const status = getStatusBadge(progress, p.deleted);
     const ownerName = getUserName(p.owner);
     const alertClass = (!p.deleted && isDaysWithoutUpdate(p, 3)) ? 'alert' : '';
-    const canDelete = currentUser?.role === 'supervisor' && !p.deleted;
-    const canRestore = currentUser?.role === 'supervisor' && p.deleted;
+    const canDelete = (currentUser?.role === 'supervisor' || currentUser?.role === 'admin') && !p.deleted;
+    const canRestore = (currentUser?.role === 'supervisor' || currentUser?.role === 'admin') && p.deleted;
     
     html += `
       <div class="project-card ${alertClass} ${p.deleted ? 'deleted' : ''}" data-project-id="${p.id}">
-        ${canDelete ? `<button class="delete-btn" onclick="event.stopPropagation(); softDeleteProject('${p.id}')">🗑️</button>` : ''}
-        ${canRestore ? `<button class="restore-btn" onclick="event.stopPropagation(); restoreProject('${p.id}')">↺</button>` : ''}
+        ${canDelete ? `<button class="delete-btn" onclick="event.stopPropagation(); softDeleteProject('${p.id}')"></button>` : ''}
+        ${canRestore ? `<button class="restore-btn" onclick="event.stopPropagation(); restoreProject('${p.id}')"></button>` : ''}
         <div onclick='openProject("${p.id}")'>
           <div class="project-header">
-            <div><div class="project-title">${p.name}</div><div class="project-code">${p.code}</div></div>
+            <div><div class="project-title">${escapeHtml(p.name)}</div><div class="project-code">${p.code}</div></div>
             <span class="badge ${status.class}">${status.label}</span>
           </div>
           <div class="progress-bar"><div class="progress-fill fill-${progress === 100 ? 'green' : progress >= 60 ? 'blue' : progress >= 30 ? 'yellow' : 'red'}" style="width:${progress}%"></div></div>
-          <div class="project-meta"><span>👤 ${ownerName}</span><span>${formatDate(p.createdAt)}</span></div>
+          <div class="project-meta"><span> ${escapeHtml(ownerName)}</span><span>${formatDate(p.createdAt)}</span></div>
         </div>
       </div>
     `;
@@ -554,11 +708,11 @@ async function renderFolderStructure(projects) {
     html += `
       <div class="folder-item">
         <div class="folder-header" onclick="toggleFolder('${folderId}')">
-          <span class="folder-icon">📁</span><span class="folder-name">${folder}</span>
+          <span class="folder-icon"></span><span class="folder-name">${folder}</span>
           <span class="folder-count">${folderProjects.length}</span><span class="folder-arrow">▼</span>
         </div>
         <div class="folder-content" id="${folderId}">
-          ${currentUser?.role !== 'supervisor' ? `<div style="margin-bottom:16px;"><button class="btn btn-primary btn-sm" onclick="openNewProjectInFolder('${folder}')">+ Nuevo Proyecto</button></div>` : ''}
+          ${currentUser?.role === 'collaborator' ? `<div style="margin-bottom:16px;"><button class="btn btn-primary btn-sm" onclick="openNewProjectInFolder('${folder.replace(/'/g, "\\'")}')">+ Nuevo Proyecto</button></div>` : ''}
           <div id="${folderId}_projects"></div>
         </div>
       </div>
@@ -590,7 +744,7 @@ async function renderSupervisorView(projects) {
         <div style="margin-bottom:32px; background:white; border-radius:20px; padding:20px;">
           <div class="flex items-center gap-3" style="margin-bottom:16px;">
             <div class="avatar" style="background:linear-gradient(135deg,#2563eb,#7c3aed);">${user.name?.charAt(0) || 'U'}</div>
-            <div><h3>${user.name}</h3><p class="text-muted">${user.email}</p></div>
+            <div><h3>${escapeHtml(user.name)}</h3><p class="text-muted">${user.email}</p></div>
           </div>
           <div class="projects-grid" id="supervisor_${uid}"></div>
         </div>
@@ -610,9 +764,6 @@ async function renderSupervisorView(projects) {
   }
 }
 
-// ============================================================
-// GESTIÓN DE USUARIOS
-// ============================================================
 function loadUsers() {
   const container = document.getElementById('usersContent');
   if (!container) return;
@@ -622,9 +773,9 @@ function loadUsers() {
   let html = '<table class="users-table"><thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Acciones</th></tr></thead><tbody>';
   users.forEach(u => {
     if (u.id !== currentUser?.id) {
-      html += `<tr><td><strong>${u.name || '—'}</strong></td><td>${u.email}</td>
+      html += `<tr><td><strong>${escapeHtml(u.name || '—')}</strong></td><td>${u.email}</td>
         <td><span class="badge ${u.role === 'supervisor' ? 'badge-purple' : 'badge-blue'}">${u.role === 'supervisor' ? 'Supervisor' : 'Colaborador'}</span></td>
-        <td><div class="flex gap-2"><button class="btn btn-ghost btn-sm" onclick="editUser('${u.id}', '${u.name}')">✏️</button><button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">🗑️</button></div></td></tr>`;
+        <td><div class="flex gap-2"><button class="btn btn-ghost btn-sm" onclick="editUser('${u.id}', '${escapeHtml(u.name)}')">✏️</button><button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">🗑️</button></div></td></tr>`;
     }
   });
   html += '</tbody></table>';
@@ -652,7 +803,7 @@ async function saveUser() {
     const userData = { name, email, role, createdAt: new Date().toISOString() };
     await db.collection('usuarios').doc(userCred.user.uid).set(userData);
     usersCache.set(userCred.user.uid, { id: userCred.user.uid, ...userData });
-    alert('✅ Usuario creado');
+    alert(' Usuario creado');
     closeModal('addUserModal');
     loadUsers();
   } catch (error) {
@@ -682,9 +833,6 @@ function deleteUser(uid) {
   }
 }
 
-// ============================================================
-// OPERACIONES CRUD DE PROYECTOS
-// ============================================================
 async function createProject() {
   const name = document.getElementById('projectName').value.trim();
   const code = document.getElementById('projectCode').value.trim();
@@ -693,16 +841,47 @@ async function createProject() {
   const description = document.getElementById('projectDesc').value.trim();
   if (!name || !code || !client) { alert('Complete nombre, código y subestación'); return; }
   
-  const projectId = Date.now().toString();
-  const project = { id: projectId, name, code, client, startDate, description, owner: currentUser.id, createdAt: new Date().toISOString(), steps: initSteps(), deleted: false };
-  await db.collection('proyectos').doc(projectId).set(project);
-  projectsCache.set(projectId, project);
-  closeModal('newProjectModal');
-  renderAll();
+  showLoading(true);
+  
+  try {
+    const projectId = Date.now().toString();
+    const project = { 
+      id: projectId, 
+      name, 
+      name_search: normalizeText(name),
+      code, 
+      code_search: normalizeText(code),
+      client, 
+      client_search: normalizeText(client),
+      startDate, 
+      description,
+      description_search: normalizeText(description),
+      owner: currentUser.id,
+      ownerName: currentUser.name,
+      ownerName_search: normalizeText(currentUser.name),
+      createdAt: new Date().toISOString(), 
+      steps: initSteps(), 
+      deleted: false 
+    };
+    
+    await db.collection('proyectos').doc(projectId).set(project);
+    projectsCache.set(projectId, project);
+    closeModal('newProjectModal');
+    
+    currentPage = 1;
+    lastVisibleDoc = null;
+    await loadAllData(true);
+    alert(' Proyecto creado exitosamente');
+    
+  } catch (error) {
+    alert('Error: ' + error.message);
+  } finally {
+    showLoading(false);
+  }
 }
 
 async function softDeleteProject(projectId) {
-  if (currentUser?.role !== 'supervisor' || !confirm('¿Eliminar este proyecto?')) return;
+  if ((currentUser?.role !== 'supervisor' && currentUser?.role !== 'admin') || !confirm('¿Eliminar este proyecto?')) return;
   await db.collection('proyectos').doc(projectId).update({ deleted: true, deletedAt: new Date().toISOString() });
   const p = projectsCache.get(projectId);
   if (p) { p.deleted = true; projectsCache.set(projectId, p); }
@@ -710,7 +889,7 @@ async function softDeleteProject(projectId) {
 }
 
 async function restoreProject(projectId) {
-  if (currentUser?.role !== 'supervisor' || !confirm('¿Restaurar este proyecto?')) return;
+  if ((currentUser?.role !== 'supervisor' && currentUser?.role !== 'admin') || !confirm('¿Restaurar este proyecto?')) return;
   await db.collection('proyectos').doc(projectId).update({ deleted: false });
   const p = projectsCache.get(projectId);
   if (p) { p.deleted = false; projectsCache.set(projectId, p); }
@@ -748,9 +927,6 @@ async function saveStepUpdate() {
   renderAll();
 }
 
-// ============================================================
-// AUTENTICACIÓN
-// ============================================================
 async function doLogin() {
   const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
@@ -758,22 +934,39 @@ async function doLogin() {
   if (!email || !password) { errorEl.textContent = 'Completa todos los campos'; errorEl.classList.remove('hidden'); return; }
   errorEl.classList.add('hidden');
   
+  showLoading(true);
+  
   try {
     const userCred = await auth.signInWithEmailAndPassword(email, password);
     const userDoc = await db.collection('usuarios').doc(userCred.user.uid).get();
+    
+    let userData;
     if (!userDoc.exists) {
-      await db.collection('usuarios').doc(userCred.user.uid).set({ name: email.split('@')[0], email, role: 'collaborator', createdAt: new Date().toISOString() });
+      const usersSnapshot = await db.collection('usuarios').get();
+      const role = usersSnapshot.empty ? 'admin' : 'collaborator';
+      userData = { name: email.split('@')[0], email, role, createdAt: new Date().toISOString() };
+      await db.collection('usuarios').doc(userCred.user.uid).set(userData);
+    } else {
+      userData = userDoc.data();
     }
-    currentUser = { id: userCred.user.uid, ...userDoc.data() };
+    
+    currentUser = { id: userCred.user.uid, ...userData };
     usersCache.set(currentUser.id, currentUser);
+    
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     setupUI();
+    
+    currentPage = 1;
+    lastVisibleDoc = null;
     await loadAllData(true);
     showPage('dashboard');
+    
   } catch (error) {
     errorEl.textContent = 'Error: ' + error.message;
     errorEl.classList.remove('hidden');
+  } finally {
+    showLoading(false);
   }
 }
 
@@ -787,16 +980,24 @@ async function doRegister() {
   if (password.length < 6) { errorEl.textContent = 'La contraseña debe tener al menos 6 caracteres'; errorEl.classList.remove('hidden'); return; }
   errorEl.classList.add('hidden');
   
+  showLoading(true);
+  
   try {
     const userCred = await auth.createUserWithEmailAndPassword(email, password);
-    const userData = { name, email, role, createdAt: new Date().toISOString() };
+    const usersSnapshot = await db.collection('usuarios').get();
+    const assignedRole = usersSnapshot.empty ? 'admin' : role;
+    
+    const userData = { name, email, role: assignedRole, createdAt: new Date().toISOString() };
     await db.collection('usuarios').doc(userCred.user.uid).set(userData);
     usersCache.set(userCred.user.uid, { id: userCred.user.uid, ...userData });
-    alert('✅ Registro exitoso. Ahora puedes iniciar sesión.');
+    
+    alert(' Registro exitoso. Ahora puedes iniciar sesión.');
     switchAuthTab('login');
   } catch (error) {
     errorEl.textContent = 'Error: ' + (error.code === 'auth/email-already-in-use' ? 'Este email ya está registrado' : error.message);
     errorEl.classList.remove('hidden');
+  } finally {
+    showLoading(false);
   }
 }
 
@@ -810,26 +1011,32 @@ function doLogout() {
   document.getElementById('app').style.display = 'none';
 }
 
-// ============================================================
-// FUNCIONES DE UI
-// ============================================================
 function setupUI() {
   document.getElementById('sidebarAvatar').textContent = currentUser.name?.charAt(0) || 'U';
   document.getElementById('sidebarName').textContent = currentUser.name;
-  document.getElementById('sidebarRole').textContent = currentUser.role === 'supervisor' ? 'Supervisor' : 'Colaborador';
-  const isSupervisor = currentUser.role === 'supervisor';
-  document.getElementById('navSupervisor').classList.toggle('hidden', !isSupervisor);
-  document.getElementById('navUsers').classList.toggle('hidden', !isSupervisor);
-  document.getElementById('navDeleted').classList.toggle('hidden', !isSupervisor);
-  document.getElementById('btnNewProject').style.display = isSupervisor ? 'none' : 'block';
+  
+  const roleText = currentUser.role === 'admin' ? 'Administrador' : 
+                   (currentUser.role === 'supervisor' ? 'Supervisor' : 'Colaborador');
+  document.getElementById('sidebarRole').textContent = roleText;
+  
+  // Supervisor y Admin tienen acceso a las mismas secciones
+  const hasSupervisorAccess = currentUser.role === 'supervisor' || currentUser.role === 'admin';
+  const hasAdminAccess = currentUser.role === 'admin';
+  
+  document.getElementById('navSupervisor').classList.toggle('hidden', !hasSupervisorAccess);
+  document.getElementById('navUsers').classList.toggle('hidden', !hasSupervisorAccess); // Supervisor también puede gestionar usuarios
+  document.getElementById('navDeleted').classList.toggle('hidden', !hasSupervisorAccess);
+  
+  // Solo colaboradores pueden crear nuevos proyectos
+  document.getElementById('btnNewProject').style.display = (currentUser.role === 'collaborator') ? 'block' : 'none';
   const pBtn = document.getElementById('projectsNewBtn');
-  if (pBtn) pBtn.style.display = isSupervisor ? 'none' : 'block';
+  if (pBtn) pBtn.style.display = (currentUser.role === 'collaborator') ? 'block' : 'none';
 }
 
 function showPage(page) {
   ['Dashboard', 'Projects', 'Supervisor', 'Users', 'Deleted'].forEach(p => document.getElementById(`page${p}`)?.classList.add('hidden'));
   document.getElementById(`page${page.charAt(0).toUpperCase() + page.slice(1)}`)?.classList.remove('hidden');
-  const titles = { dashboard: 'Dashboard', projects: 'Proyectos', supervisor: 'Vista Supervisor', users: 'Gestión de Usuarios', deleted: 'Eliminados' };
+  const titles = { dashboard: 'Dashboard', projects: 'Proyectos', supervisor: 'Vista Supervisor', users: 'Gestión de Usuarios', deleted: 'Proyectos Eliminados' };
   document.getElementById('pageTitle').textContent = titles[page] || page;
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const navIndex = { dashboard: 0, projects: 1, supervisor: 2, users: 3, deleted: 4 };
@@ -854,7 +1061,7 @@ function toggleFolder(id) {
 }
 function openNewProjectInFolder(folder) { openNewProjectModal(); document.getElementById('projectClient').value = folder; }
 function openNewProjectModal() {
-  if (currentUser?.role === 'supervisor') { alert('Solo colaboradores pueden crear proyectos'); return; }
+  if (currentUser?.role !== 'collaborator') { alert('Solo colaboradores pueden crear proyectos'); return; }
   document.getElementById('projectName').value = '';
   document.getElementById('projectCode').value = '';
   document.getElementById('projectStartDate').value = new Date().toISOString().split('T')[0];
@@ -876,8 +1083,8 @@ function renderProjectTimeline() {
   const canEdit = (currentUser?.role === 'collaborator' && currentProject.owner === currentUser?.id && !currentProject.deleted);
   currentProject.steps.forEach((step, i) => {
     html += `<div class="timeline-item"><div class="timeline-dot ${step.status === 'done' ? 'done' : (step.status === 'in_progress' ? 'active' : '')}"></div><div class="timeline-content">
-      <div class="timeline-step-header"><span class="timeline-step-title">${i+1}. ${step.name}</span><span class="timeline-step-date">${step.completedAt ? formatDate(step.completedAt) : (step.startedAt ? formatDate(step.startedAt) : 'Pendiente')}</span></div>
-      ${step.notes ? `<div class="timeline-step-notes">${step.notes}</div>` : ''}
+      <div class="timeline-step-header"><span class="timeline-step-title">${i+1}. ${escapeHtml(step.name)}</span><span class="timeline-step-date">${step.completedAt ? formatDate(step.completedAt) : (step.startedAt ? formatDate(step.startedAt) : 'Pendiente')}</span></div>
+      ${step.notes ? `<div class="timeline-step-notes">${escapeHtml(step.notes)}</div>` : ''}
       ${canEdit ? `<div class="flex gap-2 mt-2"><button class="btn btn-primary btn-sm" onclick="openUpdateStep(${i})">Actualizar</button></div>` : ''}
     </div></div>`;
   });
@@ -890,9 +1097,9 @@ function renderProjectSteps() {
   let html = '<div class="steps-list">';
   const canEdit = (currentUser?.role === 'collaborator' && currentProject.owner === currentUser?.id && !currentProject.deleted);
   currentProject.steps.forEach((step, i) => {
-    html += `<div class="step-row"><div class="step-number">${i+1}</div><div class="step-info"><div class="step-name">${step.name}</div>
-      <div class="step-status">${step.status === 'done' ? '✅ Completado' : (step.status === 'in_progress' ? '🔄 En Progreso' : '⏳ Pendiente')}</div>
-      ${step.notes ? `<div class="step-status">${step.notes}</div>` : ''}</div>
+    html += `<div class="step-row"><div class="step-number">${i+1}</div><div class="step-info"><div class="step-name">${escapeHtml(step.name)}</div>
+      <div class="step-status">${step.status === 'done' ? ' Completado' : (step.status === 'in_progress' ? ' En Progreso' : ' Pendiente')}</div>
+      ${step.notes ? `<div class="step-status">${escapeHtml(step.notes)}</div>` : ''}</div>
       ${canEdit ? `<button class="btn btn-primary btn-sm" onclick="openUpdateStep(${i})">✏️</button>` : ''}</div>`;
   });
   html += '</div>';
@@ -904,17 +1111,14 @@ function renderProjectInfo() {
   const ownerName = getUserName(currentProject.owner);
   document.getElementById('projectInfo').innerHTML = `
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-      <div><strong>Nombre:</strong><br>${currentProject.name}</div><div><strong>OT:</strong><br>${currentProject.code}</div>
-      <div><strong>Subestación:</strong><br>${currentProject.client || '—'}</div><div><strong>Responsable:</strong><br>${ownerName}</div>
+      <div><strong>Nombre:</strong><br>${escapeHtml(currentProject.name)}</div><div><strong>OT:</strong><br>${currentProject.code}</div>
+      <div><strong>Subestación:</strong><br>${escapeHtml(currentProject.client || '—')}</div><div><strong>Responsable:</strong><br>${escapeHtml(ownerName)}</div>
       <div><strong>Fecha Inicio:</strong><br>${formatDate(currentProject.startDate || currentProject.createdAt)}</div><div><strong>Progreso:</strong><br>${getProgress(currentProject)}%</div>
     </div>
-    ${currentProject.description ? `<div class="mt-4"><strong>Descripción:</strong><br>${currentProject.description}</div>` : ''}
+    ${currentProject.description ? `<div class="mt-4"><strong>Descripción:</strong><br>${escapeHtml(currentProject.description)}</div>` : ''}
   `;
 }
 
-// ============================================================
-// EXPORTAR PDF (VERSIÓN MEJORADA - PROFESIONAL)
-// ============================================================
 async function exportProjectPDF() {
   if (!currentProject) return;
   
@@ -933,7 +1137,6 @@ async function exportProjectPDF() {
     return String(text).replace(/[áäâà]/g, 'a').replace(/[éëêè]/g, 'e').replace(/[íïîì]/g, 'i').replace(/[óöôò]/g, 'o').replace(/[úüûù]/g, 'u').replace(/ñ/g, 'n').replace(/Ñ/g, 'N').replace(/[¿¡]/g, '').replace(/[•·]/g, '-').replace(/[“”]/g, '"').replace(/[‘’]/g, "'").replace(/[–—]/g, '-');
   }
 
-  // Cabecera
   doc.setFillColor(37, 99, 235);
   doc.rect(0, 0, W, 35, 'F');
   doc.setFont('helvetica', 'bold');
@@ -953,7 +1156,6 @@ async function exportProjectPDF() {
   doc.text(`${progress}%`, W - 35, 16, { align: 'center' });
   y = 50;
 
-  // Datos generales
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(14);
   doc.setTextColor(30, 41, 59);
@@ -976,6 +1178,7 @@ async function exportProjectPDF() {
     ['Progreso General:', `${progress}%`]
   ];
   generalData.forEach((row, i) => {
+    if (y + 8 > H - 50 && i > 0) { doc.addPage(); y = 20; }
     doc.setFont('helvetica', 'bold');
     doc.text(row[0], 25, y + (i * 8));
     doc.setFont('helvetica', 'normal');
@@ -983,7 +1186,6 @@ async function exportProjectPDF() {
   });
   y += generalData.length * 8 + 15;
 
-  // Descripción
   if (p.description) {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(14);
@@ -1000,7 +1202,7 @@ async function exportProjectPDF() {
     y += descLines.length * 6 + 15;
   }
 
-  // Progreso general
+  if (y > H - 60) { doc.addPage(); y = 20; }
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(14);
   doc.setTextColor(30, 41, 59);
@@ -1018,7 +1220,6 @@ async function exportProjectPDF() {
   doc.text(`${progress}%`, W / 2, y + 5.5, { align: 'center' });
   y += 20;
 
-  // Detalle de pasos
   if (y > H - 60) { doc.addPage(); y = 20; }
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(14);
@@ -1079,14 +1280,13 @@ async function exportProjectPDF() {
       doc.setFont('helvetica', 'italic');
       doc.setFontSize(8);
       doc.setTextColor(71, 85, 105);
-      const notesLines = doc.splitTextToSize(`📝 ${cleanText(step.notes)}`, W - 60);
+      const notesLines = doc.splitTextToSize(` ${cleanText(step.notes)}`, W - 60);
       doc.text(notesLines, 38, y);
       y += notesLines.length * 5 + 5;
     }
     y += 2;
   });
 
-  // Alertas
   if (!p.deleted && isDaysWithoutUpdate(p, 3)) {
     if (y > H - 30) { doc.addPage(); y = 20; }
     y += 5;
@@ -1097,7 +1297,7 @@ async function exportProjectPDF() {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
     doc.setTextColor(190, 18, 60);
-    doc.text('⚠️ ALERTA', 30, y + 8);
+    doc.text('⚠️ALERTA', 30, y + 8);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
     doc.setTextColor(153, 27, 27);
@@ -1105,7 +1305,7 @@ async function exportProjectPDF() {
     y += 25;
   }
 
-  // Pie de página
+
   const totalPages = doc.internal.getNumberOfPages();
   for (let pg = 1; pg <= totalPages; pg++) {
     doc.setPage(pg);
@@ -1123,9 +1323,6 @@ async function exportProjectPDF() {
   doc.save(`Informe_${safeFileName}.pdf`);
 }
 
-// ============================================================
-// INICIALIZACIÓN Y EXPORTACIÓN
-// ============================================================
 document.addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) e.target.classList.add('hidden'); });
 document.getElementById('loginEmail')?.addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
 document.getElementById('loginPassword')?.addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
@@ -1139,11 +1336,14 @@ auth.onAuthStateChanged(async (user) => {
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('app').style.display = 'block';
       setupUI();
+      currentPage = 1;
+      lastVisibleDoc = null;
       await loadAllData(true);
       showPage('dashboard');
     }
   }
 });
+
 
 window.switchAuthTab = switchAuthTab;
 window.doLogin = doLogin;
@@ -1169,6 +1369,8 @@ window.openAddUserModal = openAddUserModal;
 window.saveUser = saveUser;
 window.editUser = editUser;
 window.deleteUser = deleteUser;
+window.goToNextPage = goToNextPage;
+window.goToPrevPage = goToPrevPage;
 </script>
 </body>
 </html>
